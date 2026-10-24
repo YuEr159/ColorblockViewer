@@ -52,6 +52,14 @@ export class SimViewport {
     return this.scene.camera.fov;
   }
 
+  /** 运行时导出（截图/GIF 帧源）：完整模式 = WebGL 画布。
+   *  截图依赖 scene.ts 的 preserveDrawingBuffer（否则 rAF 清屏后读到黑图）。
+   *  曾漏实现本 getter → App 的 exportCanvas 恒 null，截图报「画布不可用」，
+   *  GIF 尺寸退化到兜底 960×540 而非实际视口。 */
+  get exportCanvas(): HTMLCanvasElement | null {
+    return this.scene.renderer.domElement;
+  }
+
   constructor(container: HTMLElement, maxParticles: number, atlasKey = '26.2') {
     this.scene = createScene(container);
     this.atlasKey = atlasKey;

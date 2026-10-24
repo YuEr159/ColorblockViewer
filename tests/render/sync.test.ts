@@ -11,6 +11,7 @@ const { rendererMock } = vi.hoisted(() => ({
   rendererMock: {
     getContext: vi.fn(),
     compileAsync: vi.fn(() => Promise.resolve()),
+    domElement: { __canvas: true },
   },
 }));
 vi.mock('../../src/render/scene', () => ({
@@ -39,6 +40,10 @@ afterEach(() => {
 });
 
 describe('SimViewport.start WebGL 门控', () => {
+  it('exportCanvas 暴露 WebGL 画布（运行时截图/GIF 依赖；曾漏实现致截图恒失败）', () => {
+    const vp = mkViewport();
+    expect(vp.exportCanvas).toBe(rendererMock.domElement as never);
+  });
   it('上下文为 null → 不上 rAF、立即上报 ready（进度条可淡出）', () => {
     rendererMock.getContext.mockReturnValue(null);
     const vp = mkViewport();
