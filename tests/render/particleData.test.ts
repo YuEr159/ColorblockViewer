@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { PARTICLE_DATA } from '../../src/render/particleData';
 import { textureFor, particleVersionData } from '../../src/render/points';
+import { frameSpecFor } from '../../src/render/color';
 
 describe('particleData 版本分区', () => {
   it('两版本条目存在且非空', () => {
@@ -45,5 +46,12 @@ describe('particleData 版本分区', () => {
     expect(textureFor('end_rod', '1.21.11')?.length).toBeGreaterThan(0);
     expect(particleVersionData('9.9.9')).toBeUndefined();
     expect(textureFor('flame', '9.9.9')).toBeNull();
+  });
+
+  it('end_rod 帧行为（colorShift）在全部 13 桶生效（曾只注册 1.21.11/26.2 → 其余 11 桶插值静默失效）', () => {
+    for (const v of Object.keys(PARTICLE_DATA)) {
+      expect(frameSpecFor('end_rod', v), v).toEqual({ colorShift: [242, 222, 201] });
+    }
+    expect(frameSpecFor('flame', '1.17.1')).toBeNull();
   });
 });

@@ -79,7 +79,7 @@ README 转述；原帖随 MCBBS 关站已不可直查）。
 |---|---|---|
 | 翊尘呀 | B 站专栏 [cv21908911](https://www.bilibili.com/read/cv21908911)（1.16.5 字段序，2025-02 编辑）+ [mcmod 教程帖 post/4889](https://www.mcmod.cn/post/4889.html)（1.21.1 表达式语法全表） | 声明前两三章改编自 MCBBS 失效原帖——原帖教程事实上的继承者；专栏结尾明确推荐 ExParticle |
 | Minecraft_OCEAN | OCEAN 站教程页（5 步安装/各子命令/运算符表/mcfunction） | 1.16.5 口径，声明参考原帖 |
-| 本 Wiki | [ColorblockViewer Wiki](https://yuer159.github.io/ColorblockViewer/wiki/) | 按 26.2/1.21.11 语义 1:1 整理，含版本差异与来源标注 |
+| 本 Wiki | [ColorblockViewer Wiki](https://yuer159.github.io/ColorblockViewer/wiki/) | 按 26.2/1.21.11 语义 1:1 整理，粒子类型逐版本分 13 桶，含版本差异与来源标注 |
 
 ## 五、贡献者致谢
 

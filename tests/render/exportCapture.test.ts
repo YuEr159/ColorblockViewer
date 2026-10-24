@@ -17,6 +17,9 @@ function fakeCtx(): CanvasRenderingContext2D & { calls: string[] } {
     setTransform: () => calls.push('setTransform'),
     fillRect: () => calls.push('fillRect'),
     beginPath: () => calls.push('beginPath'),
+    moveTo: () => calls.push('moveTo'),
+    lineTo: () => calls.push('lineTo'),
+    closePath: () => calls.push('closePath'),
     arc: () => calls.push('arc'),
     fill: () => calls.push('fill'),
     stroke: () => calls.push('stroke'),
@@ -56,6 +59,15 @@ describe('drawGifFrame', () => {
     const ctx = fakeCtx();
     drawGifFrame(ctx, [particle({ sizeMul: 8 })], { width: 256, height: 192, gridSize: 10 });
     expect(ctx.calls).toContain('addColorStop');
+  });
+  it('网格按 gridVisible 门控、三轴恒画（与快速模式实况一致；曾漏画整层网格）', () => {
+    const withGrid = fakeCtx();
+    drawGifFrame(withGrid, [], { width: 256, height: 192, gridSize: 10, gridVisible: true });
+    // 网格 + 外框 + 3 轴 = 5 次 stroke
+    expect(withGrid.calls.filter((c) => c === 'stroke')).toHaveLength(5);
+    const noGrid = fakeCtx();
+    drawGifFrame(noGrid, [], { width: 256, height: 192, gridSize: 10, gridVisible: false });
+    expect(noGrid.calls.filter((c) => c === 'stroke')).toHaveLength(3);
   });
 });
 

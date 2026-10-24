@@ -191,11 +191,17 @@ describe('encodeShare/decodeShare round-trip', () => {
     expect(decodeShare(b64({ commands: [{ ...CMDS[0], normal: 'yes' }] }), SIM)).toBeNull();
   });
 
-  it('sim mcVersion 仅接受 1.21.11 / 26.2，其余降级默认（防未知版本进渲染层取空类型表）', () => {
+  it('sim mcVersion 接受 13 桶全部版本，未知版本降级默认（防未知版本进渲染层取空类型表）', () => {
     const back = decodeShare(b64({ commands: CMDS, sim: { mcVersion: '1.20' } }), SIM);
     expect(back!.sim.mcVersion).toBe(SIM.mcVersion);
     const ok = decodeShare(b64({ commands: CMDS, sim: { mcVersion: '1.21.11' } }), SIM);
     expect(ok!.sim.mcVersion).toBe('1.21.11');
+    // 13 桶逐个 round-trip（曾只有 1.21.11/26.2 过白名单，其余桶静默降级）
+    for (const v of ['1.17.1', '1.18.2', '1.19.2', '1.20.1', '1.20.4', '1.20.5', '1.20.6',
+      '1.21.1', '1.21.4', '1.21.8', '26.3']) {
+      const r = decodeShare(b64({ commands: CMDS, sim: { mcVersion: v } }), SIM);
+      expect(r!.sim.mcVersion, v).toBe(v);
+    }
   });
 
   it('sim 类型校验：垃圾值降级默认（playerPos:5 不得直通引擎 → ~ 坐标 NaN 空白）', () => {

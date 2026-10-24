@@ -36,7 +36,7 @@ export function captureFilename(tick: number): string {
 // ---------- GIF 编码（C 路线） ----------
 
 import { GIFEncoder } from 'gifenc';
-import { fit, particleProjection } from './render2d';
+import { fit, particleProjection, drawIsoGrid, drawIsoAxes } from './iso2d';
 import { particleVisual } from './color';
 import type { SimParticle } from '../sim/types';
 
@@ -73,6 +73,10 @@ export function drawGifFrame(
   ctx.fillStyle = '#0b0e14';
   ctx.fillRect(0, 0, w, h);
   const f = fit(parts, o.gridSize, w, h);
+  // 网格与三轴：与快速模式实况同口径（Render2DViewport.draw 里 gridVisible
+  // 门控网格、三轴恒画）——曾漏画，导出 GIF 比所见少一层参考网格。
+  if (o.gridVisible !== false) drawIsoGrid(ctx, f, o.gridSize);
+  drawIsoAxes(ctx, f);
   ctx.globalCompositeOperation = 'lighter';
   const key = o.atlasKey ?? '26.2';
   for (const p of parts) {

@@ -454,11 +454,28 @@ export default function App() {
     // 让按钮态先渲染一帧再进入同步编码（否则 UI 冻结期间按钮看不到 ⏳）
     setTimeout(() => {
       try {
-        const frames: GifFrame[] = [];
-        for (const fr of tl.framesSnapshot()) {
-          const parts: SimParticle[] = fr.particles.map((c) => reviveParticle(c));
-          frames.push({ particles: parts, tick: fr.tick, delayMs: 50 });
+        const snapshot = tl.framesSnapshot();
+        // 抽样上限：小场景时间线可积累数万帧（12 粒子 ≈ 8 万帧），全量同步
+        // 编码会冻结页面数分钟。超限时均匀抽样（必含末帧）；每帧 delay 按
+        // 与上一帧的 tick 差计算，被跳过的帧时长自然计入 → 总时长与实况一致。
+        const MAX_GIF_FRAMES = 1200;
+        const step = Math.max(1, Math.ceil(snapshot.length / MAX_GIF_FRAMES));
+        const picked: typeof snapshot = [];
+        for (let i = 0; i < snapshot.length; i += step) picked.push(snapshot[i]);
+        if (picked[picked.length - 1] !== snapshot[snapshot.length - 1]) {
+          picked.push(snapshot[snapshot.length - 1]);
         }
+        const frames: GifFrame[] = [];
+        let prevTick = -1;
+        for (const fr of picked) {
+          const parts: SimParticle[] = fr.particles.map((c) => reviveParticle(c));
+          // 帧间隔 = 与上一帧的 tick 差 × 50ms（1 tick = 20 TPS）。大场景时间线
+          // 会降频记录（每 k tick 一帧），硬编码 50ms 会让导出的 GIF 快 k 倍。
+          const delayMs = prevTick < 0 ? 50 : Math.max(50, (fr.tick - prevTick) * 50);
+          prevTick = fr.tick;
+          frames.push({ particles: parts, tick: fr.tick, delayMs });
+        }
+        if (frames.length === 1) frames[0].delayMs = 1000; // 单帧 GIF 停留 1s 便于观看
         const cv = viewportRef.current?.exportCanvas ?? null;
         const w = Math.max(160, cv?.width ?? 960);
         const h = Math.max(120, cv?.height ?? 540);

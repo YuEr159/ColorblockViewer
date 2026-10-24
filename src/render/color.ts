@@ -6,6 +6,7 @@
 // （3D 侧）与 tests/render/render2d.test.ts（2D 侧）双侧锁定。
 
 import { PARTICLE_DATA } from './particleData';
+import { VERSION_BUCKETS } from '../sim/kinematics';
 
 /** 基础点尺寸（**世界块单位，quad 半宽**）：对齐游戏 SingleQuadParticle quadSize
  *  均值 0.15（javap：0.1f×(nextFloat×0.5+0.5)×2f = 0.1–0.2 均匀分布）。
@@ -179,6 +180,14 @@ export const FRAME_SPECS: Record<string, Record<string, FrameSpec>> = {
   '1.21.11': { end_rod: { colorShift: [242, 222, 201] } },
   '26.2': { end_rod: { colorShift: [242, 222, 201] } },
 };
+
+// 13 桶共享同一张帧行为表：end_rod 的 AnimatedParticle.setTargetColor 行为在
+// 1.21.1 反编译与 26.2 字节码中同构，且该类型 1.13 起未变（与运动学表同一
+// 跨版本实证口径，见 sim/kinematics.ts VERSION_BUCKETS）。缺表时 frameSpecFor
+// 返回 null → 该版本下 end_rod 颜色插值静默失效（点云仍在，色值偏离原版）。
+for (const b of VERSION_BUCKETS) {
+  if (!FRAME_SPECS[b]) FRAME_SPECS[b] = FRAME_SPECS['26.2'];
+}
 
 export function frameSpecFor(name: string, version = '26.2'): FrameSpec | null {
   return FRAME_SPECS[version]?.[normName(name)] ?? null;

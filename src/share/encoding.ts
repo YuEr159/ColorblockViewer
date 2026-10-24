@@ -7,6 +7,7 @@
 
 import type { ParticleCommand } from '../command/types';
 import type { SimConfig } from '../sim/types';
+import { VERSION_BUCKETS } from '../sim/kinematics';
 
 export interface SharePayload {
   commands: ParticleCommand[];
@@ -133,7 +134,10 @@ function sanitizeSim(raw: unknown, def: SimConfig): SimConfig {
     defaultLifetime: num(o.defaultLifetime, def.defaultLifetime),
     maxParticles: num(o.maxParticles, def.maxParticles),
     seed: num(o.seed, def.seed),
-    mcVersion: o.mcVersion === '26.2' || o.mcVersion === '1.21.11' ? o.mcVersion : def.mcVersion,
+    mcVersion:
+      typeof o.mcVersion === 'string' && (VERSION_BUCKETS as readonly string[]).includes(o.mcVersion)
+        ? o.mcVersion
+        : def.mcVersion,
     gridSize: num(o.gridSize, def.gridSize),
     gridVisible: typeof o.gridVisible === 'boolean' ? o.gridVisible : def.gridVisible,
     renderMode: o.renderMode === 'full' || o.renderMode === 'fast' ? o.renderMode : def.renderMode,
