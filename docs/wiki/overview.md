@@ -87,6 +87,8 @@ https://yuer159.github.io/ColorblockViewer/
 | OCEAN 指令生成器站 | Minecraft_OCEAN | mc.ecyft.top（镜像 tools.pj568.top、colorblock.neocities.org），网页选参数生成命令 + 17 个现成案例 + 1.12.2/1.16.5 模式切换 |
 | Particlex Viewer | Minecraft_OCEAN | viewer.dbi.top，网页预览器（另一条实现路线） |
 | NBS2schematic | YuEr159 | 乐谱 → schematic + particleex 命令生成器（图片/歌词逐帧打印实例来源） |
+| [DynFirework](https://github.com/TianKong-y/DynFirework) | TianKong-y | PyQt5 烟花数据包生成器，**直接基于一代 ColorBlock 的 `rgbatickparameter` + `normal`**，逐 tick 烘焙 `.mcfunction`（1.12.2 / 1.16.5）。ColorBlock 指令生态里已知规模最大的生产级应用——命令语义映射见 [02-commands](commands.md#附-dynfirework-生态的命令语义映射-跨模组对照) |
+| [DynFireworkMod](https://github.com/TianKong-y/DynFireworkMod) | TianKong-y | Fabric 1.21.8 / Forge 1.20.1 的独立粒子物理引擎模组（`/df*` 命令面，**不依赖 ColorBlock**）——"服务端下发参数 + 客户端计算"架构，与 ColorBlock 的服务端表达式形成对照，见 [03-expressions](expressions.md#粒子系统的三种架构落点) |
 
 ## 能力边界（Wiki 读者须知）
 

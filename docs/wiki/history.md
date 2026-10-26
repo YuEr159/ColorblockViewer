@@ -73,6 +73,27 @@ README 转述；原帖随 MCBBS 关站已不可直查）。
 ——按 AnotherColorBlock 命令语义 1:1 复刻的浏览器预览，粘贴命令即可
 验证效果（1200+ 个测试锁定）。
 
+### DynFirework 与 DynFireworkMod（TianKong-y）
+
+[TianKong-y](https://github.com/TianKong-y)（B 站 TianKong_y）的两个项目是
+ColorBlock 生态里**应用规模最大**的下游，且方向不同：
+
+| 项目 | 形态 | MC 版本 | 与 ColorBlock 的关系 |
+|---|---|---|---|
+| [DynFirework](https://github.com/TianKong-y/DynFirework) | Python（PyQt5）数据包生成器 | 1.12.2 / 1.16.5 | **直接使用一代 ColorBlock 的 `rgbatickparameter` + `normal`**——把服务端表达式当作烟花工厂的底层指令，逐 tick 烘焙 `.mcfunction` |
+| [DynFireworkMod](https://github.com/TianKong-y/DynFireworkMod) | Fabric / Forge 模组 | Fabric 1.21.8 / Forge 1.20.1 | **独立的客户端物理引擎**（`/df*` 命令面），不依赖 ColorBlock；服务端只下发初始状态，物理在客户端算 |
+
+两者的意义：DynFirework 证明一代 ColorBlock 的表达式在**大规模生产**
+（每 tick 数百条指令的数据包）下可用；DynFireworkMod 则提供了第三种
+架构参照——[02-commands](commands.md#附-dynfirework-生态的命令语义映射-跨模组对照)
+有完整的命令语义映射，[03-expressions](expressions.md#粒子系统的三种架构落点)
+有架构光谱对比。`[官方级]`（作者仓库 README/templates.md 与本库源码精读）。
+
+DynFirework 的烟花模板还贡献了两类可直接借鉴的数学：**球面双角枚举**
+（单/双层烟花的轨迹方向分布）与**带空气阻力抛体**（`k/m0` 决定轨迹形状，
+按 `rho` 采样），前者已落成本 Wiki 模板库的「烟花球」，
+后者是 `parameter` 逐 t 算解析解的手算范式。
+
 ## 四、文档线
 
 | 作者 | 作品 | 说明 |

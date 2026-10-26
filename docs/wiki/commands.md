@@ -190,3 +190,53 @@ particle <粒子名> [pos x y z] [delta x y z] [speed] [count] [normal]
 | `user-function define\|undefine <名> <参数> <函数体>` | 用户自定义函数（表达式内 `f(x,2,t)` 调用） | 编译为 ASM 方法；客户端 `list` 列出 |
 
 若你玩的是 AnotherColorBlock（本 Wiki 主口径），以上命令会报未知子命令。
+
+## 附：DynFirework 生态的命令语义映射（跨模组对照）
+
+[TianKong-y](https://github.com/TianKong-y) 的两个项目建立在 ColorBlock 之上，
+但各自用不同的命令面——照抄参数前务必先换算。区分两个项目：
+
+| 项目 | 形态 | MC 版本 | 与 ColorBlock 的关系 |
+|---|---|---|---|
+| **DynFirework** | Python（PyQt5）数据包生成器 | 1.12.2 / 1.16.5 | **直接调用一代 ColorBlock 的 `rgbatickparameter` + `normal`**，逐 tick 烘焙 `.mcfunction` |
+| **DynFireworkMod** | Fabric / Forge 模组，独立客户端物理引擎 | Fabric 1.21.8、Forge 1.20.1 | **不依赖 ColorBlock**，自己一套 `/df*` 根命令（服务端下发参数 + 客户端算物理） |
+
+### DynFirework → ColorBlock（同一套模组命令，语义等价）
+
+DynFirework 生成的指令就是 ColorBlock 指令，可直接在本预览粘贴对照
+（把 `rgbatickparameter` 换成现行 `rgbapolarparameter`/`rgbatickparameter`
+系列，见[三代命令名对照](#三代命令名对照)）：
+
+| DynFirework 生成 | ColorBlock 等效 | 说明 |
+|---|---|---|
+| `particleex rgbatickparameter …` | `rgbatickparameter` 变体 | 渐变色逐 tick 生成粒子（烟花主用） |
+| `particleex normal …` | `normal` | 固定色批量生成（起爆点用） |
+
+> **重要·字段序勘误**（[源码级]，`dyn/lib/cb/commands.py` 拼串直读）：
+> 一代 `rgbatickparameter` 的颜色段是 **8 个浮点**（`begin/end` 位置各 4 个，
+> 对应 ColorBlock 的 begin/end + rgba），不是 2 个。DynFirework 恒写
+> `0.0 0.0 0.0 0.0 1.0` 作哑元——**表达式内自带 `cr/cg/cb` 时颜色段闲置**。
+> 网上教程里「begin=0.1 end=1.0 含义不明」的写法即此来历。
+> 另：一代 `normal` 的颜色段与表达式 `cr/cg/cb` 均为 **0–1 归一化**，
+> 不是 0–255。
+
+### DynFireworkMod → ColorBlock（不同系统，单位不同）
+
+| DynFireworkMod | 本预览 / ColorBlock | 差异要点 |
+|---|---|---|
+| `/dfp <pos> <r1g1b1> <r2g2b2> <vxvyvz> <lifetime>` | `normal`（固定色）/ `rgbatickparameter`（渐变） | **颜色 0–255**（ColorBlock 是 0–1）；lifetime 硬上限 1200 tick |
+| `/dfp constant … <size>` | `rgba…parameter` 的 dust `scale` | 恒定大小 = dust 系 size 固定 |
+| `/dfpbatch <json>` | 无对应（ExParticle `user-function` 精神相近） | 数据驱动批量 vs 表达式驱动 |
+| `/df singlelayer` | `polarparameter` 球面枚举 | 前者客户端物理、后者服务端表达式 |
+| `/df spray` | `conditional` + `tickparameter` | 持续喷射 = 持续生成 + 初速分布 |
+| `/df launch` / `spiral` / `beam` | 需拆多条 `parameter` 手算轨迹 | Mod 端一条命令内建弹道；ColorBlock 端只能预计算逐 tick 位置 |
+
+DynFireworkMod 的完整指令表（19 条，含 `/df doublelayer` `/df nebula`
+`/df doublehelix` `/df rotatingring` 等）见其
+[COMMANDS.md](https://github.com/TianKong-y/DynFireworkMod/blob/main/COMMANDS.md)
+[官方级·一手 README]。本预览**不解析** `/df*` 命令——它们不是 ColorBlock
+命令，粘贴会报未知命令。
+
+> 生态意义：两个项目合计展示了粒子系统的三种架构落点——**服务端逐 tick
+> 烘焙**（DynFirework）、**服务端表达式**（ColorBlock/ExParticle，本 Wiki
+> 主口径）、**服务端下发参数 + 客户端引擎**（DynFireworkMod）。
