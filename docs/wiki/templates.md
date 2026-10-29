@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 8 条）
+## 已收录模板（当前 11 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -140,6 +140,46 @@
 
 ```
 /particleex rgbatickpolarparameter minecraft:end_rod ~ ~5 ~ 0 0 0 0 200 's1=6.2832*random();s2=3.14159*random()-1.5708;dis=4*pow(random(),2);cr=0.6+0.4*(1-dis/4);cg=0.5+0.3*(1-dis/4);cb=1;alpha=1;vx=0.01*random()-0.005;vy=0.01*random()-0.005;vz=0.01*random()-0.005' 1 5 200 'null' 1 null
+```
+
+### butterfly · 蝴蝶曲线（Fay 1989，极坐标精细结构）
+
+- **标签**：`polarparameter` `表达式` `end_rod`
+- **说明**：r = e^sinθ − 2cos4θ + sin⁵((2θ−π)/24)，θ∈[0, 24π] —— Temple Fay
+  1989 年的经典蝴蝶曲线。第三项 sin⁵((2θ−π)/24) 是翅膀倾斜修正；少了它
+  两翼不对齐。**24π 的扫描范围是曲线闭合的必要条件**，缩到 2π 只能得到
+  一个小瓣。实测总转角 359 rad（是普通曲线的 10–20 倍），结构极精细。
+- **命令**（复制即用）：
+
+```
+/particleex polarparameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 75.39822368615504 's1=t;s2=0;dis=exp(sin(t))-2*cos(4*t)+pow(sin((2*t-PI)/24),5)' 0.02 200 'null' 1 null
+```
+
+### spherespiral · 球面螺旋（等角缠绕，一维 t 扫两个角）
+
+- **标签**：`polarparameter` `表达式` `end_rod`
+- **说明**：`s1=t` 转方位、`s2=0.05*t` 稳步抬仰角、`dis=4` 定半径——**一条
+  参数同时扫两个角**，得到球面上等角间距的螺旋。s2 上限 1.25 rad
+  （8π×0.05）停在北半球；要绕满全球把 0.05 调小（如 0.0125 走完 π）。
+  单选 30ns/次，是库里最省的 3D 模板。
+- **命令**（复制即用）：
+
+```
+/particleex polarparameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 25.132741228718345 's1=t;s2=0.05*t;dis=4' 0.03 200 'null' 1 null
+```
+
+### torusknot · 环面结 (5,2)（3D 拓扑曲线）
+
+- **标签**：`parameter` `表达式` `end_rod`
+- **说明**：`x=(R+r·cos qt)cos pt`、`z=(R+r·cos qt)sin pt`、`y=r·sin qt`——
+  **p=5 绕主轴、q=2 绕管**，(p,q) 互质才能得到不打结的单一闭合曲线；
+  改这组数就换一种结法（(3,2) 是三叶结、(3,4) 更密）。y 项让它离开水平面，
+  是库里第一条真正意义上的 3D 曲线（此前 8 条全在 y 为常数的平面内）。
+  注意 cos 要算两次，求值 179ns，偏贵但可接受（只用在生成路径）。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 6.283185307179586 'x=(2+0.8*cos(2*t))*cos(5*t);z=(2+0.8*cos(2*t))*sin(5*t);y=0.8*sin(2*t)' 0.02 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）

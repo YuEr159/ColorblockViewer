@@ -506,8 +506,8 @@ describe('模板库（复制命令 / 载入并执行）', () => {
     expect(cards.length).toBe(1);
     expect(cards[0].textContent).toContain('涟漪波面');
     setInputValue(search, 'end_rod');
-    // 模板库增长后逐条核对:涟漪/圆周环/克拉德尼/万花尺/超级公式均带 end_rod 标签
-    expect(container.querySelectorAll('.template-card').length).toBe(5);
+    // 模板库增长后逐条核对:涟漪/圆周环/克拉德尼/万花尺/超级公式/蝴蝶/球面螺旋/环面结均带 end_rod 标签
+    expect(container.querySelectorAll('.template-card').length).toBe(8);
     setInputValue(search, 'vel');
     // 呼吸圆环/烟花球/星云都用 vel 标签(非零命令速度提示)
     expect(container.querySelectorAll('.template-card').length).toBe(3);
