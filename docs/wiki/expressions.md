@@ -78,6 +78,13 @@ dis = √(x²+z²+y²)
 | `conditional` | `x y z`（采样点相对坐标）+ 自动 `s1 s2 dis` | 表达式结果非 0 = 该点生成粒子 |
 | `normal` 速度表达式 | `t`（每 tick += speedStep）+ 当前位置/球坐标/age | `vx,vy,vz=…` |
 
+⚠️ **polar 族只读球坐标**（模组源码 `ClientNetworkHandler.java:159-162`
+逐字）：`polarparameter` / `rgbapolarparameter` / `tickpolarparameter` /
+`rgbatickpolarparameter` 的位置输出**只取 `s1`/`s2`/`dis`**，表达式里写
+`x=`/`y=`/`z=` 会被**静默忽略**（不报错，粒子全堆在原点）。极坐标曲线
+写成 `s1=t;s2=0;dis=r(t)`；直角坐标曲线改用非 polar 族
+（`parameter` / `rgbaparameter`），它只读 `x/y/z`，写球坐标同样无效。
+
 所有族都支持自定义变量（`a=2;`）、内置函数与矩阵。
 
 ## 分段与条件写法（引擎无三元运算符）

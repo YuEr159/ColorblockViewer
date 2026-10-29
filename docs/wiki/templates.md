@@ -6,15 +6,24 @@
 > （命令文本、标签、说明），代码侧是执行来源，本页是文档来源；代码模板变更时本页同步。
 > 模板的详细效果解读见 [05-examples](examples.md)。
 
-## 硬性约定（每条模板都过三道闸，测试守护）
+## 硬性约定（每条模板都过四道闸，测试守护）
 
 1. **可被预览解析器结构化**（parseCommands 成功）；
 2. **通过游戏内格式检查**（checkCommandsFormat）——表达式一律带单引号，
    复制出去就是 brigadier 合法格式，可直接粘进游戏；
-3. **预览引擎实跑零错误、spawned > 0**——不会出现「看着有模板、一点就报错」。
+3. **预览引擎实跑零错误、spawned > 0**——不会出现「看着有模板、一点就报错」；
+4. **粒子真的散开**（空间跨度 > 0.5 格）且**表达式写的字段与命令族读取的
+   字段匹配**——只查「有粒子生成」抓不到静默失效：polar 族
+   （polarparameter 等）的位置表达式**只读 `s1`/`s2`/`dis`**，写 `x`/`y`/`z`
+   会被完全忽略，粒子全堆在原点却仍能通过前三道闸（2026-10-29 体检时
+   hypotrochoid / superformula / breathing 三条即因此中招）。
 
 > 命令要点：`vel` 非零命令速度是刻意的——模组零速命令会触发 stop 回滚，
 > 粒子被钉住不动；多行模板 = 多条命令一起载入。
+>
+> **命令族怎么选**：平面/直角坐标曲线用 `parameter` / `rgbaparameter`
+> （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
+> 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
 ## 已收录模板（当前 8 条）
 
@@ -45,50 +54,55 @@
 - **标签**：`conditional` `表达式` `end_rod`
 - **说明**：方形板驻波模态 cos(nπx/L)cos(mπz/L)+cos(mπx/L)cos(nπz/L) 的零值
   等值线筛点——金属板撒沙振动后的花纹，静态零时间项（n=2, m=3, L=10，
-  阈值 0.07 实测命中约 6000 粒）。
+  阈值 0.07 实测命中约 6000 粒）。范围 `8 0 8` = **x-z 平面**（dx dy dz
+  顺序；写 `8 8 0` 会让 z 恒为 0，图案退化成一维）。
 - **命令**（复制即用）：
 
 ```
-/particleex conditional minecraft:end_rod ~ ~ ~ 1 0.95 0.89 1 0 0 0 8 8 0 'abs(cos(0.6283185307179587*x)*cos(0.9424777960769379*z)+cos(0.9424777960769379*x)*cos(0.6283185307179587*z))<0.07' 0.05 200 null 1 null
+/particleex conditional minecraft:end_rod ~ ~ ~ 1 0.95 0.89 1 0 0 0 8 0 8 'abs(cos(0.6283185307179587*x)*cos(0.9424777960769379*z)+cos(0.9424777960769379*x)*cos(0.6283185307179587*z))<0.07' 0.05 200 null 1 null
 ```
 
 ### hypotrochoid · 万花尺繁花（hypotrochoid 内旋线）
 
-- **标签**：`polarparameter` `表达式` `end_rod`
+- **标签**：`parameter` `表达式` `end_rod`
 - **说明**：小圆在定圆内滚动：x=(R−r)cos(t)+d·cos((R−r)t/r)，
-  z=(R−r)sin(t)−d·sin((R−r)t/r)——R=5 r=3 d=5 转 R/gcd(R,r)=5 圈闭合
-  （t∈[0,6π]），三旋钮（R, r, d）调出万花筒图案。
+  z=(R−r)sin(t)−d·sin((R−r)t/r)——R=5 r=3 d=5，**闭合条件是
+  t 上界 = 2π·q**（q 为 k=(R−r)/r 的最简分母；此处 k=2/3 → q=3 →
+  t∈[0,6π]），三旋钮（R, r, d）调出万花筒图案。
+  平面曲线用 `parameter` 族——**polar 族只读 s1/s2/dis，写 x/z 会被忽略**。
 - **命令**（复制即用）：
 
 ```
-/particleex polarparameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 18.84955592153876 'x=2*cos(t)+5*cos(2*t/3);z=2*sin(t)-5*sin(2*t/3);y=0' 0.03 200 'null' 1 null
+/particleex parameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 18.84955592153876 'x=2*cos(t)+5*cos(2*t/3);z=2*sin(t)-5*sin(2*t/3);y=0' 0.03 200 'null' 1 null
 ```
 
 ### superformula · 超级公式五瓣花（Gielis 极坐标轮廓）
 
 - **标签**：`rgbapolarparameter` `表达式` `end_rod`
 - **说明**：r=[|cos(mφ/4)|^n+|sin(mφ/4)|^n]^(−1/n1) 的五瓣星花（m=5, n=1.7）
-  ——一条公式从圆到多边形到花瓣的形态变换器；rgbapolarparameter 随 s1
-  转色相（cr/cg/cb 相位差 2π/3）。
+  ——一条公式从圆到多边形到花瓣的形态变换器。polar 族写法：
+  `s1` 取极角 t、`s2=0` 落在水平面、`dis` 即 r(s1)；随 s1 转色相
+  （cr/cg/cb 相位差 2π/3）。
 - **命令**（复制即用）：
 
 ```
-/particleex rgbapolarparameter minecraft:end_rod ~ ~2 ~ 0 0 0 0 18.84955592153876 'r=(abs(cos(5*s1/4))^1.7+abs(sin(5*s1/4))^1.7)^(-0.5882352941176471);x=r*1.8*cos(s1);z=r*1.8*sin(s1);y=0;cr=0.5+0.5*cos(s1);cg=0.5+0.5*cos(s1+2.0943951023931953);cb=0.5+0.5*cos(s1+4.1887902047863905);alpha=1' 0.03 200 'null' 1 null
+/particleex rgbapolarparameter minecraft:end_rod ~ ~2 ~ 0 0 0 0 18.84955592153876 's1=t;s2=0;dis=(abs(cos(5*s1/4))^1.7+abs(sin(5*s1/4))^1.7)^(-0.5882352941176471)*1.8;cr=0.5+0.5*cos(s1);cg=0.5+0.5*cos(s1+2.0943951023931953);cb=0.5+0.5*cos(s1+4.1887902047863905);alpha=1' 0.03 200 'null' 1 null
 ```
 
 ### breathing · 呼吸圆环（社区最高频·正弦径向速度）
 
 - **标签**：`polarparameter` `表达式` `vel`
-- **说明**：polarparameter 摆出半径 2 的圆环（12 粒，step 0.3 ≈ 2π/0.3 个点，
-  每帧速度 = 当前位置 × i，i=0.1·sin(t/5)）——乘性递推使构型整体胀缩
-  （周期 2π×5≈31 tick）；r=2 环 200 tick（寿命）实测半径 0.62→2.62 呼吸
-  6 个周期。B 站社区最高频用法（[05-examples](examples.md) 载变体出处），
-  改 0.1（幅度）/5（周期倒数）调观感。`vel` 标签提示：速度表达式自带
-  非零初速意义，但命令速度槽仍须非 0（零速触发模组 stop 回滚钉住粒子）。
+- **说明**：polar 族写法——s1=t 扫极角、s2=0 水平面、dis=2 定半径，摆出
+  半径 2 的圆环（12 粒，step 0.3），每帧速度 = 当前位置 × i，
+  i=0.1·sin(t/5)——乘性递推使构型整体胀缩（周期 2π×5≈31 tick）；
+  r=2 环 200 tick（寿命）实测半径 0.62→2.62 呼吸 6 个周期。B 站社区
+  最高频用法，改 0.1（幅度）/5（周期倒数）调观感。`vel` 标签提示：
+  速度表达式自带非零初速意义，但命令速度槽仍须非 0（零速触发模组
+  stop 回滚钉住粒子）。
 - **命令**（复制即用）：
 
 ```
-/particleex polarparameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 6.2832 'x=2*cos(t);z=2*sin(t);y=0' 0.3 200 'i=0.1*sin(t/5);(vx,vy,vz)=(x*i,y*i,z*i)' 1 null
+/particleex polarparameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 6.2832 's1=t;s2=0;dis=2' 0.3 200 'i=0.1*sin(t/5);(vx,vy,vz)=(x*i,y*i,z*i)' 1 null
 ```
 
 ### fireworkball · 烟花球（球面枚举 144 粒一次炸开）
