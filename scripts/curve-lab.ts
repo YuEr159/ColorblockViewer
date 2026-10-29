@@ -122,6 +122,13 @@ export interface ScanReport {
   suggestStep: number;
   /** 位置是否真的散开（跨度之和） */
   spread: number;
+  /** 折线曲率积分（rad）：曲线「绕」的总量。同包围盒的不同频率比
+   *  （如 Lissajous 3:2 与 5:4 都是 3×3 盒）靠这个才能区分。 */
+  turn: number;
+  /** 空间占用格数（0.3 格立方体）：「覆盖了多大体积」，3D 曲线远高于平面 */
+  cells: number;
+  /** 2 = 平面曲线（y 跨度≈0），3 = 真 3D */
+  dims: 2 | 3;
   error?: string;
 }
 
@@ -141,6 +148,9 @@ export function scanCandidate(c: LabCandidate): ScanReport {
     closure: NaN,
     suggestStep: c.step ?? 0.03,
     spread: 0,
+    turn: 0,
+    cells: 0,
+    dims: 2,
   };
   let block: ReturnType<typeof parse>;
   try {
@@ -155,6 +165,8 @@ export function scanCandidate(c: LabCandidate): ScanReport {
   let last: [number, number, number] | null = null;
   let arc = 0;
   let prev: [number, number, number] | null = null;
+  let prevDir: [number, number, number] | null = null;
+  const cellSet = new Set<string>();
   for (let i = 0; i < N; i++) {
     const t = tmin + i * dt;
     s.t = t;
@@ -187,12 +199,28 @@ export function scanCandidate(c: LabCandidate): ScanReport {
     report.range.y[1] = Math.max(report.range.y[1], y);
     report.range.z[0] = Math.min(report.range.z[0], z);
     report.range.z[1] = Math.max(report.range.z[1], z);
+    cellSet.add(`${Math.floor(x / 0.3)},${Math.floor(y / 0.3)},${Math.floor(z / 0.3)}`);
     const cur: [number, number, number] = [x, y, z];
     if (!first) first = cur;
-    if (prev) arc += Math.hypot(x - prev[0], y - prev[1], z - prev[2]);
+    if (prev) {
+      const dx = x - prev[0], dy = y - prev[1], dz = z - prev[2];
+      arc += Math.hypot(dx, dy, dz);
+      const len = Math.hypot(dx, dy, dz);
+      if (len > 1e-9) {
+        const dir: [number, number, number] = [dx / len, dy / len, dz / len];
+        if (prevDir) {
+          const dot = Math.max(-1, Math.min(1,
+            dir[0] * prevDir[0] + dir[1] * prevDir[1] + dir[2] * prevDir[2]));
+          report.turn += Math.acos(dot);
+        }
+        prevDir = dir;
+      }
+    }
     prev = cur;
     last = cur;
   }
+  report.cells = cellSet.size;
+  report.dims = report.range.y[1] - report.range.y[0] > 0.3 ? 3 : 2;
   if (first && last) {
     const diag = Math.hypot(
       report.range.x[1] - report.range.x[0],
@@ -355,6 +383,8 @@ function printReport(c: LabCandidate, r: ScanReport): void {
     + `  跨度=${r.spread.toFixed(2)}`);
   console.log(`  闭环: ${Number.isNaN(r.closure) ? '—' : r.closure.toFixed(4)}`
     + `（<0.01 视为闭合，适合无限循环）`);
+  // 结构指标：同包围盒的不同频率比（如 Lissajous）只能靠这两项区分
+  console.log(`  结构: ${r.dims}D  总转角 ${r.turn.toFixed(1)} rad  占用格 ${r.cells}`);
   console.log(`  建议 step: ${r.suggestStep.toPrecision(3)}`);
   if (r.error) console.log(`  ! ${r.error}`);
 }

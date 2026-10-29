@@ -85,3 +85,27 @@ describe('curve-lab：数值快筛', () => {
     expect(r.range.z[1]).toBeCloseTo(2, 3);
   });
 });
+
+describe('curve-lab：结构指标（值域区分不了时靠它）', () => {
+  it('同包围盒的不同频率比，总转角单调递增', () => {
+    // 2026-10-29 实测发现：Lissajous 六档的值域完全相同（都是 3×3 盒），
+    // 仅靠 spread 无法区分，必须看曲率积分。
+    const scan = (a: number, b: number) =>
+      scanCandidate({ expr: `x=3*sin(${a}*t+0.5);z=3*sin(${b}*t);y=0`, tmax: Math.PI * 2 });
+    const r32 = scan(3, 2);
+    const r54 = scan(5, 4);
+    expect(r32.spread).toBeCloseTo(r54.spread, 6); // 包围盒确实一样
+    expect(r54.turn).toBeGreaterThan(r32.turn * 1.5); // 结构完全不同
+    expect(r54.cells).toBeGreaterThan(r32.cells);
+  });
+
+  it('平面曲线判 2D，带 y 跨度判 3D', () => {
+    expect(scanCandidate({ expr: 'x=cos(t);z=sin(t)', tmax: Math.PI * 2 }).dims).toBe(2);
+    expect(scanCandidate({ expr: 'x=cos(t);z=sin(t);y=0.5*sin(3*t)', tmax: Math.PI * 2 }).dims).toBe(3);
+  });
+
+  it('直线（无曲率）总转角接近 0', () => {
+    const r = scanCandidate({ expr: 'x=t;z=0;y=0', tmax: 10 });
+    expect(r.turn).toBeLessThan(0.01);
+  });
+});
