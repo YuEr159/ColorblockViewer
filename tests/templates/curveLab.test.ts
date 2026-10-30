@@ -4,7 +4,7 @@
 // 写 x/y/z 会被静默忽略 → 粒子全堆在原点，且原三闸测试抓不到。
 
 import { describe, it, expect } from 'vitest';
-import { pickFamily, buildCommand, scanCandidate } from '../../scripts/curve-lab';
+import { pickFamily, buildCommand, scanCandidate, runCandidate } from '../../scripts/curve-lab';
 
 describe('curve-lab：片段 → 命令族自动选择', () => {
   it('写 x/y/z → parameter（直角坐标族）', () => {
@@ -107,5 +107,44 @@ describe('curve-lab：结构指标（值域区分不了时靠它）', () => {
   it('直线（无曲率）总转角接近 0', () => {
     const r = scanCandidate({ expr: 'x=t;z=0;y=0', tmax: 10 });
     expect(r.turn).toBeLessThan(0.01);
+  });
+});
+
+describe('curve-lab：动态闸（run，抓速度场发散）', () => {
+  // 2026-10-29 实测教训：静态 scan 健康 ≠ 动态安全。圆锥螺旋 + 旋转速度式
+  // 的静态扫描一切正常，跑 30 tick 后跨度从 22.7 爆到 1114.8（正反馈）。
+  it('自旋速度场在锥形曲线上发散 → 判失败', () => {
+    const r = runCandidate({
+      expr: 'x=0.2*t*cos(t);z=0.2*t*sin(t);y=0.18*t',
+      vel: 'r=0.5*exp(0-age/60);(vx,vy,vz)=(0-r*z,r*x,0.01)',
+      tmax: 25.132741228718345,
+    }, 30);
+    expect(r.ok).toBe(false);
+    expect(r.growth).toBeGreaterThan(10);
+    expect(r.spanN).toBeGreaterThan(500);
+  });
+
+  it('呼吸速度场稳定 → 判通过', () => {
+    const r = runCandidate({
+      expr: 's1=t;s2=0;dis=2',
+      vel: 'i=0.1*sin(t/5);(vx,vy,vz)=(x*i,y*i,z*i)',
+      tmax: Math.PI * 2,
+    }, 30);
+    expect(r.ok).toBe(true);
+    expect(r.growth).toBeLessThan(2);
+  });
+
+  it('无速度表达式（静止）总是稳定', () => {
+    const r = runCandidate({ expr: 'x=cos(t);z=sin(t)', tmax: Math.PI * 2 }, 30);
+    expect(r.ok).toBe(true);
+    expect(r.growth).toBeCloseTo(1, 2);
+  });
+
+  it('runCandidate 把速度片段拼进正确的命令槽位', async () => {
+    const { parseCommands } = await import('../../src/command/parser');
+    const { buildCommand } = await import('../../scripts/curve-lab');
+    const { cmd } = buildCommand({ expr: 'x=cos(t);z=sin(t)', vel: 'vx=0.01' });
+    expect(cmd).toContain(`'vx=0.01' 1 null`);
+    expect(() => parseCommands(cmd.replace(/^\//, ''))).not.toThrow();
   });
 });

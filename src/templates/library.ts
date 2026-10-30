@@ -130,6 +130,15 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 6.283185307179586 'x=(2+0.8*cos(2*t))*cos(5*t);z=(2+0.8*cos(2*t))*sin(5*t);y=0.8*sin(2*t)' 0.02 200 'null' 1 null",
     ],
   },
+  {
+    id: 'thomas',
+    name: 'Thomas 环（混沌吸引子 · 速度场积分）',
+    desc: 'vx=sin(y)−bx, vy=sin(z)−by, vz=sin(x)−bz (b=0.208186) —— 速度场每 tick 积分一次，粒子被吸引到环面状吸引子并在其上混沌游走。sin 的天然有界性让它成为唯一不数值发散的经典吸引子（洛伦兹/罗斯勒/Aizawa/Halvorsen 在 20TPS 显式欧拉下全部爆掉，实测记录见 wiki）。范围 0.6 让出生点散开——所有粒子完全同点会沿同一条轨迹重合。',
+    tags: ['normal', '表达式', 'vel'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 1 0 1 0.95 0.89 1 0 0 0 0.6 0.6 0.6 1000 900 'u=0.15*sin(y)-0.0312279*x;v=0.15*sin(z)-0.0312279*y;w=0.15*sin(x)-0.0312279*z;(vx,vy,vz)=(u*0.45,v*0.45,w*0.45)' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */

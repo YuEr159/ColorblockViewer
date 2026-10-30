@@ -77,6 +77,10 @@ export function pickFamily(expr: string): { family: string; polar: boolean; note
 export interface LabCandidate {
   /** 位置表达式片段 */
   expr: string;
+  /** 速度表达式片段（可选；不传 = 'null' 静止）。带速度的候选必须过 run 闸：
+   *  静态 scan 健康 ≠ 动态安全（2026-10-29 实测：圆锥螺旋 + 旋转速度式
+   *  30 tick 后跨度从 22.7 爆到 1114.8，正反馈发散）。 */
+  vel?: string;
   /** t 起点（默认 0） */
   tmin?: number;
   /** t 终点（默认 2π） */
@@ -94,9 +98,10 @@ export function buildCommand(c: LabCandidate): { cmd: string; family: string; po
   const tmax = c.tmax ?? Math.PI * 2;
   const step = c.step ?? 0.03;
   const age = c.age ?? 200;
+  const vel = c.vel ? `'${c.vel}'` : `'null'`;
   // 槽位：<粒子> <位置> <颜色> <速度> <begin> <end> <表达式> [step] [age] [速度表达式] [speedStep] [group]
   const cmd = `/particleex ${family} ${PARTICLE} ~ ~2 ~ 1 0.95 0.89 1 0 0 0 `
-    + `${num(tmin)} ${num(tmax)} '${c.expr}' ${num(step)} ${age} 'null' 1 null`;
+    + `${num(tmin)} ${num(tmax)} '${c.expr}' ${num(step)} ${age} ${vel} 1 null`;
   return { cmd, family, polar, note };
 }
 
@@ -249,6 +254,69 @@ const W = 420;
 const H = 420;
 const BG = '#0b0e14';
 const GLYPH = 'rgba(210,225,255,0.9)';
+
+// ---------- 动态闸（run） ----------
+
+export interface RunReport {
+  ok: boolean;
+  spawned: number;
+  /** 存活粒子数（跑完 ticks 后） */
+  alive: number;
+  /** 出生时的空间跨度 */
+  span0: number;
+  /** 跑完 ticks 后的空间跨度 */
+  spanN: number;
+  /** 跨度增长倍数（> 5 视为发散） */
+  growth: number;
+  /** 引擎错误 / tick 错误 */
+  errors: string[];
+  ticks: number;
+}
+
+/** 真正跑引擎 N tick，检查速度表达式是否发散。
+ *  静态 scan 只看生成位置，看不出速度场的问题——带速度表达的候选必须过这一闸。 */
+export function runCandidate(c: LabCandidate, ticks = 30): RunReport {
+  const { cmd } = buildCommand(c);
+  const en = new SimEngine(SIM as never);
+  let spawned = 0;
+  const errors: string[] = [];
+  for (const parsed of parseCommands(cmd.replace(/^\//, ''))) {
+    const r = en.runCommand(parsed);
+    spawned += r.spawned;
+    errors.push(...r.errors);
+  }
+  const span = (): number => {
+    const ps = en.snapshot();
+    if (!ps.length) return 0;
+    let a = Infinity, b = -Infinity, d = Infinity, e = -Infinity, f = Infinity, g = -Infinity;
+    for (const p of ps) {
+      if (p.x < a) a = p.x; if (p.x > b) b = p.x;
+      if (p.y < d) d = p.y; if (p.y > e) e = p.y;
+      if (p.z < f) f = p.z; if (p.z > g) g = p.z;
+    }
+    return (b - a) + (e - d) + (g - f);
+  };
+  const span0 = span();
+  for (let i = 0; i < ticks; i++) en.tickOnce();
+  errors.push(...en.tickErrors);
+  const spanN = span();
+  const growth = span0 > 1e-6 ? spanN / span0 : (spanN > 1e-6 ? Infinity : 1);
+  return {
+    ok: errors.length === 0 && stable(spanN, growth),
+    spawned,
+    alive: en.aliveCount,
+    span0,
+    spanN,
+    growth,
+    errors,
+    ticks,
+  };
+}
+
+/** 发散判据：跨度暴涨或飞出可视尺度（200 格 ≈ 网格 20 倍） */
+function stable(spanN: number, growth: number): boolean {
+  return spanN <= 200 && growth <= 5;
+}
 
 function drawScene(
   ctx: import('@napi-rs/canvas').CanvasRenderingContext2D,
@@ -404,11 +472,30 @@ async function main(): Promise<void> {
   };
   const opts = (expr: string): LabCandidate => ({
     expr,
+    vel: flags.get('vel'),
     tmin: numFlag('tmin'),
     tmax: numFlag('tmax'),
     step: numFlag('step'),
     age: numFlag('age'),
   });
+
+  if (sub === 'run') {
+    if (!exprs.length) throw new Error('用法: run <片段> [--vel <速度片段>] [--ticks N]');
+    const ticks = numFlag('ticks') ?? 30;
+    let allOk = true;
+    for (const e of exprs) {
+      const c = opts(e);
+      const r = runCandidate(c, ticks);
+      console.log(`${r.ok ? '✓' : '✗'} ${shortLabel(c.expr)}`);
+      console.log(`  生成 ${r.spawned}  存活 ${r.alive}  ${r.ticks} tick 后`);
+      console.log(`  跨度 ${r.span0.toFixed(2)} → ${r.spanN.toFixed(2)}`
+        + `  增长 ${Number.isFinite(r.growth) ? r.growth.toFixed(2) + '×' : '∞'}`);
+      if (r.errors.length) console.log(`  ! ${r.errors[0]}`);
+      if (!r.ok) allOk = false;
+    }
+    process.exitCode = allOk ? 0 : 1;
+    return;
+  }
 
   if (sub === 'scan') {
     if (!exprs.length) throw new Error('用法: scan <片段>');
@@ -440,15 +527,22 @@ async function main(): Promise<void> {
   }
   console.log(`curve-lab —— 数学曲线探索实验台
 
-  scan  <片段...>           数值快筛（NaN/值域/闭环/建议 step）
+  scan  <片段...>           数值快筛（NaN/值域/闭环/结构/建议 step）
+  run   <片段> [--vel ...]  动态闸：跑引擎 N tick，查速度场是否发散
   shot  <片段> [--out p]    视觉快照 PNG
   sheet <片段...> [--out p] 批量联系表（2 列）
 
-通用参数：--tmin --tmax --step --age --view iso|top
+通用参数：--tmin --tmax --step --age --vel （run 另有 --ticks，默认 30）
+          --view iso|top
+
   shot 默认 iso（游戏内观感）；sheet 默认 top（平面曲线看形状，等距会压成线）
+
+⚠️ 带速度表达式的候选必须额外过 run 闸——静态 scan 只看生成位置，
+   看不出速度场发散（实测圆锥螺旋 + 旋转速度式 30 tick 跨度 22.7→1114.8）。
 
 示例：
   npx tsx scripts/curve-lab.ts scan "x=2*cos(t)+5*cos(2*t/3);z=2*sin(t)-5*sin(2*t/3)" --tmax 18.85
+  npx tsx scripts/curve-lab.ts run  "s1=t;dis=2" --vel "i=0.1*sin(t/5);(vx,vy,vz)=(x*i,y*i,z*i)"
   npx tsx scripts/curve-lab.ts shot "s1=t;dis=2+0.5*cos(5*t)" --tmax 12.56 --out .tmp/rose.png
 `);
 }
