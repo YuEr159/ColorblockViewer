@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 21 条）
+## 已收录模板（当前 23 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -325,6 +325,34 @@
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 37.69911184307752 'u=t;v=6.2832*sin(t*0.05);x=(2+0.5*cos(v+3*t))*cos(2*t);z=(2+0.5*cos(v+3*t))*sin(2*t);y=2*sin(3*t)+0.5*sin(v+3*t)' 0.06 200 'null' 1 null
+```
+
+### klein · Klein 瓶（8 字形嵌入 R³）
+
+- **标签**：`parameter` `表达式` `end_rod`
+- **说明**：`r=3+cos(u/2)sin v−sin(u/2)sin 2v` 的「8 字形」嵌入——Klein 瓶是
+  不可定向闭曲面（没有内外之分），在三维空间里只能自交，这个经典参数化
+  让瓶颈穿过瓶身。**`cos(u/2)`/`sin(u/2)` 用的是半角**：走完一圈 u=2π
+  时半角只转 π，正是这个半扭转让两端能「反向」接上。
+  占格 862，是本库覆盖面最广的参数曲面之一。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 502.6548245743669 'u=t;v=6.2832*sin(t*0.02);c=cos(u*0.5);s=sin(u*0.5);r=3+c*sin(v)-s*sin(2*v);x=r*cos(u);z=r*sin(u);y=s*sin(v)+c*sin(2*v)' 0.06 200 'null' 1 null
+```
+
+### dipole · 磁偶极场线（r=r₀sin²θ 族）
+
+- **标签**：`parameter` `表达式` `end_rod`
+- **说明**：`r=3sin²θ`、绕 y 轴旋转——这是理想偶极子磁场线的极坐标方程
+  （地球辐射带、太阳磁场、条形磁铁的铁屑图案都是这个形状）。θ 用
+  `abs(sin)` 在 0.35..1.55 之间来回扫，`ph=t` 让每条线绕轴转一圈，
+  于是同一族场线被涂成一整个回转面。改 3 是磁矩强度，改 0.35 是最近点
+  距离（太接近原点会钻进「磁铁」内部）。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 188.4955592153876 'th=0.35+1.2*abs(sin(t*0.0159));r=3*sin(th)*sin(th);ph=t;x=r*sin(th)*cos(ph);z=r*sin(th)*sin(ph);y=r*cos(th)' 0.05 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）

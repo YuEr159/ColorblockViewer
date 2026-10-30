@@ -507,8 +507,8 @@ describe('模板库（复制命令 / 载入并执行）', () => {
     expect(cards[0].textContent).toContain('涟漪波面');
     setInputValue(search, 'end_rod');
     // 逐条核对:ripple/ring/chladni/hypotrochoid/superformula/butterfly/spherespiral/
-    // torusknot/torus/mobius/tubeknot 带 end_rod 标签;thomas(normal 族)与 gyroid 不带
-    expect(container.querySelectorAll(".template-card").length).toBe(11);
+    // torusknot/torus/mobius/tubeknot/klein/dipole 带 end_rod 标签;thomas(normal 族)与 gyroid 不带
+    expect(container.querySelectorAll(".template-card").length).toBe(13);
     setInputValue(search, 'vel');
     // breathing/fireworkball/nebula/thomas/gyroid 用 vel 标签
     expect(container.querySelectorAll('.template-card').length).toBe(5);
