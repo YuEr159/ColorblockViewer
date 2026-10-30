@@ -392,6 +392,33 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3000 'k=floor(t);th=2.399963229728653*k;y=5*(1-2*k/3000);rr=sqrt(max(0,25-y*y));x=rr*cos(th);z=rr*sin(th)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'foamcube',
+    name: '立方泡沫（sin x·sin y·sin z 零面）',
+    desc: 'sin x·sin y·sin z ≈ 0 的等值面——三个方向的驻波同时过零，结果是**三族互相垂直的平面网格**，把空间切成整齐的小立方体。这是泡沫结构里最简单的一型：每个气泡都是立方体，所有面都平。12581 粒 / 33ms、占格 7262，是本库覆盖率最高的 3D 体模板之一（接近 Schwarz P 的两倍）。改带宽 0.06 调泡壁厚度，改 sin 的系数调泡径。',
+    tags: ['conditional', '表达式', '泡沫'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4.5 4.5 4.5 'abs(sin(x)*sin(y)*sin(z))<0.06' 0.25 200 null 1 null",
+    ],
+  },
+  {
+    id: 'foamcavity',
+    name: 'BCC 泡沫（球形空腔阵列）',
+    desc: 'sin x·sin y + sin y·sin z + sin z·sin x ≈ 0.3 的等值面——与立方泡沫不同，这里的壁不是平面而是**曲面**，围出上下两层各四个球形空腔（体心立方排布）。整条命令形成的是一整个「气泡堆」，正面能看到 4 个洞、侧面看是双层结构。这是 Kelvin 泡沫问题的近似解之一。1362 粒 / 56ms（比 cube 版稀疏是因为等值面更窄）。',
+    tags: ['conditional', '表达式', '泡沫'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4.5 4.5 4.5 'abs(sin(x)*sin(y)+sin(y)*sin(z)+sin(z)*sin(x)-0.3)<0.05' 0.25 200 null 1 null",
+    ],
+  },
+  {
+    id: 'foamthin',
+    name: '薄壁泡沫（三向余弦零线）',
+    desc: 'sin x + sin y + sin z ≈ 0 的等值面——三个方向的平面波相加，零面形成**互相穿插的薄壁**，比立方泡沫更像肥皂泡的连通膜（立方泡沫是直角相交，这里是斜交）。占格 1976、2305 粒 / 27ms。把它与 foamcube 对照看：立方泡沫的壁是「所有面都平」，这一型的壁是「所有面都斜」——同一族公式、两种拓扑。',
+    tags: ['conditional', '表达式', '泡沫'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4.5 4.5 4.5 'abs(sin(x)+sin(y)+sin(z))<0.08' 0.25 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
