@@ -428,6 +428,33 @@ export const TEMPLATES: Template[] = [
       "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.5 0.5 0.5 3000 900 'u=sin(y)-0.1*x;v=sin(z)-0.1*y;w=sin(x)-0.1*z;(vx,vy,vz)=(u*0.3,v*0.3,w*0.3)' 1 null",
     ],
   },
+  {
+    id: 'tesseract',
+    name: 'Tesseract 4D 超立方体投影',
+    desc: '4 维超立方体的 3D 透视投影：16 个顶点由 t 的低 4 位编码，每个顶点延伸 4 条边（翻转一个位），32 条边各细分 120 点。4D 旋转在 x-w 平面上（角度 0.6 rad），再按 w 坐标做透视缩放 `2.6+wr` —— 这是「内立方套外立方 + 跨接线」的来源：内立方是 w 坐标更远的那个立方体，透视让它变小。同一条命令就是完整的 4D→3D 降维演示。3841 粒 / 14ms。改 PER 调边长密度、改 0.6 调 4D 旋转相位。',
+    tags: ['parameter', '表达式', '4D'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3840 'k=floor(t/120);s=floorMod(t,120)/120;d=floor(k/16);base=k-16*d;b0=floorMod(base,2);b1=floorMod(floor(base/2),2);b2=floorMod(floor(base/4),2);b3=floorMod(floor(base/8),2);c0=2*b0-1;c1=2*b1-1;c2=2*b2-1;c3=2*b3-1;w0=max(0,1-abs(d-0));w1=max(0,1-abs(d-1));w2=max(0,1-abs(d-2));w3=max(0,1-abs(d-3));c0=c0+(0-c0-c0)*s*w0;c1=c1+(0-c1-c1)*s*w1;c2=c2+(0-c2-c2)*s*w2;c3=c3+(0-c3-c3)*s*w3;xr=c0*0.825336-c3*0.564642;wr=c0*0.564642+c3*0.825336;sc=7/(2.6+wr);x=xr*sc;y=c1*sc;z=c2*sc' 1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'octahedron',
+    name: '八面体（|x|+|y|+|z|=R 面族）',
+    desc: '|x|+|y|+|z| = 4 的等值面就是**正八面体**（六个顶点在坐标轴上）——这是 L1 范数的等值面。三轴绝对值相加写起来最简单，却得到最经典的柏拉图立体之一。4455 粒 / 100ms。四个「象限」面在等距投影下拼成完整菱形，中心空腔是八面体的内部。对比同族的立方体（L∞ 范数 `max(|x|,|y|,|z|)=R`）：两者是同一族「p-范数等值面」的 p=1 与 p=∞ 两端。',
+    tags: ['conditional', '表达式', '多面体'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'abs(abs(x)+abs(y)+abs(z)-4)<0.06' 0.12 200 null 1 null",
+    ],
+  },
+  {
+    id: 'cube',
+    name: '立方体（max|x| 面族）',
+    desc: 'max(|x|,|y|,|z|) = 3 的等值面——L∞ 范数的等值面就是立方体。与八面体是同一族「p-范数等值面」的两端：p=1 是八面体、p=∞ 是立方体、p=2 是球。7351 粒 / 28ms，绘制最快的一条（max 比 abs 三联快）。等距投影下能看到三个面 + 棱线，是库里唯一能直接看到「立体感」的多面体。',
+    tags: ['conditional', '表达式', '多面体'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(max(max(abs(x),abs(y)),abs(z))-3)<0.05' 0.12 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
