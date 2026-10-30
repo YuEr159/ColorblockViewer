@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 15 条）
+## 已收录模板（当前 18 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -244,6 +244,46 @@
 
 ```
 /particleex conditional minecraft:end_rod 0 3 0 1 0.95 0.89 1 0 0 0 6 6 6 'abs(sin(x)*cos(y)+sin(y)*cos(z)+sin(z)*cos(x))<0.15' 0.28 200 null 1 null
+```
+
+### mandelbrot · 曼德博集合（20 次迭代展开）
+
+- **标签**：`conditional` `表达式` `分形`
+- **说明**：z←z²+c 迭代 20 次不逃逸（|z|²<4）的点构成——分形几何的图腾。
+  **引擎没有循环，迭代靠顺序赋值展开**：每次迭代结果写进新变量
+  （zr1/zi1 → zr2/zi2…），长度线性增长且**括号深度只有 1**。
+  ⚠️ 不能用符号展开（把 zr1 的式子内联进 zr2）——那会指数膨胀，
+  实测 n=12 就卡死解析器。改迭代次数只需增减一对 zrN/ziN。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod -1 0 0 1 0.95 0.89 1 0 0 0 1.5 1.5 0 'zr0=0;zi0=0;zr1=zr0*zr0-zi0*zi0+x;zi1=2*zr0*zi0+y;zr2=zr1*zr1-zi1*zi1+x;zi2=2*zr1*zi1+y;zr3=zr2*zr2-zi2*zi2+x;zi3=2*zr2*zi2+y;zr4=zr3*zr3-zi3*zi3+x;zi4=2*zr3*zi3+y;zr5=zr4*zr4-zi4*zi4+x;zi5=2*zr4*zi4+y;zr6=zr5*zr5-zi5*zi5+x;zi6=2*zr5*zi5+y;zr7=zr6*zr6-zi6*zi6+x;zi7=2*zr6*zi6+y;zr8=zr7*zr7-zi7*zi7+x;zi8=2*zr7*zi7+y;zr9=zr8*zr8-zi8*zi8+x;zi9=2*zr8*zi8+y;zr10=zr9*zr9-zi9*zi9+x;zi10=2*zr9*zi9+y;zr11=zr10*zr10-zi10*zi10+x;zi11=2*zr10*zi10+y;zr12=zr11*zr11-zi11*zi11+x;zi12=2*zr11*zi11+y;zr13=zr12*zr12-zi12*zi12+x;zi13=2*zr12*zi12+y;zr14=zr13*zr13-zi13*zi13+x;zi14=2*zr13*zi13+y;zr15=zr14*zr14-zi14*zi14+x;zi15=2*zr14*zi14+y;zr16=zr15*zr15-zi15*zi15+x;zi16=2*zr15*zi15+y;zr17=zr16*zr16-zi16*zi16+x;zi17=2*zr16*zi16+y;zr18=zr17*zr17-zi17*zi17+x;zi18=2*zr17*zi17+y;zr19=zr18*zr18-zi18*zi18+x;zi19=2*zr18*zi18+y;zr20=zr19*zr19-zi19*zi19+x;zi20=2*zr19*zi19+y;abs(zr20*zr20+zi20*zi20)<4' 0.035 200 null 1 null
+```
+
+### julia · Julia 集 c=−0.8+0.156i（16 次迭代）
+
+- **标签**：`conditional` `表达式` `分形`
+- **说明**：同样 z←z²+c 迭代，但 c 固定、初值取采样点 (x,y)——得到 Julia 集
+  而非曼德博集。**换 c 就换一朵花**：−0.8+0.156i 是经典「兔耳」形，
+  0.285+0.01i 接近圆形，−0.4+0.6i 是细长旋臂。表达式里的
+  `(0-0.8)` 是负常数的写法——`+-0.8` 虽然引擎接受但可读性差。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 1.5 1.5 0 'zr0=x;zi0=y;zr1=zr0*zr0-zi0*zi0+(0-0.8);zi1=2*zr0*zi0+0.156;zr2=zr1*zr1-zi1*zi1+(0-0.8);zi2=2*zr1*zi1+0.156;zr3=zr2*zr2-zi2*zi2+(0-0.8);zi3=2*zr2*zi2+0.156;zr4=zr3*zr3-zi3*zi3+(0-0.8);zi4=2*zr3*zi3+0.156;zr5=zr4*zr4-zi4*zi4+(0-0.8);zi5=2*zr4*zi4+0.156;zr6=zr5*zr5-zi5*zi5+(0-0.8);zi6=2*zr5*zi5+0.156;zr7=zr6*zr6-zi6*zi6+(0-0.8);zi7=2*zr6*zi6+0.156;zr8=zr7*zr7-zi7*zi7+(0-0.8);zi8=2*zr7*zi7+0.156;zr9=zr8*zr8-zi8*zi8+(0-0.8);zi9=2*zr8*zi8+0.156;zr10=zr9*zr9-zi9*zi9+(0-0.8);zi10=2*zr9*zi9+0.156;zr11=zr10*zr10-zi10*zi10+(0-0.8);zi11=2*zr10*zi10+0.156;zr12=zr11*zr11-zi11*zi11+(0-0.8);zi12=2*zr11*zi11+0.156;zr13=zr12*zr12-zi12*zi12+(0-0.8);zi13=2*zr12*zi12+0.156;zr14=zr13*zr13-zi13*zi13+(0-0.8);zi14=2*zr13*zi13+0.156;zr15=zr14*zr14-zi14*zi14+(0-0.8);zi15=2*zr14*zi14+0.156;zr16=zr15*zr15-zi15*zi15+(0-0.8);zi16=2*zr15*zi15+0.156;abs(zr16*zr16+zi16*zi16)<4' 0.035 200 null 1 null
+```
+
+### quasicrystal · 五重准晶（Dekking 构造）
+
+- **标签**：`conditional` `表达式` `准晶`
+- **说明**：五个方向的余弦波叠加取等值线——每对方向夹角 72°，叠加出的花纹有
+  **五重旋转对称**，普通晶体（只能 2/3/4/6 重）做不到，准晶因此到 1982 年
+  才被承认（2011 年诺贝尔化学奖）。改五条 cos 的角度常数可换 7 重、8 重。
+  **只有 87 字符，却比 880 字符的分形还密**（1616 粒 vs 1416 粒）。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 5 5 0 'abs(cos(x)+cos(0.309*x+0.951*z)+cos(-x)+cos(-0.309*x-0.951*z)+cos(0.809*x+0.588*z))<0.6' 0.1 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
