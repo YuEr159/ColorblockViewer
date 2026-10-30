@@ -312,6 +312,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 28 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(abs(x/3)^10+abs(y/3)^10+abs(z/3)^10-1)<0.12' 0.28 200 null 1 null",
     ],
   },
+  {
+    id: 'sphericalharmonics',
+    name: '球谐函数（Y20 / Y30 / Y40 三阶对照）',
+    desc: '三条命令并排，各自画一个 l 阶球谐的径向调制：r = 3 + 0.8·Y_l0(θ)。Y20 ∝ 3cos²θ−1 是经典的「哑铃 + 腰环」，Y30 在赤道多一圈瓣，Y40 再多一圈——每升一阶就多一对纬向瓣，正是球谐函数「节纬线数 = l」的可视化。**必须归一化**：Y40 未归一化时 35c⁴−30c²+3 ∈ [3,8]，dis 会跨到 0.03..12.6（实测），画面炸成一片；除以 8 后统一落在 2.5..4.2。θ 用 PI*(t−floor(t)) 扫、φ 用 2π*floor(t)/rows 阶梯扫——这是引擎里唯一的「双角度栅格」写法（一维 t 只有小数/整数两位可拆）。',
+    tags: ['polarparameter', '表达式', '球谐'],
+    cmds: [
+      "/particleex polarparameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*(1.5*cos(s1)*cos(s1)-0.5)' 0.02 200 'null' 1 null",
+      "/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*(2.5*cos(s1)*cos(s1)*cos(s1)-1.5*cos(s1))' 0.02 200 'null' 1 null",
+      "/particleex polarparameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*((35*cos(s1)^4-30*cos(s1)*cos(s1)+3)/8)' 0.02 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
