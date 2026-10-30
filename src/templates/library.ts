@@ -323,6 +323,33 @@ export const TEMPLATES: Template[] = [
       "/particleex polarparameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*((35*cos(s1)^4-30*cos(s1)*cos(s1)+3)/8)' 0.02 200 'null' 1 null",
     ],
   },
+  {
+    id: 'juliaescape',
+    name: 'Julia 逃逸高度场（迭代次数成山）',
+    desc: '同样是 z←z²+(−0.8) 迭代 16 次，但这里**不是筛点、是把逃逸轮数画成高度**：z = floor(log|z₁₆|²/ln2)·0.4。落在集合内的点 z 恒 0（贴地），越早逃逸的点越高——于是 Julia 集从一张平面图变成了「地形」。实测 z 分 19 层、最高 7.6 格。关键技巧：集合内的点 |z₁₆|² 会下溢到 0，log(0) = −Inf 把整条命令毁掉，必须 `mm=min(m,1000000)` 先钳住下溢（上钳 1e6 同时把 z 压到 19.9 层上限）。**注意这是 parameter 族而非 conditional**：conditional 的位置只取网格坐标，表达式里写 x/y/z 只参与条件求值、不改变落点。',
+    tags: ['parameter', '表达式', '分形', '高度场'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 150 'px=-1.5+3*(t-floor(t));py=-1.5+3*floor(t)/150;zr0=px;zi0=py;zr1=zr0*zr0-zi0*zi0+(0-0.8);zi1=2*zr0*zi0;zr2=zr1*zr1-zi1*zi1+(0-0.8);zi2=2*zr1*zi1;zr3=zr2*zr2-zi2*zi2+(0-0.8);zi3=2*zr2*zi2;zr4=zr3*zr3-zi3*zi3+(0-0.8);zi4=2*zr3*zi3;zr5=zr4*zr4-zi4*zi4+(0-0.8);zi5=2*zr4*zi4;zr6=zr5*zr5-zi5*zi5+(0-0.8);zi6=2*zr5*zi5;zr7=zr6*zr6-zi6*zi6+(0-0.8);zi7=2*zr6*zi6;zr8=zr7*zr7-zi7*zi7+(0-0.8);zi8=2*zr7*zi7;zr9=zr8*zr8-zi8*zi8+(0-0.8);zi9=2*zr8*zi8;zr10=zr9*zr9-zi9*zi9+(0-0.8);zi10=2*zr9*zi9;zr11=zr10*zr10-zi10*zi10+(0-0.8);zi11=2*zr10*zi10;zr12=zr11*zr11-zi11*zi11+(0-0.8);zi12=2*zr11*zi11;zr13=zr12*zr12-zi12*zi12+(0-0.8);zi13=2*zr12*zi12;zr14=zr13*zr13-zi13*zi13+(0-0.8);zi14=2*zr13*zi13;zr15=zr14*zr14-zi14*zi14+(0-0.8);zi15=2*zr14*zi14;zr16=zr15*zr15-zi15*zi15+(0-0.8);zi16=2*zr15*zi15;mm=min(zr16*zr16+zi16*zi16,1000000);x=px;y=py;z=floor(log(mm)/0.6931)*0.4' 0.01 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'vortexstreet',
+    name: '涡街晶格（sin·cos 驻波零线）',
+    desc: 'sin(2x)·cos(y) ≈ 0.3 的等值线——两个正交驻波相乘，零线在平面上织成规则方格，正是卡门涡街在稳定区间的周期性排列。改 0.3 只平移等值线（0 时退化为完整方格网），改 2 和 1 的比值改变横竖格距比。条件写成 abs(F−0.3)<0.05 而不是 abs(F)<0.05：**等值线可以取非零值**，这是本库其余 condition 模板没用过的写法。4171 粒 / 32ms。',
+    tags: ['conditional', '表达式', '流场'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 8 6 0 'abs(sin(2*x)*cos(y)-0.3)<0.05' 0.05 200 null 1 null",
+    ],
+  },
+  {
+    id: 'vortexdistort',
+    name: '扭曲涡场（交叉项打破晶格）',
+    desc: '在涡街晶格上加一个乘积交叉项 0.2·sin(0.7xy)：±xy 的反对称让格子的一半顺时针扭、另一半逆时针扭，规则方格被打散成螺旋状涡胞。这是「加一项就从有序走向局部混沌」的最小例子——把 0.2 调到 0 就退回 vortexstreet 的正方晶格，调到 0.5 以上涡胞互相吞并成乱流。4800 粒 / 32ms。',
+    tags: ['conditional', '表达式', '流场'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 8 6 0 'abs(sin(1.5*x)*cos(1.2*y)+0.2*sin(0.7*x*y)-0.3)<0.06' 0.05 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */

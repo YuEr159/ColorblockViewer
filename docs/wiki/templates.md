@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 31 条）
+## 已收录模板（当前 34 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -482,6 +482,51 @@
 /particleex polarparameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*(1.5*cos(s1)*cos(s1)-0.5)' 0.02 200 'null' 1 null
 /particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*(2.5*cos(s1)*cos(s1)*cos(s1)-1.5*cos(s1))' 0.02 200 'null' 1 null
 /particleex polarparameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 48 's1=PI*(t-floor(t));s2=2*PI*floor(t)/48;dis=3+0.8*((35*cos(s1)^4-30*cos(s1)*cos(s1)+3)/8)' 0.02 200 'null' 1 null
+```
+
+### juliaescape · Julia 逃逸高度场（迭代次数成山）
+
+- **标签**：`parameter` `表达式` `分形` `高度场`
+- **说明**：同样是 `z←z²+(−0.8)` 迭代 16 次，但这里**不是筛点、是把逃逸轮数
+  画成高度**：`z = floor(log|z₁₆|²/ln2)·0.4`。落在集合内的点 z 恒 0（贴地），
+  越早逃逸的点越高——Julia 集从平面图变成了「地形」。实测 z 分 19 层、
+  最高 7.6 格，3874 粒 / 48ms。
+  **关键技巧**：集合内的点 `|z₁₆|²` 会下溢到 0，`log(0) = −Inf` 把整条命令毁掉
+  （实测 z 跨度一度达 1029），必须 `mm=min(m,1000000)` 先钳住；上钳 1e6
+  同时把高度压在 19.9 层以内。
+  ⚠️ **必须用 parameter 族**：conditional 的位置只取网格坐标，表达式里写的
+  x/y/z 只参与条件求值、**不改变落点**——这是第四类字段陷阱。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 150 'px=-1.5+3*(t-floor(t));py=-1.5+3*floor(t)/150;zr0=px;zi0=py;zr1=zr0*zr0-zi0*zi0+(0-0.8);zi1=2*zr0*zi0;zr2=zr1*zr1-zi1*zi1+(0-0.8);zi2=2*zr1*zi1;zr3=zr2*zr2-zi2*zi2+(0-0.8);zi3=2*zr2*zi2;zr4=zr3*zr3-zi3*zi3+(0-0.8);zi4=2*zr3*zi3;zr5=zr4*zr4-zi4*zi4+(0-0.8);zi5=2*zr4*zi4;zr6=zr5*zr5-zi5*zi5+(0-0.8);zi6=2*zr5*zi5;zr7=zr6*zr6-zi6*zi6+(0-0.8);zi7=2*zr6*zi6;zr8=zr7*zr7-zi7*zi7+(0-0.8);zi8=2*zr7*zi7;zr9=zr8*zr8-zi8*zi8+(0-0.8);zi9=2*zr8*zi8;zr10=zr9*zr9-zi9*zi9+(0-0.8);zi10=2*zr9*zi9;zr11=zr10*zr10-zi10*zi10+(0-0.8);zi11=2*zr10*zi10;zr12=zr11*zr11-zi11*zi11+(0-0.8);zi12=2*zr11*zi11;zr13=zr12*zr12-zi12*zi12+(0-0.8);zi13=2*zr12*zi12;zr14=zr13*zr13-zi13*zi13+(0-0.8);zi14=2*zr13*zi13;zr15=zr14*zr14-zi14*zi14+(0-0.8);zi15=2*zr14*zi14;zr16=zr15*zr15-zi15*zi15+(0-0.8);zi16=2*zr15*zi15;mm=min(zr16*zr16+zi16*zi16,1000000);x=px;y=py;z=floor(log(mm)/0.6931)*0.4' 0.01 200 'null' 1 null
+```
+
+### vortexstreet · 涡街晶格（sin·cos 驻波零线）
+
+- **标签**：`conditional` `表达式` `流场`
+- **说明**：`sin(2x)·cos(y) ≈ 0.3` 的等值线——两个正交驻波相乘，零线在平面上
+  织成规则方格，对应卡门涡街在稳定区间里的周期性排列。改 0.3 只平移等值线
+  （取 0 时退化为完整方格网），改 2 和 1 的比值改变横竖格距比。4171 粒 / 32ms。
+  条件写成 `abs(F−0.3)<0.05` 而非 `abs(F)<0.05`：**等值线可以取非零值**，
+  这是本库其余 conditional 模板没用过的写法。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 8 6 0 'abs(sin(2*x)*cos(y)-0.3)<0.05' 0.05 200 null 1 null
+```
+
+### vortexdistort · 扭曲涡场（交叉项打破晶格）
+
+- **标签**：`conditional` `表达式` `流场`
+- **说明**：在涡街晶格上加乘积交叉项 `0.2·sin(0.7xy)`：±xy 的反对称让格子
+  一半顺时针扭、一半逆时针扭，规则方格被打散成螺旋状涡胞。这是「加一项就
+  从有序走向局部混沌」的最小例子——0.2 调到 0 退回 vortexstreet 的正方晶格，
+  调到 0.5 以上涡胞互相吞并成乱流。4800 粒 / 32ms。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 8 6 0 'abs(sin(1.5*x)*cos(1.2*y)+0.2*sin(0.7*x*y)-0.3)<0.06' 0.05 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
