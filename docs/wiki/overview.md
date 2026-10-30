@@ -75,7 +75,7 @@ https://yuer159.github.io/ColorblockViewer/
 
 - 粘贴命令 → 立刻看效果 → 满意后复制回游戏，命令文本一字不改
 - 引擎与模组 1:1 复刻：报错文案、表达式求值、粒子寿命与运动全部一致
-- 内置模板 29 条（涟漪/圆环/克拉德尼/万花尺/超级公式/呼吸圆环/烟花球/星云/蝴蝶/球面螺旋/环面结/Thomas 环/环面/Möbius/Gyroid/曼德博/Julia/准晶/双曲镶嵌/Chirikov/管状纽结/Klein瓶/磁偶极/双源干涉/三源干涉/Schwarz P/Schwarz D/Neovius/傅里叶方波，清单见 [07-templates](templates.md)）演示模组招牌写法与数学模板
+- 内置模板 30 条（涟漪/圆环/克拉德尼/万花尺/超级公式/呼吸圆环/烟花球/星云/蝴蝶/球面螺旋/环面结/Thomas 环/环面/Möbius/Gyroid/曼德博/Julia/准晶/双曲镶嵌/Chirikov/管状纽结/Klein瓶/磁偶极/双源干涉/三源干涉/Schwarz P/Schwarz D/Neovius/傅里叶方波/超椭球，清单见 [07-templates](templates.md)）演示模组招牌写法与数学模板
 - 设置面板可切快速模式（纯色圆点）跑大场景，也可切 13 个游戏版本
   （粒子类型表与贴图逐版本区分）
 
