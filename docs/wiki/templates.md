@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 37 条）
+## 已收录模板（当前 38 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -582,6 +582,21 @@
 /particleex conditional minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-0.2)<0.08' 0.02 200 null 1 null
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-0.95)<0.08' 0.02 200 null 1 null
 /particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-1.6)<0.08' 0.02 200 null 1 null
+```
+
+### fibonaccisphere · 斐波那契球（黄金角均匀分布）
+
+- **标签**：`parameter` `表达式` `球面分布`
+- **说明**：球面上最均匀的点分布：k 从 1 到 N，纬线 `y=R(1−2k/N)` 等间距下降，
+  方位角每次转**黄金角** `2π(1−1/φ)=2.399963 rad`。黄金角的好处是任何前缀
+  都是准均匀的——只画前 100 个点也不会挤成一团，与向日葵种子排列同一原理。
+  与随机撒点（`nebula`）的区别：随机撒点会有疏有密，斐波那契是**真正等间距**。
+  N=3000、R=5 时 3001 粒 / 6ms。`step` 必须是 1（k=floor(t) 逐点），
+  写 0.1 会让每个点重复采样 10 次。N 直接改表达式里的 3000 与 tmax。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3000 'k=floor(t);th=2.399963229728653*k;y=5*(1-2*k/3000);rr=sqrt(max(0,25-y*y));x=rr*cos(th);z=rr*sin(th)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）

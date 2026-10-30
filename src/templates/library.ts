@@ -383,6 +383,15 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-1.6)<0.08' 0.02 200 null 1 null",
     ],
   },
+  {
+    id: 'fibonaccisphere',
+    name: '斐波那契球（黄金角均匀分布）',
+    desc: '球面上最均匀的点分布：k 从 1 到 N，纬线 y=R(1−2k/N) 等间距下降，方位角每次转**黄金角** 2π(1−1/φ)=2.399963 rad。黄金角的好处是任何前缀都是准均匀的——只画前 100 个点也不会挤成一团，这是向日葵种子排列的同一原理。与随机撒点（nebula）区别：随机撒点会有疏有密，斐波那契是**真正等间距**。N=3000、R=5 时 3001 粒 / 6ms，N 直接改 tmax。',
+    tags: ['parameter', '表达式', '球面分布'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3000 'k=floor(t);th=2.399963229728653*k;y=5*(1-2*k/3000);rr=sqrt(max(0,25-y*y));x=rr*cos(th);z=rr*sin(th)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
