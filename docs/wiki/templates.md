@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 34 条）
+## 已收录模板（当前 36 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -527,6 +527,43 @@
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 8 6 0 'abs(sin(1.5*x)*cos(1.2*y)+0.2*sin(0.7*x*y)-0.3)<0.06' 0.05 200 null 1 null
+```
+
+### catenoid · 悬链面→螺旋面（等距变形族）
+
+- **标签**：`parameter` `表达式` `极小曲面`
+- **说明**：极小曲面里最漂亮的等距变形：α=0 是螺旋面（helicoid），α=π/2 是
+  悬链面（catenoid），中间值是整族**既保长度又保面积的弯曲**——1776 年
+  Meusnier 证明的那对曲面。写法
+  `x = cosα·sinh v·sin u + sinα·cosh v·cos u`，三条命令取 α=0 / π/4 / π/2
+  并排（左→右从螺旋面变号角面）。`sinh`/`cosh` 引擎可用；v 限在 ±1.5
+  防止 cosh 爆炸。6000 粒 / 26ms。
+- **命令**（复制即用，三条一起载入）：
+
+```
+/particleex parameter minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 0 60 'u=2*PI*(t-floor(t));v=1.5*(floor(t)/60-0.5);x=sinh(v)*sin(u);z=(0-sinh(v))*cos(u);y=u' 0.03 200 'null' 1 null
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 60 'u=2*PI*(t-floor(t));v=1.5*(floor(t)/60-0.5);x=0.707107*sinh(v)*sin(u)+0.707107*cosh(v)*cos(u);z=(0-0.707107)*sinh(v)*cos(u)+0.707107*cosh(v)*sin(u);y=0.707107*u+0.707107*v' 0.03 200 'null' 1 null
+/particleex parameter minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 0 60 'u=2*PI*(t-floor(t));v=1.5*(floor(t)/60-0.5);x=cosh(v)*cos(u);z=cosh(v)*sin(u);y=v' 0.03 200 'null' 1 null
+```
+
+### crystal · 晶体点阵三型（SC / BCC / FCC）
+
+- **标签**：`conditional` `表达式` `晶体`
+- **说明**：三条命令并排各画一种布拉维格子。判定用三角函数零点：
+  `sin(πx/a)=0 ⇔ x 是 a 的整数倍`。
+  **SC 用「到最近格点的球距」判定**——sin 三轴同时过零会随阈值放宽而暴增
+  （bw 0.06→0.2 从 7 粒涨到 129 粒，仍到不了可用密度），改成球体积判定
+  `|x−a·round(x/a)|² < r²` 后稳定在 9408 粒。
+  BCC 是 `|sin x + sin y + sin z|` 趋零（整数三重与半整数三重都满足），
+  FCC 换成 cos 之和。改 a（表达式里的 1.5）整体缩放，改阈值调点的大小。
+  这三型是金属晶体的全部基本格子（Fe 是 BCC、Cu 是 FCC、Po 是 SC）。
+  共 16960 粒 / 439ms。
+- **命令**（复制即用，三条一起载入）：
+
+```
+/particleex conditional minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(x-1.5*round(x/1.5))^2+abs(y-1.5*round(y/1.5))^2+abs(z-1.5*round(z/1.5))^2<0.1024' 0.1 200 null 1 null
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(sin(PI*x/1.5)+sin(PI*y/1.5)+sin(PI*z/1.5))<0.02' 0.1 200 null 1 null
+/particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(cos(PI*x/1.5)+cos(PI*y/1.5)+cos(PI*z/1.5))<0.02' 0.1 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
