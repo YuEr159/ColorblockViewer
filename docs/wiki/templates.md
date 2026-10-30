@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 36 条）
+## 已收录模板（当前 37 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -564,6 +564,24 @@
 /particleex conditional minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(x-1.5*round(x/1.5))^2+abs(y-1.5*round(y/1.5))^2+abs(z-1.5*round(z/1.5))^2<0.1024' 0.1 200 null 1 null
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(sin(PI*x/1.5)+sin(PI*y/1.5)+sin(PI*z/1.5))<0.02' 0.1 200 null 1 null
 /particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(cos(PI*x/1.5)+cos(PI*y/1.5)+cos(PI*z/1.5))<0.02' 0.1 200 null 1 null
+```
+
+### pendulum · 单摆相空间（三能级等能线）
+
+- **标签**：`conditional` `表达式` `动力系统`
+- **说明**：相平面 (θ, ω) 上的三条等能线：`E = ω²/2 − cos θ`。左边 E=0.2 是
+  小振幅的**闭合椭圆**（摆小角度来回，永不越顶），中间 E=0.95 逼近**分界线**
+  （周期趋于无穷），右边 E=1.6 越过顶点成为**开放轨道**（单向转圈）。
+  分界线 E=1 是相空间拓扑的临界点——动力系统里最干净的分岔例子。
+  三条并排、各错开 7 格，11064 粒 / 52ms。
+  注意这是 2D 图形，**扫描范围必须写 `3 3 0`**（x-y 竖直面），写成 `3 0 3`
+  会把 ω 压成常数、三条曲线全部退化。
+- **命令**（复制即用，三条一起载入）：
+
+```
+/particleex conditional minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-0.2)<0.08' 0.02 200 null 1 null
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-0.95)<0.08' 0.02 200 null 1 null
+/particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-1.6)<0.08' 0.02 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）

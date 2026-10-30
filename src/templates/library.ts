@@ -372,6 +372,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(cos(PI*x/1.5)+cos(PI*y/1.5)+cos(PI*z/1.5))<0.02' 0.1 200 null 1 null",
     ],
   },
+  {
+    id: 'pendulum',
+    name: '单摆相空间（三能级等能线）',
+    desc: '相平面 (θ, ω) 上的三条等能线：E = ω²/2 − cos θ。左边 E=0.2 是小振幅的**闭合椭圆**（摆在小角度来回摆，永不越顶），中间 E=0.95 逼近**分界线**（摆恰好快要翻过去，周期趋于无穷），右边 E=1.6 越过顶点变成**开放轨道**（摆一路单向转圈）。分界线 E=1 是相空间拓扑的临界点——这是动力系统里最干净的分岔例子，也是混沌教材的第一张图。三条并排、各错开 7 格。11064 粒 / 52ms。',
+    tags: ['conditional', '表达式', '动力系统'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-0.2)<0.08' 0.02 200 null 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-0.95)<0.08' 0.02 200 null 1 null",
+      "/particleex conditional minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(y*y/2-cos(x)-1.6)<0.08' 0.02 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
