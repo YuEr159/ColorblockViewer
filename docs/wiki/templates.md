@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 25 条）
+## 已收录模板（当前 28 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -382,6 +382,46 @@
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'r1=sqrt((x-2)*(x-2)+y*y+z*z);r2=sqrt((x+2)*(x+2)+y*y+z*z);r3=sqrt(x*x+(y-2)*(y-2)+z*z);abs(cos(r1-r2)+cos(r2-r3))>1.4' 0.3 200 null 1 null
+```
+
+### schwarzp · Schwarz P 极小曲面（原始型）
+
+- **标签**：`conditional` `表达式` `极小曲面`
+- **说明**：`cos x + cos y + cos z ≈ 0` —— 三大极小曲面里最简单的「原始型」
+  （P = Primitive）。用 conditional 在一整个周期（范围 3.14159 = cos 的半周期，
+  跨度为 2π）里筛等值面，带宽 0.3、步长 0.3 → 1652 粒 / 11ms。与 gyroid
+  同属三周期极小曲面（TPMS），但 **P 面没有手性**（上下两半互为镜像），
+  gyroid 有手性——这正是化学里拿 gyroid 做模板材料而不用 P 面的原因。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.14159 3.14159 3.14159 'abs(cos(x)+cos(y)+cos(z))<0.3' 0.3 200 null 1 null
+```
+
+### schwarzd · Schwarz D 极小曲面（钻石型）
+
+- **标签**：`conditional` `表达式` `极小曲面`
+- **说明**：`sin x·sin y·sin z + sin x·cos y·cos z + cos x·sin y·cos z + cos x·cos y·sin z ≈ 0`
+  —— 「钻石型」（D = Diamond），四项相乘再相加，是全库算式最长的一条曲面条件。
+  比 P 面多一层交叉项，孔隙沿体对角线排列成钻石骨架。1546 粒 / 22ms
+  （每采样点 8 次三角 + 3 次乘），比 P 面贵一倍。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.14159 3.14159 3.14159 'abs(sin(x)*sin(y)*sin(z)+sin(x)*cos(y)*cos(z)+cos(x)*sin(y)*cos(z)+cos(x)*cos(y)*sin(z))<0.2' 0.3 200 null 1 null
+```
+
+### neovius · Neovius 极小曲面（多孔骨架）
+
+- **标签**：`conditional` `表达式` `极小曲面`
+- **说明**：`3(cos x+cos y+cos z) + 4 cos x·cos y·cos z ≈ 0` —— 在 Schwarz P
+  基础上加一个三次交叉项，把 P 面的连续孔道打断成互不相连的空腔，外观更像
+  海绵骨架而非膜。1695 粒 / 13ms，只比 P 面多一次乘法。调孔道连通性就改
+  两个系数的比值：4/3 是 Neovius 原式，把 4 调小会逐渐退回 Schwarz P。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.14159 3.14159 3.14159 'abs(3*(cos(x)+cos(y)+cos(z))+4*cos(x)*cos(y)*cos(z))<0.4' 0.3 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
