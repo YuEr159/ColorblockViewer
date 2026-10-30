@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 28 条）
+## 已收录模板（当前 29 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -422,6 +422,25 @@
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.14159 3.14159 3.14159 'abs(3*(cos(x)+cos(y)+cos(z))+4*cos(x)*cos(y)*cos(z))<0.4' 0.3 200 null 1 null
+```
+
+### fouriersquare · 傅里叶方波（五阶逐层逼近）
+
+- **标签**：`parameter` `表达式` `傅里叶`
+- **说明**：五条曲线自下而上叠放，每条比下面多一项奇次谐波：
+  `sin t` → `+sin3t/3` → `+sin5t/5` → `+sin7t/7` → `+sin9t/9`，系数 4/π 归一化。
+  少项时圆滑的正弦两侧长出平台，到第九阶已很像方波，但边角仍有约 9% 的
+  过冲——这就是**吉布斯现象**：有限项叠加消不掉，只会把振荡挤进更窄的范围。
+  y 偏移走「位置参数」而不是表达式（每条命令自己的出生高度），是做多子图
+  对照最省的做法。
+- **命令**（复制即用，五条一起载入）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 12.566370614359172 'x=t;y=1.27324*sin(t);z=0' 0.02 200 'null' 1 null
+/particleex parameter minecraft:end_rod 0 1.2 0 1 0.95 0.89 1 0 0 0 0 12.566370614359172 'x=t;y=1.27324*(sin(t)+sin(3*t)/3);z=0' 0.02 200 'null' 1 null
+/particleex parameter minecraft:end_rod 0 2.4 0 1 0.95 0.89 1 0 0 0 0 12.566370614359172 'x=t;y=1.27324*(sin(t)+sin(3*t)/3+sin(5*t)/5);z=0' 0.02 200 'null' 1 null
+/particleex parameter minecraft:end_rod 0 3.6 0 1 0.95 0.89 1 0 0 0 0 12.566370614359172 'x=t;y=1.27324*(sin(t)+sin(3*t)/3+sin(5*t)/5+sin(7*t)/7);z=0' 0.02 200 'null' 1 null
+/particleex parameter minecraft:end_rod 0 4.8 0 1 0.95 0.89 1 0 0 0 0 12.566370614359172 'x=t;y=1.27324*(sin(t)+sin(3*t)/3+sin(5*t)/5+sin(7*t)/7+sin(9*t)/9);z=0' 0.01 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
