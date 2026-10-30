@@ -506,12 +506,12 @@ describe('模板库（复制命令 / 载入并执行）', () => {
     expect(cards.length).toBe(1);
     expect(cards[0].textContent).toContain('涟漪波面');
     setInputValue(search, 'end_rod');
-    // 逐条核对:ripple/ring/chladni/hypotrochoid/superformula/butterfly/spherespiral/torusknot
-    // 带 end_rod 标签;thomas 走 normal 族故无此标签
-    expect(container.querySelectorAll(".template-card").length).toBe(8);
+    // 逐条核对:ripple/ring/chladni/hypotrochoid/superformula/butterfly/spherespiral/
+    // torusknot/torus/mobius 带 end_rod 标签;thomas(normal 族)与 gyroid 不带
+    expect(container.querySelectorAll(".template-card").length).toBe(10);
     setInputValue(search, 'vel');
-    // breathing/fireworkball/nebula/thomas 都用 vel 标签(非零命令速度提示)
-    expect(container.querySelectorAll('.template-card').length).toBe(4);
+    // breathing/fireworkball/nebula/thomas/gyroid 用 vel 标签
+    expect(container.querySelectorAll('.template-card').length).toBe(5);
     setInputValue(search, '不存在的模板');
     expect(container.querySelectorAll('.template-card').length).toBe(0);
   });

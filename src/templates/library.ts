@@ -139,6 +139,33 @@ export const TEMPLATES: Template[] = [
       "/particleex normal minecraft:end_rod 0 1 0 1 0.95 0.89 1 0 0 0 0.6 0.6 0.6 1000 900 'u=0.15*sin(y)-0.0312279*x;v=0.15*sin(z)-0.0312279*y;w=0.15*sin(x)-0.0312279*z;(vx,vy,vz)=(u*0.45,v*0.45,w*0.45)' 1 null",
     ],
   },
+  {
+    id: 'torus',
+    name: '环面（一维 t 拆双参数）',
+    desc: 'x=(R+r·cos v)cos u、z=(R+r·cos v)sin u、y=r·sin v —— 经典甜甜圈。引擎只有一维 t，这里用两个互质频率造双参数：u=t 快转、v=0.058824·t 慢抬（≈1/17，非整数比才遍历整张面）。把 0.058824 改成 1/7 会看到明显的螺旋条纹而不是均匀铺面。',
+    tags: ['parameter', '表达式', 'end_rod'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 251.32741228718345 'u=t;v=t*0.058824;x=(2+0.8*cos(v))*cos(u);z=(2+0.8*cos(v))*sin(u);y=0.8*sin(v)' 0.12 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'mobius',
+    name: 'Möbius 带（单侧曲面）',
+    desc: 'x=(2+v·cos(u/2))cos u、z=(2+v·cos(u/2))sin u、y=v·sin(u/2) —— 半扭转的纸带，只有一个面。u/2 是关键：扭转率取一半，走完一圈 (u=2π) 只转 180°，带子首尾相接时正好翻面。v 用 sin 限幅（±1.5）保持带宽不随 t 无限增长。',
+    tags: ['parameter', '表达式', 'end_rod'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod ~ ~2 ~ 1 0.95 0.89 1 0 0 0 0 314.1592653589793 'u=t;v=1.5*sin(t*0.043478);x=(2+v*cos(u/2))*cos(u);z=(2+v*cos(u/2))*sin(u);y=v*sin(u/2)' 0.1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'gyroid',
+    name: 'Gyroid 极小曲面（隐式等值面）',
+    desc: 'sin x·cos y + sin y·cos z + sin z·cos x ≈ 0 的三周期极小曲面——肥皂膜在周期性边界下的自然形状，化学里做模板材料的结构。用 conditional 在 6×6×6 立方里筛等值面（带宽 0.15）：每三个轴各跑一次 sin/cos，命中率约 10%。代价是空扫 30 万点、生成近 8 千粒——这是本库最重的一条，想轻量就把范围或带宽调小。',
+    tags: ['conditional', '表达式', 'vel'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 3 0 1 0.95 0.89 1 0 0 0 6 6 6 'abs(sin(x)*cos(y)+sin(y)*cos(z)+sin(z)*cos(x))<0.15' 0.28 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
