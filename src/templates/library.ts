@@ -193,6 +193,33 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 5 5 0 'abs(cos(x)+cos(0.309*x+0.951*z)+cos(-x)+cos(-0.309*x-0.951*z)+cos(0.809*x+0.588*z))<0.6' 0.1 200 null 1 null",
     ],
   },
+  {
+    id: 'hyperbolic',
+    name: '双曲镶嵌（庞加莱圆盘的环族）',
+    desc: 'sin(log(1−0.95·dis)·5)≈0 的等值环——环间距按对数增长，正是庞加莱圆盘上双曲距离 r=2·atanh(|z|) 的等距环。欧氏距离上越靠边越密、越靠中心越疏，这个「越边越挤」的视觉就是双曲几何的特征。⚠️ 扫描范围必须是 `3 0 3`（x-z 平面）——写成 `3 3 0` 会让 s1 只取 0/π 两个值（y 恒为 0 时 atan2(y-height, x) 退化），所有角度相关的条件都失效。',
+    tags: ['conditional', '表达式', '非欧几何'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 0 3 'abs(sin(log(1-dis*0.95)*5))<0.5 & dis<0.93' 0.015 200 null 1 null",
+    ],
+  },
+  {
+    id: 'chirikov',
+    name: 'Chirikov 标准映射（KAM 岛与混沌海）',
+    desc: 'sin(3πx+z)−0.5sin(z)≈0 的等值线——Chirikov 标准映射 p′ = p+(K/2π)sin(2πθ)、θ′ = θ+p′ 的相空间结构。这是动力系统里最经典的「有序与混沌共存」模型：岛状区域（KAM 环）里轨道规则，海里的轨道混沌。K 取 3（表达式里 3*x*PI 的系数）已经越过 KAM 破裂阈值。',
+    tags: ['conditional', '表达式', '动力系统'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 0 'abs(sin(3*x*3.14159+z)-sin(z)*0.5)<0.15' 0.03 200 null 1 null",
+    ],
+  },
+  {
+    id: 'tubeknot',
+    name: '管状纽结（绕轴扭动的实体管）',
+    desc: '在环面结的路径上加一个绕轴的旋转角 v+3t —— 中心线走 (3,2) 结，每个点上再画一个半径 0.5 的管截面。与 torusknot 的区别：那条是线，这条是**有粗细的管**，v+3t 的相位让管身沿路径扭转（扭转率 3，改这个数看管身缠绕疏密）。y=2sin(3t) 让整条结离开水平面成为真 3D。',
+    tags: ['parameter', '表达式', 'end_rod'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 37.69911184307752 'u=t;v=6.2832*sin(t*0.05);x=(2+0.5*cos(v+3*t))*cos(2*t);z=(2+0.5*cos(v+3*t))*sin(2*t);y=2*sin(3*t)+0.5*sin(v+3*t)' 0.06 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
