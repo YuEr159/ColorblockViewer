@@ -419,6 +419,15 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4.5 4.5 4.5 'abs(sin(x)+sin(y)+sin(z))<0.08' 0.25 200 null 1 null",
     ],
   },
+  {
+    id: 'thomasslow',
+    name: 'Thomas 环·低阻尼（b=0.1 大环）',
+    desc: '与已收录的 `thomas`（b=0.208186，标准值）同一组方程 vx=sin(y)−bx, vy=sin(z)−by, vz=sin(x)−bz，但 b 取 0.1。**b 是阻尼系数**：b 越小，粒子被注入的能量越难耗散，轨道越外扩——b=0.1 时吸引子直径约 13 格（标准 b 值只有约 7 格）；b=0.3 时反而缩成 6 格的小球。所以这一对模板可以直接对照「阻尼越小、吸引子越大」的规律。3000 粒 / 315ms（300 tick 后统计）。注意：只有 Thomas 系统在 20 TPS 显式欧拉下不发散（sin 项的天然有界性），Lorenz/Rössler 等在这一积分器下都会爆掉。',
+    tags: ['normal', '表达式', 'vel', '混沌'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.5 0.5 0.5 3000 900 'u=sin(y)-0.1*x;v=sin(z)-0.1*y;w=sin(x)-0.1*z;(vx,vy,vz)=(u*0.3,v*0.3,w*0.3)' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */

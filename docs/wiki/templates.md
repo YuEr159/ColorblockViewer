@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 41 条）
+## 已收录模板（当前 42 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -636,6 +636,23 @@
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4.5 4.5 4.5 'abs(sin(x)+sin(y)+sin(z))<0.08' 0.25 200 null 1 null
+```
+
+### thomasslow · Thomas 环·低阻尼（b=0.1 大环）
+
+- **标签**：`normal` `表达式` `vel` `混沌`
+- **说明**：与已收录的 `thomas`（b=0.208186，标准值）同一组方程
+  `vx=sin(y)−bx, vy=sin(z)−by, vz=sin(x)−bz`，但 b 取 0.1。
+  **b 是阻尼系数**：b 越小，注入的能量越难耗散，轨道越外扩——实测跨度
+  t=0 时 6.3 格、30 tick 后 17.6 格、300 tick 后 22.1 格；标准 b=0.208
+  只有约 7 格；b=0.3 反而缩成 6 格小球。两条模板可直接对照
+  「阻尼越小、吸引子越大」的规律。3000 粒 / 315ms。
+  ⚠️ 只有 Thomas 系统在 20 TPS 显式欧拉下不发散（sin 项的天然有界性），
+  Lorenz / Rössler / Aizawa 等在这一积分器下全部爆掉（见 [05-examples](examples.md)）。
+- **命令**（复制即用）：
+
+```
+/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.5 0.5 0.5 3000 900 'u=sin(y)-0.1*x;v=sin(z)-0.1*y;w=sin(x)-0.1*z;(vx,vy,vz)=(u*0.3,v*0.3,w*0.3)' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）

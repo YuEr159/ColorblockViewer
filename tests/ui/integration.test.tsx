@@ -510,8 +510,8 @@ describe('模板库（复制命令 / 载入并执行）', () => {
     // torusknot/torus/mobius/tubeknot/klein/dipole 带 end_rod 标签;thomas(normal 族)与 gyroid 不带
     expect(container.querySelectorAll(".template-card").length).toBe(13);
     setInputValue(search, 'vel');
-    // breathing/fireworkball/nebula/thomas/gyroid 用 vel 标签
-    expect(container.querySelectorAll('.template-card').length).toBe(5);
+    // breathing/fireworkball/nebula/thomas/gyroid/thomasslow 用 vel 标签
+    expect(container.querySelectorAll('.template-card').length).toBe(6);
     setInputValue(search, '不存在的模板');
     expect(container.querySelectorAll('.template-card').length).toBe(0);
   });
