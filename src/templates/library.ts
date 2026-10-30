@@ -455,6 +455,24 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(max(max(abs(x),abs(y)),abs(z))-3)<0.05' 0.12 200 null 1 null",
     ],
   },
+  {
+    id: 'heatsphere',
+    name: '球面高度热图（颜色承载物理量）',
+    desc: '球面上的高度 h=(y/R+1)/2 映射成色相：南极 h=0 纯蓝 → 赤道 h=0.5 绿 → 北极 h=1 纯红，是一条完整的色相环。这是**用颜色维度承载物理量**的范式——位置只负责形状，颜色负责读数。三条颜色通道写成 `cr=h; cg=1−|2h−1|; cb=1−h`（红-绿-蓝三段线性插值），比用 cos 绕色相环更直观、颜色过渡也更平滑。6401 粒 / 26ms、占格 1256。把 h 换成温度、压力、速度模长都是同一个写法。',
+    tags: ['rgbaparameter', '表达式', '颜色场'],
+    cmds: [
+      "/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 32 'u=t;k=floor(u/0.1);v=floorMod(u,0.1)/0.1;th=k*0.1;ph=v*6.2832;x=5*sin(th)*cos(ph);z=5*sin(th)*sin(ph);y=5*cos(th);h=(y/5+1)/2;cr=h;cg=1-abs(2*h-1);cb=1-h;alpha=1' 0.005 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'toruscolor',
+    name: '环面色带（主参数绕色相环）',
+    desc: '环面上按主轴角度 th 绕一整圈色相：`hh=th/2π`，三分量 `cr=0.5+0.5cos(2π·hh)` 等相隔 2π/3。绕环面走一圈颜色也走一圈，于是「颜色 = 位置沿主环的进度」变得可读——这是给闭合曲线/环面加时间或进度指示的标准做法。12600 粒 / 31ms、占格 749（环面是薄壳，占格/粒子比低）。与 `superformula` 的极角度着色对照：那条是平面极坐标，这条是 3D 环面的主参数。',
+    tags: ['rgbaparameter', '表达式', '颜色场'],
+    cmds: [
+      "/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 63 'u=t;k=floor(u/0.05);v=floorMod(u,0.05)/0.05;th=k*0.05;ph=v*6.2832;x=(3+0.8*cos(ph))*cos(th);z=(3+0.8*cos(ph))*sin(th);y=0.8*sin(ph);hh=th/6.2832;cr=0.5+0.5*cos(hh*6.2832);cg=0.5+0.5*cos(hh*6.2832-2.0944);cb=0.5+0.5*cos(hh*6.2832+2.0944);alpha=1' 0.005 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */

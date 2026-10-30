@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 45 条）
+## 已收录模板（当前 47 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -694,6 +694,35 @@
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'abs(max(max(abs(x),abs(y)),abs(z))-3)<0.05' 0.12 200 null 1 null
+```
+
+### heatsphere · 球面高度热图（颜色承载物理量）
+
+- **标签**：`rgbaparameter` `表达式` `颜色场`
+- **说明**：球面上的高度 `h=(y/R+1)/2` 映射成色相：南极 h=0 纯蓝 → 赤道
+  h=0.5 绿 → 北极 h=1 纯红，是一条完整的色相环。这是**用颜色维度承载物理量**
+  的范式——位置只负责形状，颜色负责读数。三条通道写成
+  `cr=h; cg=1−|2h−1|; cb=1−h`（红-绿-蓝三段线性插值），比用 cos 绕色相环
+  更直观、过渡也更平滑。6401 粒 / 33ms、占格 1256、30 种色。
+  把 h 换成温度、压力、速度模长都是同一个写法。
+- **命令**（复制即用）：
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 32 'u=t;k=floor(u/0.1);v=floorMod(u,0.1)/0.1;th=k*0.1;ph=v*6.2832;x=5*sin(th)*cos(ph);z=5*sin(th)*sin(ph);y=5*cos(th);h=(y/5+1)/2;cr=h;cg=1-abs(2*h-1);cb=1-h;alpha=1' 0.005 200 'null' 1 null
+```
+
+### toruscolor · 环面色带（主参数绕色相环）
+
+- **标签**：`rgbaparameter` `表达式` `颜色场`
+- **说明**：环面上按主轴角度 th 绕一整圈色相：`hh=th/2π`，三分量
+  `cr=0.5+0.5cos(2π·hh)` 等相隔 2π/3。绕环面走一圈颜色也走一圈，于是
+  「颜色 = 位置沿主环的进度」变得可读——是给闭合曲线/环面加时间或进度
+  指示的标准做法。12600 粒 / 42ms、占格 749、55 种色。
+  与 `superformula` 的极角着色对照：那条是平面极坐标，这条是 3D 环面主参数。
+- **命令**（复制即用）：
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 63 'u=t;k=floor(u/0.05);v=floorMod(u,0.05)/0.05;th=k*0.05;ph=v*6.2832;x=(3+0.8*cos(ph))*cos(th);z=(3+0.8*cos(ph))*sin(th);y=0.8*sin(ph);hh=th/6.2832;cr=0.5+0.5*cos(hh*6.2832);cg=0.5+0.5*cos(hh*6.2832-2.0944);cb=0.5+0.5*cos(hh*6.2832+2.0944);alpha=1' 0.005 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
