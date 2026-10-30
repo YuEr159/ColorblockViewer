@@ -238,6 +238,24 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 188.4955592153876 'th=0.35+1.2*abs(sin(t*0.0159));r=3*sin(th)*sin(th);ph=t;x=r*sin(th)*cos(ph);z=r*sin(th)*sin(ph);y=r*cos(th)' 0.05 200 'null' 1 null",
     ],
   },
+  {
+    id: 'interference',
+    name: '双源干涉（3D 驻波干涉面）',
+    desc: '两点源球面波之差 |cos(r₁−r₂)|>0.9 的等值面——两波同相加强处结成双曲面族，正是杨氏双缝的 3D 推广。r₁/r₂ 用 sqrt((x∓2)²+y²+z²) 手写（hypot 只有 2 参重载，3 参在模组里报 not found），在 4³ 立方里筛，2843 粒、命令耗时 6ms、占格 318/576 是本库覆盖率最高的 3D 体模板。把带宽 0.9√ 调低面会变厚成「云」。',
+    tags: ['conditional', '表达式', '干涉'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'r1=sqrt((x-2)*(x-2)+y*y+z*z);r2=sqrt((x+2)*(x+2)+y*y+z*z);abs(cos(r1-r2))>0.9' 0.4 200 null 1 null",
+    ],
+  },
+  {
+    id: 'threesource',
+    name: '三源干涉（120° 三角阵）',
+    desc: '三个点源两两干涉：|cos(r₁−r₂)+cos(r₂−r₃)|>1.4 —— 比双源多一层拍频，交叠处出现三重对称的花瓣状腔体。三源摆在 (±2,0,0) 与 (0,2,0) 构成正三角形，改成 120° 三角阵对称性最完整。4391 粒、24ms，是库里条件扫描最重的一条（每次采样要算三次 sqrt）。',
+    tags: ['conditional', '表达式', '干涉'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'r1=sqrt((x-2)*(x-2)+y*y+z*z);r2=sqrt((x+2)*(x+2)+y*y+z*z);r3=sqrt(x*x+(y-2)*(y-2)+z*z);abs(cos(r1-r2)+cos(r2-r3))>1.4' 0.3 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */

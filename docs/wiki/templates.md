@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 23 条）
+## 已收录模板（当前 25 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -353,6 +353,35 @@
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 188.4955592153876 'th=0.35+1.2*abs(sin(t*0.0159));r=3*sin(th)*sin(th);ph=t;x=r*sin(th)*cos(ph);z=r*sin(th)*sin(ph);y=r*cos(th)' 0.05 200 'null' 1 null
+```
+
+### interference · 双源干涉（3D 驻波干涉面）
+
+- **标签**：`conditional` `表达式` `干涉`
+- **说明**：两点源球面波之差 `|cos(r₁−r₂)|>0.9` 的等值面——两波同相加强处
+  结成双曲面族，正是杨氏双缝的 3D 推广。`r₁`/`r₂` 用
+  `sqrt((x∓2)²+y²+z²)` 手写（`hypot` 只有 2 参重载，3 参在模组里报
+  function not found），在 4³ 立方里筛。2843 粒、命令耗时 6ms、
+  **占格 318/576 是本库覆盖率最高的 3D 体模板**（峰均比 3.2，分布也最均匀）。
+  把阈值 0.9 调低面会变厚成「云」，调高则只剩细丝。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'r1=sqrt((x-2)*(x-2)+y*y+z*z);r2=sqrt((x+2)*(x+2)+y*y+z*z);abs(cos(r1-r2))>0.9' 0.4 200 null 1 null
+```
+
+### threesource · 三源干涉（120° 三角阵）
+
+- **标签**：`conditional` `表达式` `干涉`
+- **说明**：三个点源两两干涉：`|cos(r₁−r₂)+cos(r₂−r₃)|>1.4` —— 比双源多
+  一层拍频，交叠处出现三重对称的花瓣状腔体。三源摆在 (±2,0,0) 与
+  (0,2,0) 构成正三角形，对称性最完整。4391 粒、24ms，是库里条件扫描最重的
+  一条（每次采样要算三次 sqrt）。两项余弦可以互换正负号
+  （`cos(r₁−r₂)−cos(r₂−r₃)`）得到另一种破缺方向的花纹。
+- **命令**（复制即用）：
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'r1=sqrt((x-2)*(x-2)+y*y+z*z);r2=sqrt((x+2)*(x+2)+y*y+z*z);r3=sqrt(x*x+(y-2)*(y-2)+z*z);abs(cos(r1-r2)+cos(r2-r3))>1.4' 0.3 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
