@@ -928,6 +928,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4607 'u=t;NX=32;NZ=24;NB=6;k=floor(u/(NZ*NB));rem=floorMod(u,NZ*NB);j=floor(rem/NB);b=floorMod(rem,NB);fx=k-(NX-1)/2;fz=j-(NZ-1)/2;off=floorMod(j,2)*0.5;ba=b/NB*2*PI;x=fx*0.6+off*0.6+0.14*cos(ba);z=fz*0.6*0.866+0.14*sin(ba);y=0.14*cos(ba*2)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'archimedean',
+    name: '阿基米德立体族（一个权重走完全谱）',
+    desc: '球面单位方向 `(cx,cy,cz)` 乘上半径 `r = 3/(w·n₁ + (1−w)·n∞)`，其中 `n₁ = |x|+|y|+|z|`（八面体范数）、`n∞ = max(|x|,|y|,|z|)`（立方体范数）。**w 从 0 扫到 1，形状连续地在「八面体 ↔ 立方八面体 ↔ 立方体」之间变形**——w=0 是正八面体、w=0.35 是截角八面体、w=0.5 是立方八面体（六个正方形 + 八个三角形，阿基米德立体）、w=0.75 是截角立方体、w=1 是立方体。**一条公式换一个权重就得到整族**，是本库密度最高的几何参数化写法。命令并发三条对照 w=0.35 / 0.5 / 0.75，各 2000 粒。改 w 换立体类型。',
+    tags: ['parameter', '表达式', '多面体'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -5 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;N=2000;NL=40;P2=50;k=floor(u/P2);p=floorMod(u,P2)/(P2-1);la=k/(NL-1)*PI-PI/2;lo=p*2*PI;cx=cos(la)*cos(lo);cy=sin(la);cz=cos(la)*sin(lo);a=abs(cx);b=abs(cy);c=abs(cz);n1=a+b+c;ninf=max(max(a,b),c);r=3/(0.35*n1+0.65*ninf);x=cx*r;y=cy*r;z=cz*r' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;N=2000;NL=40;P2=50;k=floor(u/P2);p=floorMod(u,P2)/(P2-1);la=k/(NL-1)*PI-PI/2;lo=p*2*PI;cx=cos(la)*cos(lo);cy=sin(la);cz=cos(la)*sin(lo);a=abs(cx);b=abs(cy);c=abs(cz);n1=a+b+c;ninf=max(max(a,b),c);r=3/(0.5*n1+0.5*ninf);x=cx*r;y=cy*r;z=cz*r' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 5 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;N=2000;NL=40;P2=50;k=floor(u/P2);p=floorMod(u,P2)/(P2-1);la=k/(NL-1)*PI-PI/2;lo=p*2*PI;cx=cos(la)*cos(lo);cy=sin(la);cz=cos(la)*sin(lo);a=abs(cx);b=abs(cy);c=abs(cz);n1=a+b+c;ninf=max(max(a,b),c);r=3/(0.75*n1+0.25*ninf);x=cx*r;y=cy*r;z=cz*r' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
