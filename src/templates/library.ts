@@ -747,6 +747,17 @@ export const TEMPLATES: Template[] = [
       "/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4999 'u=t;s1=u*2.399963;s2=0;dis=0.6+0.05*sqrt(u)+0.5*abs(cos(s1*3))' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'matrixtrio',
+    name: '矩阵变换三态（剪切 / 缩放 / 旋转）',
+    desc: '同一个球壳，用**矩阵乘法**分别做三种线性变换并排展示：左剪切（`x += 0.8y`，球被斜切成倾斜椭球）、中缩放（对角阵 `(1.6, 0.6, 1.2)`，压成扁椭球）、右旋转（绕 z 轴 45°）。**这是本库唯一使用矩阵语法的模板**，也是三种写法的直接对照。矩阵语法要点：字面量用**双逗号分行** `(1,0,0,,0,1,0,,0,0,1)`，乘向量后**元组解构赋值** `(x,,y,,z)=M*(px,,py,,pz)`；**维度必须严格匹配**（3×3 只能乘 3×1、结果 3 分量），否则整条表达式抛 `need matrix, function call...` 且零粒子。取单个元素 `M[i]` 不支持（`[` 是未识别字符）。3840 粒 × 3、每条 10–16ms、占格 1292–1424。**矩阵路线不需要先建后改**：比 group change 少一条命令。',
+    tags: ['parameter', '表达式', '矩阵'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -4.5 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;NL=80;P=48;k=floor(u/P);s0=floorMod(u,P)/(P-1);s2=k/(NL-1)*PI-PI/2;s1=s0*2*PI;R=3;px=R*cos(s2)*cos(s1);py=R*sin(s2);pz=R*cos(s2)*sin(s1);sh=0.8;(x,,y,,z)=(1,sh,0,,0,1,0,,0,0,1)*(px,,py,,pz)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;NL=80;P=48;k=floor(u/P);s0=floorMod(u,P)/(P-1);s2=k/(NL-1)*PI-PI/2;s1=s0*2*PI;R=3;px=R*cos(s2)*cos(s1);py=R*sin(s2);pz=R*cos(s2)*sin(s1);(x,,y,,z)=(1.6,0,0,,0,0.6,0,,0,0,1.2)*(px,,py,,pz)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 4.5 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;NL=80;P=48;k=floor(u/P);s0=floorMod(u,P)/(P-1);s2=k/(NL-1)*PI-PI/2;s1=s0*2*PI;R=3;px=R*cos(s2)*cos(s1);py=R*sin(s2);pz=R*cos(s2)*sin(s1);a=0.7854;c=cos(a);s=sin(a);(x,,y,,z)=(c,-s,0,,s,c,0,,0,0,1)*(px,,py,,pz)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
