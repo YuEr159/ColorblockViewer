@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 90 条）
+## 已收录模板（当前 93 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1276,6 +1276,32 @@ tickparameter 的 `t` 按 step 递进、每 tick 吐 `cpt` 个点——**这正�
 /particle minecraft:entity_effect{color:[1.0,1.0,0.25,0.25]} 0 -5 0 1.4 0.8 1.4 0 700
 /particle minecraft:tinted_leaves{color:[1.0,0.25,1.0,0.3]} 0 0 0 1.4 0.8 1.4 0 700
 /particle minecraft:flash{color:[1.0,0.3,0.4,1.0]} 0 5 0 1.4 0.8 1.4 0 700
+```
+
+### borromean · 博罗米恩三环（两两不套、三环互锁）
+
+拓扑学里最著名的链环：**任意两个环单独看都不套在一起，但三个环合起来拆不开**。做法是三条相同的圆环命令（管半径 0.30，比单环粗得多），各自平移错开后**在管截面的相位 `ang` 上错开 0° / 120° / 240°**——`rr·cos(ang)` 决定管壁的横向偏移、`rr·sin(ang)` 决定纵向，于是三环在空间里互相穿过对方管腔，正是 Borromean 的几何。8400 粒 / 63ms、占格 976。改 `rr=0.30` 换管的粗细（太细看不出互锁、太粗变成一团），改 ±1.1/±1.2 的平移换三环展开程度。
+
+```
+/particleex parameter minecraft:end_rod -1.1 1.2 0 1 0.95 0.89 1 0 0 0 0 2799 'u=t;NR=140;NL=20;k=floor(u/NL);s=floorMod(u,NL)/NL;a=k/(NR-1)*2*PI;th=a;ang=s*2*PI;R=2.2;rr=0.30;x=(R+rr*cos(ang))*cos(th)+(-1.1);z=(R+rr*cos(ang))*sin(th);y=rr*sin(ang)+(1.2)' 1 200 'null' 1 null
+/particleex parameter minecraft:end_rod 1.1 1.2 0 1 0.95 0.89 1 0 0 0 0 2799 'u=t;NR=140;NL=20;k=floor(u/NL);s=floorMod(u,NL)/NL;a=k/(NR-1)*2*PI;th=a;ang=s*2*PI;R=2.2;rr=0.30;x=(R+rr*cos(ang))*cos(th)+(1.1);z=(R+rr*cos(ang))*sin(th);y=rr*sin(ang)+(1.2)' 1 200 'null' 1 null
+/particleex parameter minecraft:end_rod 0 -1.2 0 1 0.95 0.89 1 0 0 0 0 2799 'u=t;NR=140;NL=20;k=floor(u/NL);s=floorMod(u,NL)/NL;a=k/(NR-1)*2*PI;th=a;ang=s*2*PI;R=2.2;rr=0.30;x=(R+rr*cos(ang))*cos(th)+(0);z=(R+rr*cos(ang))*sin(th);y=rr*sin(ang)+(-1.2)' 1 200 'null' 1 null
+```
+
+### lissajous · 李萨如结 3:4:5（三轴异频正弦）
+
+三个坐标轴各自按**不同频率**做正弦：x 用 3 倍、y 用 4 倍、z 用 5 倍（y 再补 90° 相位），于是这条曲线在盒子里绕来绕去、**既不闭合自交也不重复**，形成立体编织花纹。频率全取整数才让曲线在 2π 内闭合（3:4:5 是最小的三整数互质组）；再叠一层管半径 `0.22` 的圆截面把线变成细管，否则太细看不清。**这是与 `torusknot` 相对的另一条 3D 曲线路线**：环面结缠在一个环面上，李萨如结填满整个长方体。6000 粒 / 24ms、占格 805。改 3/4/5 换频率比（相同频率会退化成平面椭圆）。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;NR=250;NL=24;k=floor(u/NL);s=floorMod(u,NL)/NL;a=k/(NR-1)*2*PI;t2=s*2*PI;x=3*sin(3*a)+0.22*cos(t2);y=3*sin(4*a+1.5708)+0.22*sin(t2);z=3*sin(5*a)+0.22*cos(t2+1.0)' 1 200 'null' 1 null
+```
+
+### trefoil2 · (2,3) 环面结加厚管（互反参数）
+
+与库里 `torusknot` 的 (5,2) 是同一族公式、**参数互反**：(p,q) = (2,3) 而不是 (5,2)。p 绕主轴、q 绕管，互质才不打结；(2,3) 给出的是经典**三叶结**的对称形态——三个花瓣状回环均匀分布。管半径 0.25 的圆截面沿曲线扫过，让这条结有了实体管的样子。注意 p/q 互换**不是同一条曲线**（(2,3) 与 (3,2) 互为镜像，缠绕方向和花瓣数都不同），这是参数化写法里最容易忽略的一点。4000 粒 / 19ms、占格 640。改 p/q 换结型：(2,5) 是五叶星、(3,4) 更繁复。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NR=200;NL=20;k=floor(u/NL);s=floorMod(u,NL)/NL;a=k/(NR-1)*2*PI;t2=s*2*PI;R1=2.4;x=(R1+0.5*cos(3*a))*cos(2*a)+0.25*cos(t2);y=0.5*sin(3*a)+0.25*sin(t2);z=(R1+0.5*cos(3*a))*sin(2*a)+0.25*cos(t2+1.5708)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
