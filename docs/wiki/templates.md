@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 65 条）
+## 已收录模板（当前 68 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1012,6 +1012,53 @@
 /particle minecraft:dust_color_transition{from_color:[0.5,0.1,1.0],to_color:[1.0,0.3,0.5],scale:4.0} 0 0 0 2.1 2.1 2.1 0 1200
 /particle minecraft:dust_color_transition{from_color:[0.1,0.8,1.0],to_color:[0.9,1.0,0.3],scale:2.5} 0 0 0 1.4 1.4 1.4 0 1200
 /particle minecraft:dust_color_transition{from_color:[1.0,0.85,0.2],to_color:[1.0,0.2,0.2],scale:1.2} 0 0 0 0.75 0.75 0.75 0 1200
+```
+
+### trailconverge · 星尘汇聚（trail NBT 定向飞行）
+
+- **标签**：`particle` `type{NBT}` `定向飞行`
+- **说明**：`trail{target:[...],duration:N,color:[...]}` 让粒子在一生中**从出生点均匀
+  lerp 到目标点**（`x += (target−x)/(lifetime−age)`，末 tick 恰好落点）。这里目标设成
+  原点，散布半径 6 格的 1500 粒星尘在 60 tick 内收束成一点——跨度从 68 格压到 4.6 格，
+  占格 1495 降到 224。播放时是最直观的「粒子被吸过来」特效。**必须先给非零 speed**：
+  `/particle` 的 speed 写 0 会让引擎置 `stop=true`，模组 customTick 会把 lerp 位移
+  整个回滚，粒子钉死在出生点（实测速度 0 时位置完全不变）。写 0.001 即可解锁。
+  **duration 就是寿命**——写 40 粒子只活 40 tick。1500 粒 / 14ms。
+- **命令**（复制即用）：
+
+```
+/particle minecraft:trail{target:[0.0,0.0,0.0],duration:60,color:[0.55,0.85,1.0]} 0 0 0 6 4 6 0.001 1500
+```
+
+### trailtri · 三向分流（trail 多目标）
+
+- **标签**：`particle` `type{NBT}` `定向飞行`
+- **说明**：三条 trail 命令共用同一出生点、各指向不同目标（左/中/右），颜色也各不
+  相同：一团混杂的星尘在飞行途中**按颜色分成三股**，分别收束到三个方向，形成 Y 形
+  分流。**这是「空间分组」的最省写法**——不需要 group 或条件表达式，只要给每条命令
+  不同的 target，同源粒子自会按命令各自飞散。duration 70 让三股都有足够时间拉开。
+  2100 粒 / 12ms、跨度 39.5→21.4。
+- **命令**（复制即用）：
+
+```
+/particle minecraft:trail{target:[-6.0,0.0,10.0],duration:70,color:[0.35,0.8,1.0]} 0 0 0 3.5 3.5 2 0.001 700
+/particle minecraft:trail{target:[0.0,0.0,13.0],duration:70,color:[0.95,0.9,0.4]} 0 0 0 3.5 3.5 2 0.001 700
+/particle minecraft:trail{target:[6.0,0.0,10.0],duration:70,color:[1.0,0.5,0.25]} 0 0 0 3.5 3.5 2 0.001 700
+```
+
+### vibconverge · 振动汇聚（vibration NBT 落点）
+
+- **标签**：`particle` `type{NBT}` `定向飞行`
+- **说明**：`vibration{destination:{block:{pos:[x,y,z]}},arrival_in_ticks:N}` 是原版的
+  「振动信号」粒子：寿命 = `arrival_in_ticks`，每 tick 朝**方块中心（+0.5 各轴）**做
+  lerp，末 tick 恰好抵达。这里 1200 粒从 5×3×4 格高斯散布出发，24 tick 内汇聚到
+  (0.5, 3.5, 8.5) 那一点。与 trail 的区别：**目标是方块整数坐标、引擎自动 +0.5 对齐
+  到方块中心**，不用手算；`arrival_in_ticks` 同时决定寿命和飞行时长。同样需要非零
+  speed 解锁。1200 粒 / 7ms、占格 1190→382。
+- **命令**（复制即用）：
+
+```
+/particle minecraft:vibration{destination:{block:{pos:[0,3,8]}},arrival_in_ticks:24} 0 0 0 5 3 4 0.001 1200
 ```
 
 ## 待采纳候选（社区高频用法）
