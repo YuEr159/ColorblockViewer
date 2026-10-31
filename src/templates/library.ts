@@ -634,6 +634,35 @@ export const TEMPLATES: Template[] = [
     ],
   },
   {
+    id: 'gvspin',
+    name: '静止球换速自旋（group change speedexpression）',
+    desc: '**两阶段动力学的标准写法**：先用 normal 铺一团**完全静止**的球（速度表达式 `null`），再用 **group change speedexpression** 把速度表达式整体替换成切向场 `(-z/r, 0, x/r)·0.06`。与 group change parameter 不同，这个分支**不改坐标、只换 exe**——粒子从「静止」切到「绕 y 轴公转」，形成一片绕轴涡旋的圆盘。要点是**新速度表达式用了 `x/z`，它们在 group change 时刻取的是粒子当时的绝对位置**（相对参考点），所以每个半径上的转速不同（角速度恒定、线速度随半径增长），外层转得快、内层慢，自然形成螺旋拖尾。2500 粒 / 52ms（含 40 tick 演进）、占格 1102。改 0.06 换转速，改 40 tick 为更长看它是否维持。',
+    tags: ['group change', '速度表达式', '两阶段动力学'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.8 0.8 0.8 2500 300 'null' 1 g1",
+      "/particleex group change speedexpression g1 'r=sqrt(x*x+z*z)+0.001;vx=-z/r*0.06;vy=0;vz=x/r*0.06'",
+    ],
+  },
+  {
+    id: 'gvhalf',
+    name: '上下分层飞离（条件速度表达式）',
+    desc: '同一个 group change speedexpression，但带上条件 `y>0`——**只有上半球被换上速度表达式**，下半球保留原 `null` 速度（继续静止）。上半球获得 `(-sinθ, 0, cosθ)·0.10` 的切向速度并 `vy=0.04` 匀速上升，于是**球从中间裂成两层**：下半球原地不动，上半球边转边升，越飘越远（实测 y 跨度 40 tick 5.71 → 80 tick 8.91 → 120 tick 10.51，线性发散）。这是条件 group change 里最有观赏性的一种：**它同时演示了「按空间位置筛选粒子」与「分阶段替换动力学」**，两条能力叠在一条命令里。2500 粒 / 38ms、占格 1123。改条件为 `y<0` 让下半球飞出，改 `0.04` 换上升速度。',
+    tags: ['group change', '速度表达式', '条件动力学'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.8 0.8 0.8 2500 300 'null' 1 g1",
+      "/particleex group change speedexpression g1 'th=atan2(z,x);vx=-sin(th)*0.10;vy=0.04;vz=cos(th)*0.10' 'y>0'",
+    ],
+  },
+  {
+    id: 'velsplit',
+    name: '单命令条件分流（速度表达式内的比较）',
+    desc: '**速度表达式里可以直接写比较运算**——`up=(y>0)` 得到 0 或 1，`vy=up·0.03` 就实现了「上半球上升、下半球不动」，效果与上一条的条件 group change 等价，但**只要一条命令**、不需要先铺再改。这是本库第一次把布尔比较塞进速度表达式：比较结果参与算术时直接当 0/1 用（`(y>0)*0.04` 与 `t2=(y>0);vy=t2*0.04` 两种写法等价，实测 y 跨度都是 7.31）。相比 group change 方案它更短、更实时（每 tick 都重判，粒子飞过 y=0 会自动换挡），但也因此**不能锁住初始分类**——想「一次分类、长期保持」还得用 group change。2500 粒 / 49ms、占格 1118。',
+    tags: ['normal', '速度表达式', '条件动力学'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.8 0.8 0.8 2500 300 'r=sqrt(x*x+z*z)+0.001;up=(y>0);vt=-(z/r)*0.06;vz2=(x/r)*0.06;vx=vt;vz=vz2;vy=up*0.03' 1 g1",
+    ],
+  },
+  {
     id: 'dusttri',
     name: '三色粉团（dust NBT 颜色 + 尺寸）',
     desc: '用**原版 /particle 命令**的 `dust{color:[...],scale:...}` NBT：颜色和点尺寸由 NBT 直接给定，不经过表达式。三条命令在不同位置各放一团，形成蓝/绿/橙三色并置。**关键：NBT 颜色只在原版 `/particle` 路径生效**——模组的 parameter/normal/conditional 族完全不消费 NBT（取证 `src/sim/spawn.ts`：`nbtVisuals` 只在 `execVanilla` 里被调用），用 mod 命令写 dust{color} 会静默变白。**delta 三轴是高斯散布的标准差，不是半径**——写 2.6 会让粒子扩散到 30 格外，1.0–1.4 才是紧凑的一团。`scale` 取值 0.01–4（构造器 Mth.clamp）。2700 粒 / 24ms、占格 2240。',
