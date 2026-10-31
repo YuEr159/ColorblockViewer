@@ -596,6 +596,26 @@ export const TEMPLATES: Template[] = [
     ],
   },
   {
+    id: 'gccone',
+    name: '条件尖顶（group change 只改上半球）',
+    desc: '前半段先铺标准球壳，后半段用 **group change 带条件表达式** `y>0` 只挑上半球，按高度把水平半径从 1.4 倍（赤道）线性收到 0.15 倍（顶点）——下半球原封不动保持球面。结果是一个**下半球圆、上半球收成尖顶**的锥台，像倒扣的漏斗或陀螺上半身。这是本库第一条**条件 group change**：不加条件时整球一起变形，加了条件才能做出「一半保留、一半改造」的不对称造型，这是 parameter 族一步到位写不出来的。3600 粒 / 40ms、占格 1410。改 `1.4`/`0.15` 换锥顶的宽窄，改条件为 `y<-1` 只改底部。',
+    tags: ['group change', '表达式', '条件形变'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;P=60;k=floor(u/P);s0=floorMod(u,P)/(P-1);eta=k/(NL-1)*PI-PI/2;phi=s0*2*PI;x=3*cos(eta)*cos(phi);y=3*sin(eta);z=3*cos(eta)*sin(phi)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'y2=max(y,0);r=sqrt(x*x+z*z);f=y2/3;s=(1-f)*1.4+0.15;x=x*s;z=z*s;y=y' 'y>0'",
+    ],
+  },
+  {
+    id: 'gcdrop',
+    name: '球顶喇叭裙（group change 条件膨胀成蘑菇）',
+    desc: '与上一条同一思路的互补用法：条件 `y<0` 只挑**下半球**，`s = 1 + 1.8·f²` 按深度 f 做**二次加速**的放大——越往底越猛地向外张开，于是下半球被拉成一圈**向外翻卷的喇叭裙**，上半球保持球冠。二次项是关键：换成线性 `s=1+1.8f` 裙边会变成平直的锥台，二次才做出「越到底越松」的蘑菇裙摆。3600 粒 / 18ms、占格 1746。改 1.8 换裙摆张开幅度，改 f² 为 f³ 裙边更贴轴。',
+    tags: ['group change', '表达式', '条件形变'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;P=60;k=floor(u/P);s0=floorMod(u,P)/(P-1);eta=k/(NL-1)*PI-PI/2;phi=s0*2*PI;x=3*cos(eta)*cos(phi);y=3*sin(eta);z=3*cos(eta)*sin(phi)' 1 200 'null' 1 g2",
+      "/particleex group change parameter g2 'y2=-min(y,0);r=sqrt(x*x+z*z);f=y2/3;s=1+f*f*1.8;x=x*s;z=z*s' 'y<0'",
+    ],
+  },
+  {
     id: 'orbitswarm',
     name: '绕轴轨道群（速度表达式做动力学）',
     desc: '用 **normal 族的速度表达式**做真正的动力学：每 tick 给每粒子算一次速度，`vx=-z/r·0.15, vz=x/r·0.15` 是**垂直于半径的切向速度**——于是每粒子都绕着 y 轴做近似圆轨道（半径由初始位置决定，永不衰减），同时 `vy=0.03` 缓慢上升形成螺旋上升的柱状轨道群。这是本库第一次用「速度场」而非「位置公式」生成形态：**形态是涌现的，不是写死的**。初始位置由 `范围 4 4 4` 的随机分布给出。3000 粒 / 94ms（每 tick 算 3000 次表达式，40 tick 后仍活跃）。改 0.15 换公转速度，改 vy 换上升速率。',

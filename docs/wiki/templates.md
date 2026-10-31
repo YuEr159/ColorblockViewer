@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 82 条）
+## 已收录模板（当前 84 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1206,6 +1206,24 @@
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NL=50;P=40;k=floor(u/P);s0=floorMod(u,P)/(P-1);e1=0.35;e2=1.7;ct=cos(k/(NL-1)*PI-PI/2);st=sin(k/(NL-1)*PI-PI/2);cp=cos(s0*2*PI);sp=sin(s0*2*PI);x=3*signum(ct)*pow(abs(ct),e1)*signum(cp)*pow(abs(cp),e2);y=3*signum(st)*pow(abs(st),e1);z=3*signum(ct)*pow(abs(ct),e1)*signum(sp)*pow(abs(sp),e2)' 1 200 'null' 1 null
+```
+
+### gccone · 条件尖顶（group change 只改上半球）
+
+前半段先铺标准球壳，后半段用 **group change 带条件表达式** `y>0` 只挑上半球，按高度把水平半径从 1.4 倍（赤道）线性收到 0.15 倍（顶点）——下半球原封不动保持球面。结果是一个**下半球圆、上半球收成尖顶**的锥台，像倒扣的漏斗或陀螺上半身。这是本库第一条**条件 group change**：不加条件时整球一起变形，加了条件才能做出「一半保留、一半改造」的不对称造型，这是 parameter 族一步到位写不出来的。3600 粒 / 40ms、占格 1410。改 `1.4`/`0.15` 换锥顶的宽窄，改条件为 `y<-1` 只改底部。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;P=60;k=floor(u/P);s0=floorMod(u,P)/(P-1);eta=k/(NL-1)*PI-PI/2;phi=s0*2*PI;x=3*cos(eta)*cos(phi);y=3*sin(eta);z=3*cos(eta)*sin(phi)' 1 200 'null' 1 g1
+/particleex group change parameter g1 'y2=max(y,0);r=sqrt(x*x+z*z);f=y2/3;s=(1-f)*1.4+0.15;x=x*s;z=z*s;y=y' 'y>0'
+```
+
+### gcdrop · 球顶喇叭裙（group change 条件膨胀成蘑菇）
+
+与上一条同一思路的互补用法：条件 `y<0` 只挑**下半球**，`s = 1 + 1.8·f²` 按深度 f 做**二次加速**的放大——越往底越猛地向外张开，于是下半球被拉成一圈**向外翻卷的喇叭裙**，上半球保持球冠。二次项是关键：换成线性 `s=1+1.8f` 裙边会变成平直的锥台，二次才做出「越到底越松」的蘑菇裙摆。3600 粒 / 18ms、占格 1746。改 1.8 换裙摆张开幅度，改 f² 为 f³ 裙边更贴轴。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;P=60;k=floor(u/P);s0=floorMod(u,P)/(P-1);eta=k/(NL-1)*PI-PI/2;phi=s0*2*PI;x=3*cos(eta)*cos(phi);y=3*sin(eta);z=3*cos(eta)*sin(phi)' 1 200 'null' 1 g2
+/particleex group change parameter g2 'y2=-min(y,0);r=sqrt(x*x+z*z);f=y2/3;s=1+f*f*1.8;x=x*s;z=z*s' 'y<0'
 ```
 
 ## 待采纳候选（社区高频用法）
