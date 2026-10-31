@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 68 条）
+## 已收录模板（当前 70 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1060,6 +1060,27 @@
 ```
 /particle minecraft:vibration{destination:{block:{pos:[0,3,8]}},arrival_in_ticks:24} 0 0 0 5 3 4 0.001 1200
 ```
+
+### clifford · Clifford 吸引子（迭代映射的落点云）
+
+- **标签**：`parameter` `表达式` `迭代映射`
+- **说明**：教科书级的二维混沌吸引子：`x' = sin(a·y) + c·cos(a·x)`，`y' = sin(b·x) + d·cos(b·y)`（a=−1.4, b=1.6, c=−1.0, d=0.9）。做法是**每个粒子先取一个初始点，再在表达式里顺序展开 20 次迭代**，最终画迭代后的位置——所以 8000 个粒子画的是 8000 条不同初始轨道的第 20 步，整体轮廓就是该参数下的吸引子。**迭代必须顺序展开**（`nx=...;x=nx;ny=...;y=ny;` 重复），不能符号代入——符号展开会指数爆炸（n=12 就卡死），顺序展开是线性增长（20 次迭代约 1400 字符）。**吸引子天然落在 [−2,2]² 内，要乘 5 倍缩放**才有 26 格的观感；不缩放时占格只有 149。8000 粒 / 61ms、占格 2362。改 a/b/c/d 换形态（每个参数组出一种「花」）。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;P=80;k=floor(u/P);s0=floorMod(u,P)/(P-1);x=4*k/(NL-1)-2;y=4*s0-2;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;nx=sin(-1.4*y)+-1.0*cos(-1.4*x);ny=sin(1.6*x)+0.9*cos(1.6*y);x=nx;y=ny;x=x*5;y=y*5;z=0' 1 200 'null' 1 null
+```
+
+### dejong · de Jong 吸引子（细丝缠绕的落点云）
+
+- **标签**：`parameter` `表达式` `迭代映射`
+- **说明**：与 Clifford 同一族（Peter de Jong 映射），参数换成 a=1.6411, b=1.9021, c=−2.0574, d=−1.3456——这四个参数让轨道形成**大量互相缠绕的细丝**而不是团块，是 Clifford 参数里结构最丰富的一组。同样顺序展开 25 次迭代、乘 4 倍缩放（这个参数组的吸引子本身落点更密集，缩放比要小）。**与 `clifford` 模板的差别只在参数与缩放**——四个系数就是四个旋钮，每换一组都是一朵新花；`a/b/c/d` 全部落在 [−2.1, 2.1] 内通常有界。8000 粒 / 79ms、占格 3323（全库迭代类最高）。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;P=80;k=floor(u/P);s0=floorMod(u,P)/(P-1);x=4*k/(NL-1)-2;y=4*s0-2;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;x=x*4;y=y*4;z=0' 1 200 'null' 1 null
+```
+
 
 ## 待采纳候选（社区高频用法）
 
