@@ -711,6 +711,33 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;s2=(u/48)/(80-1)*PI-0.5*PI;s1=floorMod(u,48)/48*2*PI;dis=4;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 48 'null' 1 null",
     ],
   },
+  {
+    id: 'sdfdiff',
+    name: 'SDF 差集（打洞的球）',
+    desc: '**构造实体几何（CSG）**的差集运算：大球半径 2.4 **减去**沿 z 轴的圆柱（半径 1）。写法是三个符号距离函数合成——球 `d1=|p|−2.4`、圆柱 `d2=1−√(x²+z²)`（取负号表示「内部」），差集取 `max(d1, −d2)`，等值面 `|m|<0.06` 就是边界。等距视角下是一个清晰的**贯穿孔圆管**，俯视能看到完整的环形截面。**SDF 的价值在于可组合**：并集 = `min`、交集 = `max`、差集 = `max(a,−b)`，任何实体都能由这几个算子拼出来，而不必硬推一个合并后的方程。5584 粒 / 75ms、占格 496。改 2.4/1.0 换球径与孔径。',
+    tags: ['conditional', '表达式', 'SDF 实体造型'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'd1=sqrt(x*x+y*y+z*z)-2.4;d2=1.0-sqrt(x*x+z*z);m=max(d1,-d2);abs(m)<0.06' 0.09 200 null 1 null",
+    ],
+  },
+  {
+    id: 'sdfisect',
+    name: 'SDF 交集（球切立方）',
+    desc: '交集运算：球（半径 2.2）∩ 立方体（半宽 1.5），取 `max(d1, d2)`。结果是**一个带棱角的「圆角立方」**——六个面朝内的部分被球面削圆，八个角保留立方体的轮廓。等距视角下棱线清晰、面微鼓，比纯球或纯立方都更有辨识度。**交集是三个 SDF 算子里视觉对比最强的**：并集把两个形体粘连（轮廓变复杂），差集挖洞（拓扑改变），交集则同时保留双方的特征。9437 粒 / 45ms、占格 938。调 2.2/1.5 的比例换「方」与「圆」的比重。',
+    tags: ['conditional', '表达式', 'SDF 实体造型'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2.6 2.6 2.6 'd1=sqrt(x*x+y*y+z*z)-2.2;d2=max(max(abs(x),abs(y)),abs(z))-1.5;m=max(d1,d2);abs(m)<0.06' 0.09 200 null 1 null",
+    ],
+  },
+  {
+    id: 'truchet',
+    name: 'Truchet 瓷砖（随机定向弧线）',
+    desc: '每块 2×2 的瓷砖里画两段四分之一圆弧，**圆弧的朝向按格号 (U+V) 的奇偶交替**——于是相邻瓷砖的弧线首尾相接，自然连成一张缠绕的曲线网，这是计算几何里著名的 Truchet 瓷砖。写法要点：`U=floor(x/2)` 取格号、`fx=(x−2U+2)*0.5` 把格内坐标归一到 [0,1]，`p=floorMod(U+V,2)` 是奇偶标志，圆心 `c1x=p` 让偶数格圆心在左、奇数格圆心在右。**格内归一化务必用 `(x−2U+2)*0.5` 而不是 `x−2U`**：`floor` 对负数向下取整，直接相减会落进 (−2,0]，图案会错位甚至零命中（本模板第一版就是这样全空的）。8406 粒 / 42ms、占格 354。改 2 换瓷砖尺寸。',
+    tags: ['conditional', '表达式', '瓷砖图案'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 6 0 6 'U=floor(x/2);V=floor(z/2);fx=(x-U*2+2)*0.5;fz=(z-V*2+2)*0.5;p=floorMod(U+V,2);c1x=p*1;c1z=0;c2x=(1-p)*1;c2z=1;d1=sqrt((fx-c1x)*(fx-c1x)+(fz-c1z)*(fz-c1z));d2=sqrt((fx-c2x)*(fx-c2x)+(fz-c2z)*(fz-c2z));m=min(abs(d1-1),abs(d2-1));m<0.06' 0.04 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
