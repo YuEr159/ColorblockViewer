@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 101 条）
+## 已收录模板（当前 102 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1368,6 +1368,14 @@ Tonnetz（音网）是音乐理论里的另一种音高几何：**它把和声�
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'a=floor((x+3)/0.7);b=floor((y+3)/0.7);c=floor((z+3)/0.7);a0=floor(a/3);b0=floor(b/3);c0=floor(c/3);ai=floorMod(a0,3)==1;bi=floorMod(b0,3)==1;ci=floorMod(c0,3)==1;cnt=ai+bi+ci;ok1=cnt<=1;ar=floorMod(a,3)==1;br=floorMod(b,3)==1;cr=floorMod(c,3)==1;cnt2=ar+br+cr;ok2=cnt2<=1;ok1*ok2==1' 0.25 200 null 1 null
+```
+
+### helixflow · 径向驻波分层（速度场把粒子困在柱面）
+
+切向速度 `(-z/r, x/r)·0.09` 让粒子绕 y 轴公转，纵向速度 `vy = 0.008 + 0.015·sin(2r)` **只依赖到轴的距离 r**。关键在于 `sin(2r)` 在 `r ≈ 0.785, 2.36, 3.93…` 处过零——**过零点两侧的 vy 符号相反**，粒子被推回零点所在的半径，形成一圈圈**径向驻波**。于是原本均匀的粒子团被「挤」进若干个同心圆柱壳里，俯视看是同心圆环、侧视看是竖直条纹。**这与 `torusflow` 的关键区别**：那里的 vy 依赖方位角 θ（沿环流动的波），这里依赖半径 r（把粒子按半径分选）。3000 粒 / 121ms（150 tick 后）、占格 2134。改 `sin(2r)` 的 2 换波数，改 0.015 换分层的锐利程度（越大分层越紧）。
+
+```
+/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 1.8 0.6 1.8 3000 500 'r=sqrt(x*x+z*z)+0.001;vx=-z/r*0.09;vy=0.008+0.015*sin(r*2);vz=x/r*0.09' 1 g1
 ```
 
 ## 待采纳候选（社区高频用法）
