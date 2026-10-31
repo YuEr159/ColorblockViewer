@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 70 条）
+## 已收录模板（当前 72 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1079,6 +1079,29 @@
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;P=80;k=floor(u/P);s0=floorMod(u,P)/(P-1);x=4*k/(NL-1)-2;y=4*s0-2;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;nx=sin(1.6411*y)+-2.0574*cos(1.6411*x);ny=sin(1.9021*x)+-1.3456*cos(1.9021*y);x=nx;y=ny;x=x*4;y=y*4;z=0' 1 200 'null' 1 null
+```
+
+
+### checkersphere · 经纬棋盘球（颜色 = 经纬格交替）
+
+- **标签**：`rgbaparameter` `表达式` `球面`
+- **说明**：球面的极坐标网格，**颜色按经纬格 (k+i) 的奇偶交替**：亮银 / 暗灰 两色，形成经典的「棋盘球」外观——这是地理课本上演示经纬度的标准画法。写法上关键是 `floorMod(k+s0*48,2)`：k 是纬线序号、s0*48 是经线序号，两者相加取模 2，所以每换一行或换一列颜色都翻转，自然拼出棋盘。**必须用 rgba 变体（rgbaparameter）**——带颜色槽的 parameter 族会直接用命令色，表达式里的 cr/cg/cb 被完全忽略（取证 src/sim/spawn.ts:409，只有 color=null 的 rgba 分支才读 s.cr）。3840 粒 / 20ms、占格 1272、渲染色种 94（明暗梯度与原版纹理叠加）。改 48/80 换网格密度。
+- **命令**（复制即用）：
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 3839 'u=t;NL=80;P=48;k=floor(u/P);s0=floorMod(u,P)/(P-1);s2=k/(NL-1)*PI-PI/2;s1=s0*2*PI;dis=3;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1);chk=floorMod(k+s0*48,2);v=0.15+0.85*chk;cr=v;cg=v;cb=v' 1 200 'null' 1 null
+```
+
+### lifesync · 寿命分层退场（三层接力消隐）
+
+- **标签**：`parameter` `表达式` `时间节奏`
+- **说明**：三条命令画三个同心的球壳（半径 3 / 2 / 4），但 **age 槽分别给 8 / 24 / 48**：粒子数在 t=8 / 24 / 48 三个时刻依次归零，于是画面从「三层套球」逐级剥落到只剩最外层，再整体消失。**这是唯一能用「寿命」做动画节奏的手法**——不改位置、不改颜色，只让不同层的粒子在不同时刻死掉。注意 age 是**绝对寿命**（tick），不是相对延迟：写成 8 的粒子从出生起就只活 8 tick。播放时能看到 11520→7680→3840 的阶梯式粒子数下降，占格 3871→2577→1869。
+- **命令**（复制即用）：
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;s2=(u/48)/(80-1)*PI-0.5*PI;s1=floorMod(u,48)/48*2*PI;dis=3;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 8 'null' 1 null
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;s2=(u/48)/(80-1)*PI-0.5*PI;s1=floorMod(u,48)/48*2*PI;dis=2;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 24 'null' 1 null
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;s2=(u/48)/(80-1)*PI-0.5*PI;s1=floorMod(u,48)/48*2*PI;dis=4;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 48 'null' 1 null
 ```
 
 
