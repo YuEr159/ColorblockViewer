@@ -738,6 +738,15 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 6 0 6 'U=floor(x/2);V=floor(z/2);fx=(x-U*2+2)*0.5;fz=(z-V*2+2)*0.5;p=floorMod(U+V,2);c1x=p*1;c1z=0;c2x=(1-p)*1;c2z=1;d1=sqrt((fx-c1x)*(fx-c1x)+(fz-c1z)*(fz-c1z));d2=sqrt((fx-c2x)*(fx-c2x)+(fz-c2z)*(fz-c2z));m=min(abs(d1-1),abs(d2-1));m<0.06' 0.04 200 null 1 null",
     ],
   },
+  {
+    id: 'polardens',
+    name: '黄金角密度花瓣（极坐标径向调制）',
+    desc: '把**黄金角**（2.399963 rad，斐波那契球用的同一个常数）用在平面极坐标上：每粒子的方位角按黄金角递增，半径则由 `0.6 + 0.05√u + 0.5·|cos(3θ)|` 给出——前两项让粒子向中心聚拢，最后一项**在径向上按方位角做三次余弦调制**，于是密度沿六个方向堆积，形成六瓣的花形密度带。与 `fibonaccisphere`（球面均匀铺）互补：那条求均匀，这条用同一个角求**非均匀**。俯视是清晰的六瓣花，正视压成一条带（因为 s2=0）。5000 粒 / 12ms、占格 716。改 3 换瓣数，改 0.5 换瓣的深浅。',
+    tags: ['polarparameter', '表达式', '密度场'],
+    cmds: [
+      "/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4999 'u=t;s1=u*2.399963;s2=0;dis=0.6+0.05*sqrt(u)+0.5*abs(cos(s1*3))' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
