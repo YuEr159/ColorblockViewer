@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 87 条）
+## 已收录模板（当前 89 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1250,6 +1250,22 @@
 
 ```
 /particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0.8 0.8 0.8 2500 300 'r=sqrt(x*x+z*z)+0.001;up=(y>0);vt=-(z/r)*0.06;vz2=(x/r)*0.06;vx=vt;vz=vz2;vy=up*0.03' 1 g1
+```
+
+### tkspiralband · 逐 tick 盘绕的螺旋带（tickparameter 扫描）
+
+tickparameter 的 `t` 按 step 递进、每 tick 吐 `cpt` 个点——**这正是「用 t 当扫描索引」的天然场景**。这条把 t 拆成两段：整数部分 `n = floor(u/8)` 决定转过的总角度（每 8 个点转 0.5 弧度），小数部分 `s0` 在一圈内扫过完整 2π；半径再叠 `0.4·sin(0.3n)` 的起伏、高度 `0.04n` 缓慢下移。于是**每个 tick 吐出一条 8 点的短弧，弧推进的角度整体向前滚**，播放时看到一条螺旋带绕着轴一圈圈缠上去再慢慢下沉——俯视是一个不断生长的同心螺旋。808 粒 / 9ms、占格 565。改 8 换每圈点数（越小越像虚线），改 0.5 换每步转过的角。
+
+```
+/particleex tickparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1600 'u=t;n=floor(u/8);s0=floorMod(u,8)/8;th=n*0.5;s1=s0*2*PI;r=3+0.4*sin(n*0.3);x=r*cos(th+s1*0.2);z=r*sin(th+s1*0.2);y=(n*0.04)-2' 1 8 500 'null' 1 null
+```
+
+### tkrings · 逐圈外扩的同心环（tickpolarparameter）
+
+用 **tickpolarparameter**：`dis` 随圈号 `n` 线性增长（`0.8 + 0.14n`），每 20 个点正好铺满一圈（`s1 = 2πs0`、`s2 = 0` 让所有点落在同一水平面）。播放时一圈圈同心圆从内向外依次出现，**像水面的涟漪一圈圈荡开**——但这里是「一次一圈、圆整地铺」而非连续扩散，节奏感比 `tkspiralband` 更强。1601 粒 / 5ms、占格 865。改 20 换每圈点数（越小圈越稀），改 0.14 换环间距。
+
+```
+/particleex tickpolarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1600 'u=t;n=floor(u/20);s0=floorMod(u,20)/20;s1=s0*2*PI;s2=0;dis=0.8+n*0.14' 1 20 500 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）

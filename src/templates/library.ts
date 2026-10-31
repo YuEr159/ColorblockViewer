@@ -548,6 +548,24 @@ export const TEMPLATES: Template[] = [
     ],
   },
   {
+    id: 'tkspiralband',
+    name: '逐 tick 盘绕的螺旋带（tickparameter 扫描）',
+    desc: 'tickparameter 的 `t` 按 step 递进、每 tick 吐 `cpt` 个点——**这正是「用 t 当扫描索引」的天然场景**。这条把 t 拆成两段：整数部分 `n = floor(u/8)` 决定转过的总角度（每 8 个点转 0.5 弧度），小数部分 `s0` 在一圈内扫过完整 2π；半径再叠 `0.4·sin(0.3n)` 的起伏、高度 `0.04n` 缓慢下移。于是**每个 tick 吐出一条 8 点的短弧，弧推进的角度整体向前滚**，播放时看到一条螺旋带绕着轴一圈圈缠上去再慢慢下沉——俯视是一个不断生长的同心螺旋。808 粒 / 9ms、占格 565。改 8 换每圈点数（越小越像虚线），改 0.5 换每步转过的角。',
+    tags: ['tickparameter', '表达式', '时间驱动'],
+    cmds: [
+      "/particleex tickparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1600 'u=t;n=floor(u/8);s0=floorMod(u,8)/8;th=n*0.5;s1=s0*2*PI;r=3+0.4*sin(n*0.3);x=r*cos(th+s1*0.2);z=r*sin(th+s1*0.2);y=(n*0.04)-2' 1 8 500 'null' 1 null",
+    ],
+  },
+  {
+    id: 'tkrings',
+    name: '逐圈外扩的同心环（tickpolarparameter）',
+    desc: '用 **tickpolarparameter**：`dis` 随圈号 `n` 线性增长（`0.8 + 0.14n`），每 20 个点正好铺满一圈（`s1 = 2πs0`、`s2 = 0` 让所有点落在同一水平面）。播放时一圈圈同心圆从内向外依次出现，**像水面的涟漪一圈圈荡开**——但这里是「一次一圈、圆整地铺」而非连续扩散，节奏感比 `tkspiralband` 更强。1601 粒 / 5ms、占格 865。改 20 换每圈点数（越小圈越稀），改 0.14 换环间距。',
+    tags: ['tickpolarparameter', '表达式', '时间驱动'],
+    cmds: [
+      "/particleex tickpolarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1600 'u=t;n=floor(u/20);s0=floorMod(u,20)/20;s1=s0*2*PI;s2=0;dis=0.8+n*0.14' 1 20 500 'null' 1 null",
+    ],
+  },
+  {
     id: 'tickpulse',
     name: '阶梯扩散脉冲环（tickparameter）',
     desc: '同样是 tickparameter，但半径按 `r=1+floor(u/100)*0.25` **阶梯式跳变**：每 100 个采样点（5 个 tick）半径跳 0.25 格，于是每帧画面是一圈固定半径的圆，跳变瞬间同时存在两圈——形成同心环逐层向外扩散的脉冲感。俯视能看到从内到外的多层圆环。**阶梯与 tick 节拍要对齐**：一圈 100 点 = 5 tick（cpt=25），改 cpt 要同步改阶梯长度，否则阶梯与圆环错位成斜纹。2951 粒 / 16ms、占格 1066、跨度 22.8。',
