@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 62 条）
+## 已收录模板（当前 65 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -961,6 +961,57 @@
 
 ```
 /particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 3000 2000 'rr=sqrt(x*x+z*z)+0.001;th=atan2(z,x);vx=-(z/rr)*0.18;vz=(x/rr)*0.18;vy=0.08*sin(th*3)' 1 g1
+```
+
+### dusttri · 三色粉团（dust NBT 颜色 + 尺寸）
+
+- **标签**：`particle` `type{NBT}` `颜色`
+- **说明**：用**原版 /particle 命令**的 `dust{color:[...],scale:...}` NBT：颜色和点尺寸
+  由 NBT 直接给定，不经过表达式。三条命令在不同位置各放一团，形成蓝/绿/橙三色
+  并置。**关键：NBT 颜色只在原版 `/particle` 路径生效**——模组的
+  parameter/normal/conditional 族完全不消费 NBT（取证 `src/sim/spawn.ts`：
+  `nbtVisuals` 只在 `execVanilla` 里被调用），用 mod 命令写 dust{color} 会静默变白。
+  **delta 三轴是高斯散布的标准差，不是半径**——写 2.6 会让粒子扩散到 30 格外，
+  1.0–1.4 才是紧凑的一团。`scale` 取值 0.01–4（构造器 Mth.clamp）。2700 粒 /
+  24ms、占格 2240。
+- **命令**（复制即用）：
+
+```
+/particle minecraft:dust{color:[0.15,0.7,1.0],scale:2.2} -4 0 0 1.0 1.4 1.0 0 900
+/particle minecraft:dust{color:[0.4,1.0,0.5],scale:2.2} 4 0 0 1.0 1.4 1.0 0 900
+/particle minecraft:dust{color:[1.0,0.55,0.15],scale:2.2} 0 0 0 1.0 1.4 1.0 0 900
+```
+
+### dustfire · 蓝转金渐变云（dust_color_transition 寿命渐变）
+
+- **标签**：`particle` `type{NBT}` `颜色`
+- **说明**：`dust_color_transition{from_color:[...],to_color:[...],scale:...}` 让
+  **每个粒子的渲染色随自身寿命进度从 from 线性插到 to**（`frac = age/(lifetime+1)`，
+  取证 `DustColorTransitionParticle.lerpColors`）。所以同一时刻场上不同年龄的粒子
+  呈现不同颜色——新生的偏蓝、将死的偏金，整团云内部是一张平滑的色彩梯度，播放时
+  整体从蓝缓慢烧成金色。**字段名必须用下划线**（`from_color`/`to_color`），写成
+  驼峰 `fromColor` 会被解析器以「缺字段」拒绝——这和其它 NBT 教程的写法不一致，
+  是最容易踩的坑。2500 粒、寿命 40 tick、渲染色种随 age 从 1 涨到 30。
+- **命令**（复制即用）：
+
+```
+/particle minecraft:dust_color_transition{from_color:[0.1,0.35,1.0],to_color:[1.0,0.92,0.3],scale:3.5} 0 0 0 1.3 1.3 1.3 0 2500
+```
+
+### dustshells · 三层渐变嵌套（尺寸差构成深度）
+
+- **标签**：`particle` `type{NBT}` `颜色`
+- **说明**：三条 dust_color_transition 同中心、只差 `scale` 与扩散半径：外层 scale 4.0
+  （粉紫→洋红）、中层 2.5（青→黄绿）、内层 1.2（金→红）。**尺寸差是深度线索**——
+  外圈粒子大、内圈粒子小，等距视角下自动分出前后层，比同尺寸多层叠放清楚得多。
+  配合各自的颜色对，共 6 种颜色在 3 个尺度上同时渐变，渲染层实测渲染色种从 3 涨到
+  67。3600 粒 / 15ms、占格 2446。
+- **命令**（复制即用）：
+
+```
+/particle minecraft:dust_color_transition{from_color:[0.5,0.1,1.0],to_color:[1.0,0.3,0.5],scale:4.0} 0 0 0 2.1 2.1 2.1 0 1200
+/particle minecraft:dust_color_transition{from_color:[0.1,0.8,1.0],to_color:[0.9,1.0,0.3],scale:2.5} 0 0 0 1.4 1.4 1.4 0 1200
+/particle minecraft:dust_color_transition{from_color:[1.0,0.85,0.2],to_color:[1.0,0.2,0.2],scale:1.2} 0 0 0 0.75 0.75 0.75 0 1200
 ```
 
 ## 待采纳候选（社区高频用法）

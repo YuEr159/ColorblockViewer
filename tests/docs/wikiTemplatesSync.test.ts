@@ -11,14 +11,14 @@ import { TEMPLATES } from '../../src/templates/library';
 
 const WIKI = resolve(process.cwd(), 'docs/wiki/templates.md');
 
-/** 从 wiki 的 ``` 代码块里抽出所有 /particleex 命令行 */
+/** 从 wiki 的 ``` 代码块里抽出所有模板命令行（particleex 模组命令与原版 /particle） */
 function wikiCommands(mdRaw: string): string[] {
   const md = mdRaw.replace(/\r\n/g, '\n'); // 仓库文件是 CRLF，先归一
   const out: string[] = [];
   for (const m of md.matchAll(/^```[a-z]*[ \t]*$\n([\s\S]*?)^```[ \t]*$/gm)) {
     for (const line of m[1].split('\n')) {
       const t = line.trim();
-      if (t.startsWith('/particleex')) out.push(t);
+      if (t.startsWith('/particleex') || t.startsWith('/particle ')) out.push(t);
     }
   }
   return out;
