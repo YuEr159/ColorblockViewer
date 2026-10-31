@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 105 条）
+## 已收录模板（当前 107 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1408,6 +1408,22 @@ Tonnetz（音网）是音乐理论里的另一种音高几何：**它把和声�
 /particle minecraft:trail{target:[0.0,0.0,0.0],duration:60,color:[0.9,1.0,0.4]} 0 0 0 2.5 0.6 2.5 0.001 800
 /particle minecraft:trail{target:[0.0,1.5,0.0],duration:80,color:[0.4,1.0,0.6]} 0 1.5 0 2.5 0.6 2.5 0.001 800
 /particle minecraft:trail{target:[0.0,3.0,0.0],duration:100,color:[0.4,0.7,1.0]} 0 3 0 2.5 0.6 2.5 0.001 800
+```
+
+### dualtone · 双通道颜色调制（色相随高度、饱和度随半径）
+
+把两个独立的空间量**分别接到颜色的两个独立自由度**上：高度 `h = k/(NL−1)` 控制**色相**（`cr=h·k2`, `cb=(1−h)·k2`，从蓝到红），半径 `s` 控制**饱和度**（`k2 = 0.4 + 0.6s`，轴上颜色灰暗、外圈饱和）。于是同一张螺旋面上同时编码了两个信息——**看颜色就能读出高度和半径**。这是 rgbaparameter 族的核心价值：**它有一个完整的颜色空间可以自由支配**，而普通 parameter 族只能用一个命令色。5000 粒 / 12ms、占格 1204、**渲染色种 173**（全库最多，普通的 hue 环只有 30–50 种）。改 `2*PI*3` 的 3 换螺旋圈数。
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 4999 'u=t;NL=50;P=100;k=floor(u/P);s=floorMod(u,P)/(P-1);hh=(k/(NL-1));r=0.4+s*2.6;th=s*2*PI*3;x=r*cos(th);z=r*sin(th);y=(k/(NL-1)-0.5)*4;cr=hh*(0.4+0.6*s);cg=1-abs(2*hh-1);cb=(1-hh)*(0.4+0.6*s);alpha=1' 1 200 'null' 1 null
+```
+
+### heathue · 距离场热力图球（颜色编码到热源的距离）
+
+球壳上每个点的颜色由**它到偏置热源 `(2,0,2)` 的距离**决定：`h = min(d/5, 1)` 走三段线性热图 `cr=h, cg=1−|2h−1|, cb=1−h`（蓝 → 绿 → 黄 → 红）。于是球面上现出一个**以 (2,0,2) 为「热点」的温度场**——靠近热点的区域是红黄、远离的是蓝色，而且因为热点不在球心，热图在球面上呈**偏心的一侧偏热**分布，而不是同心环。这是把「标量场」直接映射到颜色的标准做法（科学可视化的 colormap），也是 `rgbaparameter` 与普通 parameter 族最本质的能力差异。6000 粒 / 20ms、占格 1396。改分母 5 换热区范围，改热点坐标换偏置方向。
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 5999 'u=t;NL=60;P=100;k=floor(u/P);s=floorMod(u,P)/(P-1);eta=k/(NL-1)*PI-PI/2;phi=s*2*PI;x=3*cos(eta)*cos(phi);y=3*sin(eta);z=3*cos(eta)*sin(phi);d=sqrt((x-2)*(x-2)+y*y+(z-2)*(z-2));hh=min(d/5,1);cr=hh;cg=1-abs(2*hh-1);cb=1-hh;alpha=1' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
