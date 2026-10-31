@@ -559,7 +559,7 @@ export const TEMPLATES: Template[] = [
   {
     id: 'tkrings',
     name: '逐圈外扩的同心环（tickpolarparameter）',
-    desc: '用 **tickpolarparameter**：`dis` 随圈号 `n` 线性增长（`0.8 + 0.14n`），每 20 个点正好铺满一圈（`s1 = 2πs0`、`s2 = 0` 让所有点落在同一水平面）。播放时一圈圈同心圆从内向外依次出现，**像水面的涟漪一圈圈荡开**——但这里是「一次一圈、圆整地铺」而非连续扩散，节奏感比 `tkspiralband` 更强。1601 粒 / 5ms、占格 865。改 20 换每圈点数（越小圈越稀），改 0.14 换环间距。',
+    desc: '用 **tickpolarparameter**：`dis` 随圈号 `n` 线性增长（`0.8 + 0.14n`），每 20 个点正好铺满一圈（`s1 = 2πs0`、`s2 = 0` 让所有点落在同一水平面）。播放时一圈圈同心圆从内向外依次出现，**像水面上一圈圈荡开的波纹**——但这里是「一次一圈、圆整地铺」而非连续扩散，节奏感比 `tkspiralband` 更强。1601 粒 / 5ms、占格 865。改 20 换每圈点数（越小圈越稀），改 0.14 换环间距。',
     tags: ['tickpolarparameter', '表达式', '时间驱动'],
     cmds: [
       "/particleex tickpolarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1600 'u=t;n=floor(u/20);s0=floorMod(u,20)/20;s1=s0*2*PI;s2=0;dis=0.8+n*0.14' 1 20 500 'null' 1 null",
@@ -672,7 +672,7 @@ export const TEMPLATES: Template[] = [
     ],
   },
   {
-    id: 'velsplit',
+    id: 'updownsplit',
     name: '单命令条件分流（速度表达式内的比较）',
     desc: '**速度表达式里可以直接写比较运算**——`up=(y>0)` 得到 0 或 1，`vy=up·0.03` 就实现了「上半球上升、下半球不动」，效果与上一条的条件 group change 等价，但**只要一条命令**、不需要先铺再改。这是本库第一次把布尔比较塞进速度表达式：比较结果参与算术时直接当 0/1 用（`(y>0)*0.04` 与 `t2=(y>0);vy=t2*0.04` 两种写法等价，实测 y 跨度都是 7.31）。相比 group change 方案它更短、更实时（每 tick 都重判，粒子飞过 y=0 会自动换挡），但也因此**不能锁住初始分类**——想「一次分类、长期保持」还得用 group change。2500 粒 / 49ms、占格 1118。',
     tags: ['normal', '速度表达式', '条件动力学'],
@@ -689,6 +689,17 @@ export const TEMPLATES: Template[] = [
       "/particle minecraft:dust{color:[0.15,0.7,1.0],scale:2.2} -4 0 0 1.0 1.4 1.0 0 900",
       "/particle minecraft:dust{color:[0.4,1.0,0.5],scale:2.2} 4 0 0 1.0 1.4 1.0 0 900",
       "/particle minecraft:dust{color:[1.0,0.55,0.15],scale:2.2} 0 0 0 1.0 1.4 1.0 0 900",
+    ],
+  },
+  {
+    id: 'argbtrio',
+    name: 'ARGB 三色层（alpha 在首位的字段序陷阱）',
+    desc: '`entity_effect` / `tinted_leaves` / `flash` 这类粒子的 NBT `color` 是 **ARGB 序 `[a, r, g, b]`**，不是 RGB——**alpha 排第一位**。写 `[1.0,1.0,0.25,0.25]` 得到的是「不透明 + RGB(1.0,0.25,0.25)」的**红色**；若按 RGB 直觉写 `[1.0,0.25,0.25,1.0]` 会被解成 a=1.0、rgb=(0.25,0.25,1.0)，得到**蓝色**。这是它与 `dust` 的 `color:[r,g,b]` 最本质的区别（dust 是 3 分量 RGB，无 alpha）。三条命令竖直堆叠，实测渲染色分别是 (1.00,0.25,0.25)/(0.25,1.00,0.30)/(0.30,0.40,1.00)——**解码正确性可以直接用渲染色验证**。2100 粒 / 15ms、占格 1842。delta 的 y 轴收到 0.8 让每团压成扁盘。',
+    tags: ['particle', 'type{NBT}', 'ARGB'],
+    cmds: [
+      "/particle minecraft:entity_effect{color:[1.0,1.0,0.25,0.25]} 0 -5 0 1.4 0.8 1.4 0 700",
+      "/particle minecraft:tinted_leaves{color:[1.0,0.25,1.0,0.3]} 0 0 0 1.4 0.8 1.4 0 700",
+      "/particle minecraft:flash{color:[1.0,0.3,0.4,1.0]} 0 5 0 1.4 0.8 1.4 0 700",
     ],
   },
   {

@@ -83,9 +83,18 @@ describe('模板库：格式与解析（质量闸门）', () => {
         for (const m of c.expression.matchAll(/\(?\s*([xyz],\s*[xyz],\s*[xyz])\s*\)?\s*=/g)) {
           for (const f of m[1].split(',')) if (POS_FIELDS.has(f.trim())) written.add(f.trim());
         }
-        if (written.size === 0) continue; // 位置全省略 = 用上次残留，不判
+        // 矩阵元组解构 `(x,,y,,z)=M*(...)`：空位分隔、无逗号后缀，模式为
+        // `(名字 ,* , 名字 ,* , 名字)=`
+        for (const m of c.expression.matchAll(/\(\s*([a-zA-Z_][\w]*)\s*,+\s*([a-zA-Z_][\w]*)\s*,+\s*([a-zA-Z_][\w]*)\s*\)\s*=(?!=)/g)) {
+          for (const f of [m[1], m[2], m[3]]) if (POS_FIELDS.has(f)) written.add(f);
+        }
+        if (written.size === 0) continue; // 位置省略 = 用上次残留，不判
         const cart = written.has('x') || written.has('y') || written.has('z');
         const sph = written.has('s1') || written.has('s2') || written.has('dis');
+        // 同时写了 x/y/z 与 s1/s2/dis 时，球坐标多半只是中间变量（如矩阵模板
+        // matrixtrio 用 s1/s2 生成顶点再乘矩阵写入 x/y/z）→ 最终落点仍由
+        // x/y/z 承载，不判。
+        if (cart && sph) continue;
         if (c.polar) {
           expect(cart && !sph, `${t.id}: polar 族却写直角坐标 [${[...written]}]——`
             + 'polar 只读 s1/s2/dis，x/y/z 会被忽略（改用非 polar 族或改写成 s1/s2/dis）').toBe(false);
