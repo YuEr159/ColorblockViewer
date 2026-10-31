@@ -565,6 +565,54 @@ export const TEMPLATES: Template[] = [
       "/particleex rgbapolarparameter minecraft:end_rod 0 0 0 0 0 0 0 7999 'u=t;s2=0;s1=u*0.0047;dis=0.3+u*0.0009;cr=0.5+0.5*cos(u*0.03);cg=0.5+0.5*cos(u*0.03-2.0944);cb=0.5+0.5*cos(u*0.03+2.0944)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'groupcube',
+    name: '球壳后处理成立方体（group change 形变）',
+    desc: '先用 parameter 画一个标准球壳（100 层纬线 × 60 经线），再用 **group change parameter** 逐粒子改写坐标：`x=sgn(x)·|x|^0.4·1.2`（三轴同式）。指数 0.4 < 1 把「接近 0 的分量」抬起来、把大分量压下去——球面的平滑分布被推成**接近立方体的面包形**，六个面清晰可辨，棱角柔和。这正是 group change 的独特价值：**它能做「先铺满、再变形」的两阶段效果**，而 parameter 族必须一步到位写出目标形状。**注意 group 表达式的 `s1/s2` 是每粒子自身的球坐标（atan2 反解），不是命令参数**——用它做旋转会让整体塌缩成一条线（实测占格 102），要用 `atan2(z,x)` 现算。6000 粒 / 24ms、占格 616。改指数 0.4→0.2 更方、→0.7 更圆。',
+    tags: ['group change', '表达式', '后处理形变'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;s2=(u/60)/(100-1)*PI-0.5*PI;s1=floorMod(u,60)/60*2*PI;dis=3;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'x=signum(x)*pow(abs(x),0.4)*1.2;y=signum(y)*pow(abs(y),0.4)*1.2;z=signum(z)*pow(abs(z),0.4)*1.2'",
+    ],
+  },
+  {
+    id: 'groupfish',
+    name: '球壳起皱（group change 径向波纹）',
+    desc: '同一条球壳，group change 把每点的半径乘 `k=1+0.18·sin(7d)`（d=到原点距离）。球面变成**一层细密的起伏皱褶**，像鱼鳞或皱皮气球。要点是把倍数作用在 `x/y/z` 三轴而不是 `dis`——group 表达式里没有 `dis` 这个输入变量（只有 x/y/z/s1/s2/dis 中的 dis 是算出来的），直接改三轴是唯一稳妥写法。振幅 0.18 不能再大：超过 0.3 后相邻皱褶会互相穿插，视觉上糊成一团。6000 粒 / 32ms、占格 1797。改 `sin(7d)` 的频率换皱褶密度。',
+    tags: ['group change', '表达式', '后处理形变'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;s2=(u/60)/(100-1)*PI-0.5*PI;s1=floorMod(u,60)/60*2*PI;dis=3;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'd=sqrt(x*x+y*y+z*z);k=1+0.18*sin(d*7);x=x*k;y=y*k;z=z*k'",
+    ],
+  },
+  {
+    id: 'groupshear',
+    name: '球体斜切（group change 剪切变换）',
+    desc: '剪切变换：`x += 0.7y, z += 0.4y`——同一高度的点整体沿两个方向平移，球被**斜切成一个倾斜的椭球壳**，中段最宽、两端收窄，像被压扁的果冻。剪切矩阵行列式为 1，体积不变，所以粒子密度分布与原球一致（不出现拉伸稀疏）。这是线性代数里最朴素的一种「变形但不缩体积」的演示，也是 group change 里最容易一次写对的形变。**两条平移量不能相等**——相等就退化成沿 (1,1)/√2 方向的纯倾斜，立体感消失。6000 粒 / 23ms、占格 1609。',
+    tags: ['group change', '表达式', '后处理形变'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;s2=(u/60)/(100-1)*PI-0.5*PI;s1=floorMod(u,60)/60*2*PI;dis=3;x=dis*cos(s2)*cos(s1);y=dis*sin(s2);z=dis*cos(s2)*sin(s1)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'x=x+y*0.7;y=y;z=z+y*0.4'",
+    ],
+  },
+  {
+    id: 'orbitswarm',
+    name: '绕轴轨道群（速度表达式做动力学）',
+    desc: '用 **normal 族的速度表达式**做真正的动力学：每 tick 给每粒子算一次速度，`vx=-z/r·0.15, vz=x/r·0.15` 是**垂直于半径的切向速度**——于是每粒子都绕着 y 轴做近似圆轨道（半径由初始位置决定，永不衰减），同时 `vy=0.03` 缓慢上升形成螺旋上升的柱状轨道群。这是本库第一次用「速度场」而非「位置公式」生成形态：**形态是涌现的，不是写死的**。初始位置由 `范围 4 4 4` 的随机分布给出。3000 粒 / 94ms（每 tick 算 3000 次表达式，40 tick 后仍活跃）。改 0.15 换公转速度，改 vy 换上升速率。',
+    tags: ['normal', '速度表达式', '动力学'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 3000 2000 'r=sqrt(x*x+z*z)+0.001;vx=-z/r*0.15;vy=0.03;vz=x/r*0.15' 1 g1",
+    ],
+  },
+  {
+    id: 'torusflow',
+    name: '环面流场（切向公转 + 纵向波）',
+    desc: '速度场版「环面流」：切向速度 `(-z/r, x/r)·0.18` 让粒子绕 y 轴公转，纵向速度 `vy=0.08·sin(3θ)` 按方位角做正弦起伏——上行的粒子被压下来、下行的被抬上去，于是粒子群整体在**一个环面的管壁上流动**，并随时间演化出波浪状的密度脊线。**关键是 vy 依赖 θ 而不是 y**：依赖 y 只会得到整齐的上下分层，依赖 θ 才有沿环流动的波。3000 粒 / 146ms、占格 2951。改 `sin(3θ)` 的系数换波数，改 0.18 换流速。',
+    tags: ['normal', '速度表达式', '动力学'],
+    cmds: [
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 3000 2000 'rr=sqrt(x*x+z*z)+0.001;th=atan2(z,x);vx=-(z/rr)*0.18;vz=(x/rr)*0.18;vy=0.08*sin(th*3)' 1 g1",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
