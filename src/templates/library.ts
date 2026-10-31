@@ -473,6 +473,24 @@ export const TEMPLATES: Template[] = [
       "/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 63 'u=t;k=floor(u/0.05);v=floorMod(u,0.05)/0.05;th=k*0.05;ph=v*6.2832;x=(3+0.8*cos(ph))*cos(th);z=(3+0.8*cos(ph))*sin(th);y=0.8*sin(ph);hh=th/6.2832;cr=0.5+0.5*cos(hh*6.2832);cg=0.5+0.5*cos(hh*6.2832-2.0944);cb=0.5+0.5*cos(hh*6.2832+2.0944);alpha=1' 0.005 200 'null' 1 null",
     ],
   },
+  {
+    id: 'rose3d',
+    name: '3D 玫瑰螺旋（极坐标玫瑰绕轴上升）',
+    desc: '经典玫瑰线 r=|cos(kθ)|（k=5 出五瓣）绕 y 轴高速旋转 60 圈，同时缓慢上升——2D 玫瑰变成一条 3D 螺旋带。**关键是转速 60 远大于上升速率 0.05**：每转一圈只升 0.05·(2π/60)≈0.005 格，60 圈形成均匀的螺旋薄壳。俯视是完美的五瓣玫瑰，侧视是斜纹螺旋带，等距视角下立体感最强。6667 粒 / 14ms、占格 3377。改 k 换瓣数（k=3/4/6），改 60 换螺旋密度。',
+    tags: ['parameter', '表达式', '曲线 3D 化'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 100 'u=t;k=5;r=3*abs(cos(k*u));th=u*60;x=r*cos(th);z=r*sin(th);y=u*0.05-2.5' 0.015 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'rose3ddual',
+    name: '双层玫瑰（正反镜像对）',
+    desc: '同一条 3D 玫瑰螺旋，但 y 坐标乘一个 `sg=floorMod(u,2)*2−1` 的正负交替因子：奇数段向上、偶数段向下，于是同一条命令画出**上下镜像的两层**。侧视能看到两层中间夹着空隙，等距视角像一朵立体的花。与原版（`rose3d`）的差别只在 y 的那一个因子——一个 `*sg` 就把单层薄壳变成了双层对称结构，是本库最省的「对称化」写法。6667 粒 / 17ms、占格 2641。',
+    tags: ['parameter', '表达式', '曲线 3D 化'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 100 'u=t;k=5;r=3*abs(cos(k*u));th=u*60;sg=floorMod(u,2)*2-1;x=r*cos(th);z=r*sin(th);y=sg*(u*0.025-1.25)' 0.015 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
