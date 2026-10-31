@@ -910,6 +910,24 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NR=200;NL=20;k=floor(u/NL);s=floorMod(u,NL)/NL;a=k/(NR-1)*2*PI;t2=s*2*PI;R1=2.4;x=(R1+0.5*cos(3*a))*cos(2*a)+0.25*cos(t2);y=0.5*sin(3*a)+0.25*sin(t2);z=(R1+0.5*cos(3*a))*sin(2*a)+0.25*cos(t2+1.5708)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'pitchspiral',
+    name: '音高螺旋（音乐理论的 pitch helix）',
+    desc: '音乐理论里描述音高的经典几何：**音高轴的每一圈是一个八度**——绕一圈回到同名音（如 C 到 C），但升高了一个八度，所以螺旋整体向上。公式 `a = 八度号·2π + 半音/12·2π` 让 12 个半音均匀分布在一圈上，同名的 C 在相邻两圈的正上方对齐。半径随八度缓慢增大（`0.8 + 0.09·八度号`），侧视就成了一个**向上张开的锥形螺线**。这是把「音阶的循环性 + 音高的单调性」同时画出来的一条曲线，也是把乐理概念直接转成粒子形态的少用例。1152 粒 / 11ms、占格 273（细线）。改 0.20 换每八度升多少，改 0.09 换锥的张开速度。',
+    tags: ['parameter', '表达式', '音乐几何'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1151 'u=t;NO=48;NL=24;o=floor(u/NL);s=floorMod(u,NL)/NL;a=o*2*PI+s*2*PI/12;ang=s*2*PI;r=0.8+o*0.09+0.12*cos(ang);x=r*cos(a);z=r*sin(a);y=(o-24)*0.20+0.12*sin(ang)' 1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'tonnetz',
+    name: '音网 Tonnetz（六边形点阵 + 球节点）',
+    desc: 'Tonnetz（音网）是音乐理论里的另一种音高几何：**它把和声关系摆成一张二维三角网**——相邻格点代表纯五度、斜向代表大三度，在网上的移动对应和声进行。这条用三角格点阵实现（行距 = 列距×0.866 才是等边三角网，**行内每隔一行错位半格**），每个格点再撒 6 个点围成小球，让节点有实体感。4608 粒 / 12ms、占格 4226——是音高类模板里视觉密度最高的。改 `NB=6` 换球节点密度，改 0.6 换格距。',
+    tags: ['parameter', '表达式', '音乐几何'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4607 'u=t;NX=32;NZ=24;NB=6;k=floor(u/(NZ*NB));rem=floorMod(u,NZ*NB);j=floor(rem/NB);b=floorMod(rem,NB);fx=k-(NX-1)/2;fz=j-(NZ-1)/2;off=floorMod(j,2)*0.5;ba=b/NB*2*PI;x=fx*0.6+off*0.6+0.14*cos(ba);z=fz*0.6*0.866+0.14*sin(ba);y=0.14*cos(ba*2)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
