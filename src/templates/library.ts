@@ -758,6 +758,15 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 4.5 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;NL=80;P=48;k=floor(u/P);s0=floorMod(u,P)/(P-1);s2=k/(NL-1)*PI-PI/2;s1=s0*2*PI;R=3;px=R*cos(s2)*cos(s1);py=R*sin(s2);pz=R*cos(s2)*sin(s1);a=0.7854;c=cos(a);s=sin(a);(x,,y,,z)=(c,-s,0,,s,c,0,,0,0,1)*(px,,py,,pz)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'cospockets',
+    name: '三轴余弦等值面（对称嵌套泡）',
+    desc: '等值面 `cos(kx)·cos(ky)·cos(kz) = c` ——三个方向各取一次余弦再相乘。这个函数**沿每个坐标轴都是偶函数、且三轴等价**，所以等值面在八个卦限里完全对称，形成一组**嵌套的球状泡**：外层大泡、内层小泡，泡之间由细颈相连（系数 c=0.35 恰好切在「泡与颈的分界」附近，c 取 0 附近会连成整片网、取 ±0.9 附近只剩孤立的球）。与同库的 gyroid（sin 之和）对照：gyroid 是单一连通的极小曲面，这条是**离散的泡状等值面**，视觉上更「块」。6673 粒 / 60ms、占格 1837。改 1.2 换泡的个数，改 0.35 在「网」与「孤立球」之间过渡。',
+    tags: ['conditional', '表达式', '等值面'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.2 3.2 3.2 'abs(cos(1.2*x)*cos(1.2*y)*cos(1.2*z)-0.35)<0.07' 0.14 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
