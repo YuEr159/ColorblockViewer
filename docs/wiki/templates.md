@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 100 条）
+## 已收录模板（当前 101 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1360,6 +1360,14 @@ Tonnetz（音网）是音乐理论里的另一种音高几何：**它把和声�
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NR=50;NL=80;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);d=0.4+k/(NR-1)*2.6;th=s*2*PI;c1=0.9;c2=-0.9;x=c1+d*cos(th);z=d*sin(th);p1=atan2(z-d, x+c1);p2=atan2(z+d, x-c2);y=0.6*(p1-p2)' 1 200 'null' 1 null
+```
+
+### menger · 门格海绵两级递归（分形实体）
+
+门格海绵：把一个立方体分成 3³ 个小块、**挖掉中心块和六个面心块**（保留 20 个角/棱块），然后对每个保留的小块递归重复。判定式写成「三个轴向坐标里有几个落在中带 `floorMod(n,3)==1`」——**中带数 ≤ 1 才保留**（=1 是棱块、=0 是角块），中带数 ≥ 2 的（面心块和中心块）全部挖掉。这条做了**两级递归**：第一级在 9×9×9 的大网格上、第二级在每个 3×3×3 单元内部再分 3 层，用同一个 `floorMod(...,3)==1` 判据。8789 粒 / 23ms、占格 4736。改 `0.7` 换单元尺度，删掉第二级的 `ok2` 就退化成一级海绵（3872 粒、占格 3872）。
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'a=floor((x+3)/0.7);b=floor((y+3)/0.7);c=floor((z+3)/0.7);a0=floor(a/3);b0=floor(b/3);c0=floor(c/3);ai=floorMod(a0,3)==1;bi=floorMod(b0,3)==1;ci=floorMod(c0,3)==1;cnt=ai+bi+ci;ok1=cnt<=1;ar=floorMod(a,3)==1;br=floorMod(b,3)==1;cr=floorMod(c,3)==1;cnt2=ar+br+cr;ok2=cnt2<=1;ok1*ok2==1' 0.25 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
