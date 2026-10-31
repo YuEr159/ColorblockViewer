@@ -1002,6 +1002,32 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4899 'u=t;NL=70;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);a=k-(NL-1)/2;b=floor(s*70)-(NL-1)/2;n2=a*a+b*b;m=floorMod(n2,11);x=a*0.19;z=b*0.19;y=(m/10-0.5)*2.4' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'sizespectrum',
+    name: 'dust 尺度谱（scale 0.1 → 4.0 五级）',
+    desc: '`dust{color,scale}` 的 `scale` 是**唯一直接控制单个粒子视觉尺寸的参数**（构造器 Mth.clamp 到 0.01–4.0）。五条命令排成一列，scale 取 0.1 / 0.4 / 1.0 / 2.0 / 4.0，渲染色由红到蓝标示档位。**实测渲染尺寸从 0.9 到 36.0（40 倍）**——注意这不是线性：`scale` 同时参与贴图缩放和 alpha 衰减，小 scale 的点在远处几乎不可见、4.0 的大点会盖住整片画面。同一条命令里改 `scale` 就能做「远近层次」或「大小渐变」的视觉分组，不需要多命令。1000 粒 / 4ms、占格 518。改 4.0 换上限（超过会被 clamp 到 4）。',
+    tags: ['particle', 'type{NBT}', '视觉参数'],
+    cmds: [
+      "/particle minecraft:dust{color:[1.0,0.3,0.3],scale:0.1} -3 0 0 0.4 0.4 0.4 0 200",
+      "/particle minecraft:dust{color:[1.0,0.6,0.3],scale:0.4} -1.5 0 0 0.4 0.4 0.4 0 200",
+      "/particle minecraft:dust{color:[0.9,1.0,0.4],scale:1.0} 0 0 0 0.4 0.4 0.4 0 200",
+      "/particle minecraft:dust{color:[0.4,1.0,0.6],scale:2.0} 1.5 0 0 0.4 0.4 0.4 0 200",
+      "/particle minecraft:dust{color:[0.4,0.7,1.0],scale:4.0} 3 0 0 0.4 0.4 0.4 0 200",
+    ],
+  },
+  {
+    id: 'lifespectrum',
+    name: 'trail 寿命谱（duration 决定飞行时长与寿命）',
+    desc: '五条 `trail{target,duration,color}` 命令，**共用同一出生散布、只改 duration（20/40/60/80/100）**。trail 的 duration 同时决定两件事：**粒子活多少 tick** 和 **用多少 tick 飞到 target**——所以 duration 短的粒子飞得快、早死，duration 长的飞得慢、活得久。五层在竖直方向排开，播放时能看到**从下往上逐层消散**：tick 15 时五层都在（4000 粒），tick 35 只剩四层（3200 粒），tick 60 只剩最上面两层（1600 粒）。与库里 `lifesync` 的区别：那条用 `age` 槽做绝对寿命阶梯（三球壳），这条用 trail 的 duration **同时控制寿命和飞行速度**，且都能在同一条命令族里换档。4000 粒 / 17ms、占格 3683。',
+    tags: ['particle', 'type{NBT}', '时间节奏'],
+    cmds: [
+      "/particle minecraft:trail{target:[0.0,-3.0,0.0],duration:20,color:[1.0,0.3,0.3]} 0 -3 0 2.5 0.6 2.5 0.001 800",
+      "/particle minecraft:trail{target:[0.0,-1.5,0.0],duration:40,color:[1.0,0.7,0.3]} 0 -1.5 0 2.5 0.6 2.5 0.001 800",
+      "/particle minecraft:trail{target:[0.0,0.0,0.0],duration:60,color:[0.9,1.0,0.4]} 0 0 0 2.5 0.6 2.5 0.001 800",
+      "/particle minecraft:trail{target:[0.0,1.5,0.0],duration:80,color:[0.4,1.0,0.6]} 0 1.5 0 2.5 0.6 2.5 0.001 800",
+      "/particle minecraft:trail{target:[0.0,3.0,0.0],duration:100,color:[0.4,0.7,1.0]} 0 3 0 2.5 0.6 2.5 0.001 800",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
