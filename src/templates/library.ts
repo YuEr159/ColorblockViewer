@@ -529,6 +529,42 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 19999 'u=t;N=200;R2=100;k=floor(u/N);s=floorMod(u,N)/N;n=0.6;RR=3;aa=1.2;ug=k/R2*2*PI;vv=s*2*PI;cv=cos(vv);sv=sin(vv);r=RR+aa*signum(cv)*pow(abs(cv),n);x=r*cos(ug);y=r*sin(ug);z=aa*signum(sv)*pow(abs(sv),n)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'stereosphere',
+    name: '球极投影网格球（正交网格贴在球面）',
+    desc: '球极投影之逆：把平面上的**正交网格**（u 族竖线 × v 族横线）映回球面。写法是逆变换 `(X,Y) → (2X/(1+r²), 2Y/(1+r²), (r²−1)/(1+r²))`——平面上的无穷远点映到北极，原点映到南极，所以**网格在北极处被压得极密、在南极处被拉得极疏**（这正是球极投影保角的代价，也是它视觉上最有辨识度的地方）。俯视看是一张规整的经纬网球；等距视角能看到极点附近的密集堆积。**采样用两层索引**：`k=floor(u/P)` 选第几条线，`s=floorMod(u,P)/(P-1)` 取线上位置。7320 粒 / 22ms、占格 700。改 `2.5` 换球半径，改 NL/P 换网格疏密。',
+    tags: ['parameter', '表达式', '球面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7319 'u=t;NL=61;P=120;k=floor(u/P);s=floorMod(u,P)/(P-1);a=2*k/(NL-1)-1;b=2*s-1;X=a;Y=b;rr=X*X+Y*Y;den=1+rr;x=2*X/den*2.5;y=2*Y/den*2.5;z=(rr-1)/den*2.5' 1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'tickgrow',
+    name: '随时间画出的螺旋（tickparameter 逐帧生长）',
+    desc: '用 **tickparameter** 族：命令注册后不是一次性生成全部粒子，而是**每个游戏 tick 吐 `cpt` 个点**，t 按 step 递进——于是曲线是「随时间一笔画出来」的。这条画的是半径 3 的圆螺旋（`th=u*0.02` 每 tick 转一点、`y=u*0.002` 缓慢上升），20 个点/tick 持续 150 tick，最终 2961 粒。播放时能看到螺旋一圈圈长出来的动态过程，这是 parameter 族做不到的（后者是瞬时全部生成）。**命令槽位与众不同**：`<begin> <end> <表达式> <step> <cpt>`，注意此处 **cpt 在 age 之前**（非 tick 族没有 cpt 槽）。2961 粒 / 14ms、占格 657、跨度 10.3。',
+    tags: ['tickparameter', '表达式', '时间驱动'],
+    cmds: [
+      "/particleex tickparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3000 'u=t;th=u*0.02;r=3;x=r*cos(th);z=r*sin(th);y=u*0.002' 1 20 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'tickpulse',
+    name: '阶梯扩散脉冲环（tickparameter）',
+    desc: '同样是 tickparameter，但半径按 `r=1+floor(u/100)*0.25` **阶梯式跳变**：每 100 个采样点（5 个 tick）半径跳 0.25 格，于是每帧画面是一圈固定半径的圆，跳变瞬间同时存在两圈——形成同心环逐层向外扩散的脉冲感。俯视能看到从内到外的多层圆环。**阶梯与 tick 节拍要对齐**：一圈 100 点 = 5 tick（cpt=25），改 cpt 要同步改阶梯长度，否则阶梯与圆环错位成斜纹。2951 粒 / 16ms、占格 1066、跨度 22.8。',
+    tags: ['tickparameter', '表达式', '时间驱动'],
+    cmds: [
+      "/particleex tickparameter minecraft:end_rod 0 0 0 1 0.9 0.5 1 0 0 0 0 3000 'u=t;th=u*0.02;r=1+floor(u/100)*0.25;x=r*cos(th);z=r*sin(th);y=0' 1 25 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'rgbaspiral',
+    name: '彩虹阿基米德螺线（rgbapolarparameter 颜色表达式）',
+    desc: '用 **rgbapolarparameter** 族：它**没有颜色槽**，颜色完全由表达式里的 `cr/cg/cb` 给出——这是本库唯一直写颜色字段的模板。画 6 圈阿基米德螺线（`s1=u*0.0047` 方位角、`dis=0.3+u*0.0009` 半径同步线性增长），同时 `cr/cg/cb = 0.5+0.5*cos(φ) / cos(φ−2π/3) / cos(φ+2π/3)` 让颜色沿径向绕色相环一圈——于是同一条螺线上能同时看到 577 种颜色，从内到外是彩虹渐变。**注意 polar 族只读 `s1/s2/dis`**：写 `x/y/z` 会静默失效（全落原点）。8000 粒 / 22ms、占格 631、跨度 20.0。改 `0.0047` 换圈数，改 `0.0009` 换圈间距。',
+    tags: ['rgbapolarparameter', '表达式', '颜色'],
+    cmds: [
+      "/particleex rgbapolarparameter minecraft:end_rod 0 0 0 0 0 0 0 7999 'u=t;s2=0;s1=u*0.0047;dis=0.3+u*0.0009;cr=0.5+0.5*cos(u*0.03);cg=0.5+0.5*cos(u*0.03-2.0944);cb=0.5+0.5*cos(u*0.03+2.0944)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
