@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 80 条）
+## 已收录模板（当前 82 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1191,6 +1191,22 @@
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;P=40;k=floor(u/P);s0=floorMod(u,P)/(P-1);y0=(k/(NL-1)-0.5)*6;tw=cbrt(y0*2);r=2.4+0.55*sin(tw*4);x=r*cos(s0*2*PI+tw*3);z=r*sin(s0*2*PI+tw*3);y=y0' 1 200 'null' 1 null
 ```
 
+
+### hypertorus · 4D 超环面（穿在四维空间里的甜甜圈）
+
+先用两个独立角 `a`（绕主轴）和 `b`（绕副轴）搭出标准 3D 环面，再把副轴上的圆抬进第四维 `w = 0.9·R2·sin(b)`，随后在 x-w 平面旋转 1.3a 角、最后做透视 `sc = 2.6/(2.6+w)` 投影回三维。这样内外表面会**互相穿过**——近处（w 大）的段被透视放大、远处被缩小，出现普通 3D 环面绝不可能有的「管壁自交」层次感。4000 粒 / 16ms、占格 2013。改 1.3 换 x-w 旋转速度（越大缠绕越紧），改 0.9 换抬升幅度（0 退化为普通环面）。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NL=80;P=50;i=floor(u/P);j=floorMod(u,P);a=i/(NL-1)*2*PI;b=j/(P-1)*2*PI;R1=3;R2=1.1;px=(R1+R2*cos(b))*cos(a);py=R2*sin(b);pz=(R1+R2*cos(b))*sin(a);w=R2*sin(b)*0.9;ca=cos(a*1.3);sa=sin(a*1.3);xr=px*ca-pz*sa;zr=px*sa+pz*ca;sc=2.6/(2.6+w);x=xr*sc;y=py*sc;z=zr*sc' 1 200 'null' 1 null
+```
+
+### superquad · 超二次曲面（指数控制形状的星形环）
+
+超二次曲面的两条指数 `e1`（纬度方向）与 `e2`（经度方向）分别控制两个方向的「方/圆」程度：`e = 1` 是圆，`e < 1` 趋方，`e > 1` 趋尖。用 `signum(u)·|u|^e` 保留符号地做幂运算（直接 `pow` 遇负数会 NaN）。这条取 `e1 = 0.35`（纬度趋方、赤道处形成平直带）、`e2 = 1.7`（经度趋尖、周向形成尖脊），得到一个**带棱的星形环**，看上去像 8 个尖角向外顶出的实体环。2000 粒 / 9ms、占格 784。改 `e1=e2=0.4` 得圆角立方、改 `e1=1.6;e2=0.5` 得双锥（同一公式整条形态谱）。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NL=50;P=40;k=floor(u/P);s0=floorMod(u,P)/(P-1);e1=0.35;e2=1.7;ct=cos(k/(NL-1)*PI-PI/2);st=sin(k/(NL-1)*PI-PI/2);cp=cos(s0*2*PI);sp=sin(s0*2*PI);x=3*signum(ct)*pow(abs(ct),e1)*signum(cp)*pow(abs(cp),e2);y=3*signum(st)*pow(abs(st),e1);z=3*signum(ct)*pow(abs(ct),e1)*signum(sp)*pow(abs(sp),e2)' 1 200 'null' 1 null
+```
 
 ## 待采纳候选（社区高频用法）
 
