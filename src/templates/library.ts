@@ -491,6 +491,44 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 100 'u=t;k=5;r=3*abs(cos(k*u));th=u*60;sg=floorMod(u,2)*2-1;x=r*cos(th);z=r*sin(th);y=sg*(u*0.025-1.25)' 0.015 200 'null' 1 null",
     ],
   },
+  {
+    id: 'dnahelix',
+    name: 'DNA 双螺旋（主链双色的完整模型）',
+    desc: '三条命令拼出一条完整的 DNA：两条主链各 40 圈螺旋（y 从 −4 到 4，半径 1.5），相位差 π 让它们处于直径两端；第三条画 26 根横档，把两条链在同一高度连起来。**横档是这里唯一的难点**——它需要「同一 y、两端各落在两条链上」，写法是先把 t 归一化成 0..1，`k=floor(u*N)` 取横档编号、`s=floorMod(u*N,1)` 取档内位置，角度 `th=40πk/N` 只由编号决定（同一根档上的所有点角度相同），再用 `(2s−1)` 从 −1 线性拉到 +1，于是每个点都落在这根档的连线上。俯视是标准圆环（双链在直径两端 + 径向横档），等距视角是清晰的螺旋柱。21201 粒 / 60ms、占格 1525。改 `40*PI` 换圈数，改 N 换横档数，改 1.5 换半径。',
+    tags: ['parameter', '表达式', '多命令组合'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 0.2 0.6 1 1 0 0 0 0 40 'u=t/40;th=u*40*PI;r=1.5;x=r*cos(th);z=r*sin(th);y=u*8-4' 0.005 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.35 0.3 1 0 0 0 0 40 'u=t/40;th=u*40*PI+PI;r=1.5;x=r*cos(th);z=r*sin(th);y=u*8-4' 0.005 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 0.9 0.9 1 1 0 0 0 0 26 'u=t/26;N=26;k=floor(u*N);s=floorMod(u*N,1);th=40*PI*k/N;x=1.5*cos(th)*(2*s-1);z=1.5*sin(th)*(2*s-1);y=8*k/N-4' 0.005 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'helicoid',
+    name: '螺旋面（极小曲面的经典代表）',
+    desc: 'Helicoid：`(v·cos u, v·sin u, c·u)`——一条水平直线一边绕轴旋转一边匀速上升，扫出的曲面。它与悬链面（本库 `catenoid`）是同一张曲面在等距变形下的两端，是极小曲面里最基础的一对。采样用**两层索引**：`k=floor(u/N)` 选螺旋的第几圈（共 40 圈），`s` 在圈内取角度；半径 v 由 k 决定，所以每一圈是一条半径固定的水平线——这正是它的生成方式。按 45° 侧滚看最像螺旋楼梯；等距视角下能看到半透明的层叠丝带。24000 粒 / 27ms、占格 1002。把 `0.6` 调大让螺距更大（看起来更「转得开」）。',
+    tags: ['parameter', '表达式', '极小曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 23999 'u=t;N=600;R2=40;k=floor(u/N);s=floorMod(u,N)/N;ug=s*4*PI;v=k/R2*4-2;x=v*cos(ug);y=v*sin(ug);z=0.6*ug-3.8' 1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'dini',
+    name: 'Dini 螺旋面（常平均曲率的扭曲喇叭）',
+    desc: 'Dini 曲面：`z = a·(cos v + ln tan(v/2)) + b·u`，x/y 是半径为 `a·sin v` 的圆。它是**常平均曲率曲面**（不同于极小曲面），形状像一只被拧过的喇叭筒——下部敞开成漏斗、上部收成螺旋尖。v 取 0.35..π−0.35 避开 `log(tan(0))` 的奇点，u 扫 4π 让上下端各拧两圈。**采样分层**：k 决定 v（40 层），s 在层内扫 u。等距视角呈现典型的「螺旋楼梯筒」轮廓。24000 粒 / 57ms、占格 927。改 `b` 调扭转强度（b 越大越像拧毛巾）。',
+    tags: ['parameter', '表达式', '极小曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 23999 'u=t;N=600;R2=40;k=floor(u/N);s=floorMod(u,N)/N;ug=s*4*PI;vv=0.35+(PI-0.7)*k/R2;a=2;b=0.25;x=a*cos(ug)*sin(vv);y=a*sin(ug)*sin(vv);z=a*(cos(vv)+log(tan(vv/2)))+b*ug' 1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'supertoroid',
+    name: '超环面（|cos|^n 控制环管截面）',
+    desc: '环面的超椭圆推广：把截面半径换成 `R + a·sign(cos v)·|cos v|^n`、高度换成 `a·sign(sin v)·|sin v|^n`。n=1 是标准环面（圆管），n→0 时截面趋近方管（像一个带孔的立方块），n<1 出「胖方环」，n>1 出「瘦星环」。**这里必须用 `signum(x)*pow(abs(x),n)`**——直接 `x^n` 对负底数返回 NaN（JDK Math.pow 语义）。与本库 `superellipsoid`（2D 超椭圆旋转）互补：那个改的是轮廓，这个改的是环管截面。20000 粒 / 26ms、占格 2016。俯视是一个带方角特征的圆环带，截面形状一眼可辨。',
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 19999 'u=t;N=200;R2=100;k=floor(u/N);s=floorMod(u,N)/N;n=0.6;RR=3;aa=1.2;ug=k/R2*2*PI;vv=s*2*PI;cv=cos(vv);sv=sin(vv);r=RR+aa*signum(cv)*pow(abs(cv),n);x=r*cos(ug);y=r*sin(ug);z=aa*signum(sv)*pow(abs(sv),n)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
