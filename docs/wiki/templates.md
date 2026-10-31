@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 96 条）
+## 已收录模板（当前 98 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1328,6 +1328,22 @@ Tonnetz（音网）是音乐理论里的另一种音高几何：**它把和声�
 /particleex parameter minecraft:end_rod -5 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;N=2000;NL=40;P2=50;k=floor(u/P2);p=floorMod(u,P2)/(P2-1);la=k/(NL-1)*PI-PI/2;lo=p*2*PI;cx=cos(la)*cos(lo);cy=sin(la);cz=cos(la)*sin(lo);a=abs(cx);b=abs(cy);c=abs(cz);n1=a+b+c;ninf=max(max(a,b),c);r=3/(0.35*n1+0.65*ninf);x=cx*r;y=cy*r;z=cz*r' 1 200 'null' 1 null
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;N=2000;NL=40;P2=50;k=floor(u/P2);p=floorMod(u,P2)/(P2-1);la=k/(NL-1)*PI-PI/2;lo=p*2*PI;cx=cos(la)*cos(lo);cy=sin(la);cz=cos(la)*sin(lo);a=abs(cx);b=abs(cy);c=abs(cz);n1=a+b+c;ninf=max(max(a,b),c);r=3/(0.5*n1+0.5*ninf);x=cx*r;y=cy*r;z=cz*r' 1 200 'null' 1 null
 /particleex parameter minecraft:end_rod 5 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;N=2000;NL=40;P2=50;k=floor(u/P2);p=floorMod(u,P2)/(P2-1);la=k/(NL-1)*PI-PI/2;lo=p*2*PI;cx=cos(la)*cos(lo);cy=sin(la);cz=cos(la)*sin(lo);a=abs(cx);b=abs(cy);c=abs(cz);n1=a+b+c;ninf=max(max(a,b),c);r=3/(0.75*n1+0.25*ninf);x=cx*r;y=cy*r;z=cz*r' 1 200 'null' 1 null
+```
+
+### paraboloid · 旋转抛物面（开口朝上的碗）
+
+`y = 0.28·r² − 2.4`，`r` 从 0 到 3.2——一个**开口朝上、底面平滑的旋转抛物面**。与库里已有的椭球/超环面不同，抛物面是**唯一一个「曲率沿半径均匀变化」的曲面**：顶点处曲率最大、边缘趋于平坦，所以碗底反光最集中、边缘散开。这也正是卫星天线和车灯反射面的几何形状（平行光从焦点射出会变成平行光）。60×60 网格、3600 粒 / 12ms、占格 734。改 0.28 换碗的深浅（越大越深越陡），改 −2.4 换整体高度。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NR=60;NL=60;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);rr=k/(NR-1)*3.2;th=s*2*PI;x=rr*cos(th);z=rr*sin(th);y=rr*rr*0.28-2.4' 1 200 'null' 1 null
+```
+
+### saddle · 双曲抛物面（马鞍形）
+
+`y = 0.16·(x² − z²)`——沿 x 方向向上弯、沿 z 方向向下弯，是一个**马鞍**。这是唯一同时具备**正负两种曲率**的二次曲面：从中心任一点出发，一个方向是「谷」、垂直方向是「脊」，所以从上方看是交叉的双曲线，从侧面看是两条反向抛物线。鞍点（原点）处两个主曲率大小相等、符号相反（高斯曲率为负），这也是它区别于抛物面（处处正曲率）的本质。60×60 网格、3600 粒 / 8ms、占格 682。改 0.16 换鞍的陡峭程度。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NR=60;NL=60;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);xx=(k/(NR-1)-0.5)*6;zz=(s-0.5)*6;x=xx;z=zz;y=(xx*xx-zz*zz)*0.16' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
