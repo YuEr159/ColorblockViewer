@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 128 条）
+## 已收录模板（当前 129 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1678,6 +1678,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex rgbaparameter minecraft:end_rod 7 0 0 0 0 0 0 1599 'u=t;N=40;kk=floor(u/N);j=floorMod(u,N);th=j/(N-1)*2.0*PI;ph=kk/(N-1)*PI;ss=sin(ph);x=ss*cos(th)*2.5;z=ss*sin(th)*2.5;y=cos(ph)*2.5;hh=th/(2.0*PI);hv=hh*6.0;cr=max(0.0,min(1.0,abs(hv-3.0)-1.0));cg=max(0.0,min(1.0,2.0-abs(hv-2.0)));cb=max(0.0,min(1.0,2.0-abs(hv-4.0)))' 1 200 'null' 1 null
+```
+
+### associate · 螺旋面 ⇄ 悬链面关联族（极小曲面连续形变）
+
+**螺旋面与悬链面是同一族曲面里的两个成员**——把两者的参数式做线性组合 `cos t · helicoid + sin t · catenoid`，让 t 从 0 走到 π/2，螺旋面就会连续弯折成悬链面。这不是插值动画的花招，而是极小曲面理论里的 **associated family（伴随族）**：族里每一个成员的平均曲率都恒为零，**弯曲过程中曲面始终是极小曲面**，这正是肥皂膜在两个边界条件下的两种稳定形态。三条：左 t=0（螺旋面，甲板状螺旋楼梯）、中 t=π/4（中间过渡态，最奇特的样子——螺旋与悬链的混合）、右 t=π/2（悬链面，两环之间的最小面积肥皂膜）。三条各 2400 粒 / 共 7200 粒 31ms、占格 1296。改 t 扫过整族；改 1.4 换螺旋的圈数（越大转越多圈）。
+
+标签：`parameter` `表达式` `极小曲面`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;NRv=40;kk=floor(u/NL);s=floorMod(u,NL)/(NL-1);uu=(kk/(NRv-1)*2.0-1.0)*1.4;vv=s*2.0*PI;ct=cos(0);st=sin(0);hx=uu*cos(vv);hy=uu*sin(vv);hz=vv;cx=cosh(uu)*cos(vv);cy=uu;cz=cosh(uu)*sin(vv);x=ct*hx+st*cx;y=ct*hz+st*cy;z=ct*hy+st*cz' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;NRv=40;kk=floor(u/NL);s=floorMod(u,NL)/(NL-1);uu=(kk/(NRv-1)*2.0-1.0)*1.4;vv=s*2.0*PI;ct=cos(0.7854);st=sin(0.7854);hx=uu*cos(vv);hy=uu*sin(vv);hz=vv;cx=cosh(uu)*cos(vv);cy=uu;cz=cosh(uu)*sin(vv);x=ct*hx+st*cx;y=ct*hz+st*cy;z=ct*hy+st*cz' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;NRv=40;kk=floor(u/NL);s=floorMod(u,NL)/(NL-1);uu=(kk/(NRv-1)*2.0-1.0)*1.4;vv=s*2.0*PI;ct=cos(1.5708);st=sin(1.5708);hx=uu*cos(vv);hy=uu*sin(vv);hz=vv;cx=cosh(uu)*cos(vv);cy=uu;cz=cosh(uu)*sin(vv);x=ct*hx+st*cx;y=ct*hz+st*cy;z=ct*hy+st*cz' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
