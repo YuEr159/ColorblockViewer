@@ -1100,6 +1100,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NR=50;NL=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);r=0.2+k/(NR-1)*2.8;th=(s-0.5)*2*PI*2.5;x=r*cos(th);z=r*sin(th);y=th*0.75' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'wavetrio',
+    name: '三层波次退场（同心环依次消失）',
+    desc: '三条 `conditional` 命令各画一个同心环，**只改两个数字**：环半径（1.5 / 2.2 / 2.9）和命令末尾的 `age` 槽（60 / 120 / 180）。`age` 是**绝对寿命**——内环的粒子从出生起只活 60 tick，中环 120、外环 180。于是播放时**从内到外逐圈消失**：tick 0 三环都在（2660 粒）、tick 70 内环已死只剩两环（2072 粒）、tick 130 只剩外环（1260 粒）、tick 190 全空。**这是唯一只靠寿命就能做出「波」的手法**——不改位置、不改速度，纯靠死亡节奏。与 `lifesync` 的区别：那条是三层球壳（径向套嵌），这条是同一平面上的三个同心环（共面并列），视觉上更像水波一圈圈荡开。改 60/120/180 的间隔换节奏快慢。',
+    tags: ['conditional', '表达式', '时间节奏'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2 2 2 'r=sqrt(x*x+z*z);abs(r-1.5)<0.2' 0.3 60 null 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 2 3 'r=sqrt(x*x+z*z);abs(r-2.2)<0.2' 0.3 120 null 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 2 3.6 'r=sqrt(x*x+z*z);abs(r-2.9)<0.2' 0.3 180 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
