@@ -1046,6 +1046,15 @@ export const TEMPLATES: Template[] = [
       "/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 5999 'u=t;NL=60;P=100;k=floor(u/P);s=floorMod(u,P)/(P-1);eta=k/(NL-1)*PI-PI/2;phi=s*2*PI;x=3*cos(eta)*cos(phi);y=3*sin(eta);z=3*cos(eta)*sin(phi);d=sqrt((x-2)*(x-2)+y*y+(z-2)*(z-2));hh=min(d/5,1);cr=hh;cg=1-abs(2*hh-1);cb=1-hh;alpha=1' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'cliffordtorus',
+    name: 'Clifford 环面（4D 平坦环面的投影）',
+    desc: 'Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参数化写成 `x4=cosα, y4=sinα, z4=0.7cosβ, w4=0.7sinβ`——两个圆各自独立绕自己的平面转，**四维里它没有曲率**（高斯曲率处处为 0），这和高维里的普通环面完全不同。投影到三维时 `w4` 只负责透视缩放 `sc=2.6/(2.8+w4)`，于是四维里「两个圆」的规整结构在三维变成**两层嵌套的环带**（正视看是同心环、等距看是内外两圈）。这是库里除 `hypertorus`（4D 环面）之外的第二个四维曲面——区别在于 `hypertorus` 的 `w` 来自副圆的正弦（有曲率），`cliffordtorus` 的 `w` 来自第二个圆本身（平坦）。4800 粒 / 12ms、占格 2330。改 0.7 换第二个圆的半径（1.0 时两圆等大、退化成更对称的形状）。',
+    tags: ['parameter', '表达式', '4D 投影'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NU=80;NV=60;k=floor(u/NV);s=floorMod(u,NV)/(NV-1);a=k/(NU-1)*2*PI;b=s*2*PI;x4=cos(a);y4=sin(a);z4=cos(b)*0.7;w4=sin(b)*0.7;sc=2.6/(2.8+w4);x=x4*3.2*sc;y=y4*3.2*sc;z=z4*3.2*sc' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
