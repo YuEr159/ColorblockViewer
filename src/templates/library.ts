@@ -1275,6 +1275,15 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 2 0 0 1 0.95 0.89 1 0 0 0 0 2999 'u=t;NZ=30;NXv=100;kk=floor(u/NZ);s=floorMod(u,NZ)/(NZ-1);xx=(kk/(NXv-1));amp=sin(6*PI*xx);x=(xx-0.5)*11.0;y=amp*1.3;z=(s-0.5)*2.4+0.8' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'cantordust',
+    name: 'Cantor 尘（三轴同时挖中段的三维分形）',
+    desc: '把立方体每边三等分、挖掉中间那一段——**三个轴同时挖，做三级**，剩下的就是 Cantor 尘。判据只有一行：**该坐标的三进制表示里，每一位都不能是 1**。三级就是 \`floorMod(floor(p·27),3)\`、\`(p·9)\`、\`(p·3)\` 三次取位，全不等于 1 才保留。这样得到的是一个**维度为 log2/log3 ≈ 0.631 的三维尘埃**：它的体积为零（Lebesgue 测度是 0），却又不比一个点——**比线更稀、比点更密**，是「分数维」最纯粹的例子。观感上是一堆立方体的八个角反复复制：每个大立方体的八个角各有一个小立方体，小立方体的八个角又各有一个更小的。10648 粒 / 166ms、占格 1728（**代价主要来自三轴 12 次 floorMod，不是粒子数**）。改 0.07 换步长（决定能否分辨最小的块），改三级为两级就变成 8×8×8 的稀疏角阵。⚠️ 范围 5³ 配 0.07 步长要扫描 12.7 万个点，预览约 0.17 秒，游戏内同理。',
+    tags: ['conditional', '表达式', '分形'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2.5 2.5 2.5 'px=(x+2.5)/5;py=(y+2.5)/5;pz=(z+2.5)/5;x1=floorMod(floor(px*27.0),3);x2=floorMod(floor(px*9.0),3);x3=floorMod(floor(px*3.0),3);y1=floorMod(floor(py*27.0),3);y2=floorMod(floor(py*9.0),3);y3=floorMod(floor(py*3.0),3);z1=floorMod(floor(pz*27.0),3);z2=floorMod(floor(pz*9.0),3);z3=floorMod(floor(pz*3.0),3);x1!=1 & x2!=1 & x3!=1 & y1!=1 & y2!=1 & y3!=1 & z1!=1 & z2!=1 & z3!=1' 0.07 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
