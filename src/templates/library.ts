@@ -1064,6 +1064,15 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'a=1.2;hx=floor((x+a*0.5)/a);hz=floor((z+a*0.866)/a);hy=floor((y+a*0.4)/(a*0.8165));oy=floorMod(hy,2)*0.5*a;dx=x-hx*a;dz=z-hz*a*0.866-oy;dy=y-hy*a*0.8165;d=sqrt(dx*dx+dz*dz+dy*dy);d<0.42' 0.12 200 null 1 null",
     ],
   },
+  {
+    id: 'duallissa',
+    name: '双参数李萨如曲面（t 同时编码两个参数）',
+    desc: '**一个 `t` 装两个独立参数**：`u = floor(t/80)/79·2π`（整数位扫第一参数）、`v = (t mod 80)/79·2π`（小数位扫第二参数）。于是原本的一维李萨如曲线被「扫」成一张**二维曲面**——`x=sin(3u)cos(v), y=sin(4u+½π)sin(v), z=sin(5u)cos(u+1)`，三个坐标各自对 (u,v) 有不同的依赖，曲面在盒子里反复折叠。**这是 parameter 族最重要的复用手法**：`t` 是唯一的迭代变量，想加第二个参数就把它拆成整数位 + 小数位。库里 `sphericalharmonics`、`tonnetz` 用的都是同一招。6400 粒 / 11ms、占格 1694。改 80 换每行点数（越大 v 越密），改 3/4/5 换频率比。',
+    tags: ['parameter', '表达式', '参数曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 6399 'u=floor(t/80)/79*2*PI;v=floorMod(t,80)/79*2*PI;x=2.4*sin(3*u)*cos(v);y=2.4*sin(4*u+1.5708)*sin(v);z=2.4*sin(5*u)*cos(u+1.0)' 1 500 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
