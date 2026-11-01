@@ -1177,6 +1177,26 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 18 0 0 1 0.95 0.89 1 0 0 0 9 9 9 'rr=sqrt(x*x+y*y+z*z)+0.001;ct=y/rr;p=2.0*rr/3.0;st=sqrt(max(1.0-ct*ct,0.0));rad=p*p*exp(-p*0.5);ang=(st*st*cos(2.0*atan2(z,x)));psi=rad*ang;d=psi*psi;d>1.5' 0.4 200 null 1 null",
     ],
   },
+  {
+    id: 'enneper',
+    name: 'Enneper 极小曲面（自交的鞍形薄片）',
+    desc: '**Enneper 曲面**：\`x = u − u³/3 + uv²\`、\`y = v − v³/3 + vu²\`、\`z = u² − v²\`。它是极小曲面（平均曲率处处为零）里**参数式最简单的一个**——不像 Scherk 或 Catalan 要解超越方程，三个式子全是三次多项式，却给出了一个带自交的、向四个方向无限展开的鞍形薄片。**极小曲面的本质是「每一点两个主曲率大小相等、符号相反」**，所以它处处像马鞍：一个方向向上弯、垂直方向就向下弯。这里取 \`u,v ∈ [−2.2, 2.2]\` 截一段，中心是平的、四周翘起四个尖角、主对角线上还能看到自交的折痕。70×70 网格、4900 粒 / 13ms、占格 3440——**是本库占格最高的单曲面之一**（薄片本身处处倾斜，投影下来几乎铺满）。改 2.2 换截取范围（越大越展开也越乱），改 1.1 换整体尺度。',
+    tags: ['parameter', '表达式', '极小曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 4899 'u=t;N=70;i=floor(u/N);j=floorMod(u,N);uu=(i/(N-1)*2.0-1.0)*2.2;vv=(j/(N-1)*2.0-1.0)*2.2;x=1.1*(uu-uu*uu*uu/3.0+uu*vv*vv);y=1.1*(vv-vv*vv*vv/3.0+vv*uu*uu);z=1.1*(uu*uu-vv*vv)' 1 200 'null' 1 null",
+    ],
+  },
+  {
+    id: 'kepler',
+    name: '开普勒椭圆轨道（偏心率三档对照）',
+    desc: '**\`r = a(1 − e·cos E)\`、\`θ = E + 2e·sin E\`**，\`E\` 叫**偏近点角**（从 0 扫到 2π 走完一整圈），这一对式子就是开普勒方程的几何解。**注意 r 用的是 cos E 而不是 cos θ**——如果直接写 \`r = a(1 − e·cos θ)\`，得到的是以焦点为极点的圆锥曲线，但**粒子沿轨道分布会不均匀**：近拱点会挤成一团、远拱点稀稀拉拉。加上 \`θ = E + 2e·sin E\` 这一步换算，粒子才沿椭圆弧长均匀铺开，这正是**开普勒第二定律（等面积定律）的正确可视化**——近拱点走得快、远拱点走得慢，颗粒间距处处相等。三条椭圆同排对照 e=0.2（近乎圆）、e=0.6（明显扁）、e=0.85（极扁，近拱点在 a(1−e)=0.75、远拱点在 9.25，差 12 倍）。改 a 换轨道大小，改 e 换扁度（e→1 退化成抛物线）。',
+    tags: ['parameter', '表达式', '轨道力学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 399 'u=t;N=400;ec=u/(N-1)*2.0*PI;r=3*(1.0-0.2*cos(ec));th=ec+2.0*0.2*sin(ec);x=r*cos(th);z=r*sin(th);y=0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 399 'u=t;N=400;ec=u/(N-1)*2.0*PI;r=4*(1.0-0.6*cos(ec));th=ec+2.0*0.6*sin(ec);x=r*cos(th);z=r*sin(th);y=0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 399 'u=t;N=400;ec=u/(N-1)*2.0*PI;r=5*(1.0-0.85*cos(ec));th=ec+2.0*0.85*sin(ec);x=r*cos(th);z=r*sin(th);y=0' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
