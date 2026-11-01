@@ -1295,6 +1295,20 @@ export const TEMPLATES: Template[] = [
       "/particleex tickparameter minecraft:end_rod 12 0 0 1 0.95 0.89 1 0 0 0 0 1800 'kk=t+1;zz=1.0-2.0*kk/1800;rr=sqrt(max(1.0-zz*zz,0.0));ph=kk*2.399963;x=4.0*rr*cos(ph);y=4.0*zz;z=4.0*rr*sin(ph)' 1 20 3000 'null' 1 null",
     ],
   },
+  {
+    id: 'groupshape3',
+    name: '球的三态后处理形变（花 / 螺旋 / 波纹）',
+    desc: '**\`group change\` 是把已经生成的粒子再算一遍坐标——同一次「铺球」用它掰成三种完全不同的形状**。左边**六瓣花**：把径向乘 \`1 + 0.55·cos(6θ)\`，球在赤道方向被拉出六个花瓣（θ 是绕 y 轴的方位角，所以花瓣沿赤道排成一圈）。中间**螺旋壳**：把方位角换成 \`θ + 2.6y\`——**高度越高转得越多**，球面被拧成一条缠绕的螺旋带，这正是「纬度即相位」的经典写法。右边**波纹球**：径向乘 \`1 + 0.5·sin(8·仰角)\`，沿南北方向压出八道环状波纹，看起来像一个被拍打过的水球。**三条命令的铺球部分逐字节相同**（只是位置偏移不同），差异全在后面那一条 \`group change\`——这是这个族最省事的用法：**先付一次生成成本，再免费试各种形变**。三条各 2400 粒 / 共 7200 粒 68ms、占格 4116。改 0.55 / 2.6 / 0.5 分别换花瓣深度、扭转率、波纹幅度。⚠️ 组名必须写在第一条命令末尾（第 10 槽），且 \`group change\` 的表达式要加引号。',
+    tags: ['group change', '表达式', '后处理形变'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -14 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;LON=40;LATv=60;kk=floor(u/LON);j=floorMod(u,LON);la=(kk/(LATv-1)-0.5)*PI;lo=j/(LON-1)*2.0*PI;x=2.2*cos(la)*cos(lo);y=2.2*sin(la);z=2.2*cos(la)*sin(lo)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'rr=sqrt(x*x+z*z);gg=1.0+0.55*cos(6.0*atan2(z,x));x=x*gg;z=z*gg'",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;LON=40;LATv=60;kk=floor(u/LON);j=floorMod(u,LON);la=(kk/(LATv-1)-0.5)*PI;lo=j/(LON-1)*2.0*PI;x=2.2*cos(la)*cos(lo);y=2.2*sin(la);z=2.2*cos(la)*sin(lo)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'th=atan2(z,x)+2.6*y;rr=sqrt(x*x+z*z);x=rr*cos(th);z=rr*sin(th)'",
+      "/particleex parameter minecraft:end_rod 14 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;LON=40;LATv=60;kk=floor(u/LON);j=floorMod(u,LON);la=(kk/(LATv-1)-0.5)*PI;lo=j/(LON-1)*2.0*PI;x=2.2*cos(la)*cos(lo);y=2.2*sin(la);z=2.2*cos(la)*sin(lo)' 1 200 'null' 1 g1",
+      "/particleex group change parameter g1 'yy=y*1.0;rr=sqrt(x*x+z*z);gg=1.0+0.5*sin(8.0*atan2(y,rr));x=x*gg;z=z*gg;y=y*1.0'",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
