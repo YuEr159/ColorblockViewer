@@ -1375,6 +1375,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 2.6 2.6 2.6 'd=max(max(max(abs(x+y),abs(x-y)),max(abs(y+z),abs(y-z))),max(abs(z+x),abs(z-x)))*0.5-2.0;abs(d)<0.065' 0.13 300 null 1 null",
     ],
   },
+  {
+    id: 'covellipsoid',
+    name: '协方差椭球三态（球 / 扁椭球 / 相关斜椭球）',
+    desc: '**多元正态分布 \`exp(−Q/2)\` 的等密度面就是二次型 \`Q(x) = c\` 的等值面**——而 \`Q\` 的矩阵就是这个分布的协方差逆矩阵。所以「画正态分布的等密度面」和「画二次型等值面」是同一件事，三条分别演示三种协方差矩阵：左**各向同性**（\`Q = x²+y²+z²\`，协方差是单位阵，等值面是球）；中**对角但不等**（\`Q = 0.25x²+y²+0.25z²\`，三个特征值不同，等值面是**扁椭球**——x、z 方向方差大所以拉长）；右**非对角**（\`Q = 0.5(x−y)²+0.5z²\`，协方差矩阵有非零的非对角元，等值面是**绕 z 轴转 45° 的斜椭球**）。**非对角元就是「相关性」**：x 与 y 正相关时椭球主轴沿 x=y 方向倾斜，这正是主成分分析（PCA）要旋转掉的东西——PCA 做的就是把协方差矩阵对角化，让椭球重新对齐坐标轴。三条各约 3900 粒 / 共 11632 粒 65ms、占格 2873。把 \`0.5\` 改成别的主轴倾斜角就跟着变。',
+    tags: ['conditional', '表达式', '概率'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'Q=x*x+y*y+z*z;d=(Q-4.0)*0.25;abs(d)<0.06' 0.14 300 null 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'Q=x*x*0.25+y*y+z*z*0.25;d=(Q-2.0)*0.3;abs(d)<0.06' 0.14 300 null 1 null",
+      "/particleex conditional minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'Q=(x-y)*(x-y)*0.5+z*z*0.5;d=(Q-2.0)*0.3;abs(d)<0.06' 0.14 300 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
