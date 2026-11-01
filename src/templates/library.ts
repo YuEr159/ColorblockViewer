@@ -1353,6 +1353,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:block_crumble{block_state:\"minecraft:dirt\"} 12 0 0 1 0.95 0.89 1 0 0 0 3.2 3.2 3.2 'rr=sqrt(x*x+y*y+z*z);abs(rr-3.0)<0.08' 0.16 400 null 1 null",
     ],
   },
+  {
+    id: 'twistcolumn',
+    name: '扭转柱面三态（螺旋带 / 多圈扭转 / 锥形螺旋）',
+    desc: '**同一条公式 \`θ = 2π·v + T·π·u\`，只改扭转率 T，圆的扫掠面就变成三种完全不同的柱体**。左 T=2：每上升一个高度层只转半圈，得到一片**宽缓的螺旋带**（像一条拧过的纸带）；中 T=6：每层转三整圈，**扭转极快**，从侧面看是一叠紧贴的斜纹片，几乎糊成实心楔；右除了 T=4 还把半径随高度放大（\`r = 1.8(1+2.6u)\`），于是变成**越往上越开的锥形螺旋**，表面能看到螺旋条纹。**这三条解释了「直纹面」的直觉**：柱面本质上就是一条直线（母线）沿螺旋运动扫出来的，扭转率决定了母线转得多快——所以从侧面看，T 小的时候能看见母线的方向，T 大了就只剩下一片模糊。三条 3200 粒 / 共 9600 粒 24ms、占格 4611。改 T 换扭转率（T=0 退化成普通柱面），改 2.6 换锥角。',
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -10 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=40;NA=80;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ax=kk/(NA-1);th=ss*2.0*PI+ax*2*PI;rr=1*(1.0+2.6*ax);x=rr*cos(th);y=(ax-0.5)*8.0;z=rr*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=40;NA=80;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ax=kk/(NA-1);th=ss*2.0*PI+ax*6*PI;rr=1*(1.0+2.6*ax);x=rr*cos(th);y=(ax-0.5)*8.0;z=rr*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 10 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=40;NA=80;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ax=kk/(NA-1);th=ss*2.0*PI+ax*4*PI;rr=1.8*(1.0+2.6*ax);x=rr*cos(th);y=(ax-0.5)*8.0;z=rr*sin(th)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
