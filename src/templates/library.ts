@@ -1197,6 +1197,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 399 'u=t;N=400;ec=u/(N-1)*2.0*PI;r=5*(1.0-0.85*cos(ec));th=ec+2.0*0.85*sin(ec);x=r*cos(th);z=r*sin(th);y=0' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'mapproj',
+    name: '地图投影三态（墨卡托 / 正弦 / 摩尔威德）',
+    desc: '同一个球面经纬网，用三种经典地图投影摊平到地面——**这是"把球摊成平面必然要付出某种代价"的三份账单**。**墨卡托**：\`z ∝ ln(tan(π/4 + φ/2))\`，把纬度做成对数——换来的是「航向角不变就直线航行」的等角性质（所以大航海时代的航海图都用它），代价是**高纬度面积被极度放大**，画面上下两端被拉成竖直长条。**正弦投影**：\`x = λ·cos φ\`，让每条纬线长度正比于真实周长——**面积严格保真**，代价是形状失真，两极压成点、整体像个橄榄。**摩尔威德**：用三次近似解 \`θ + sin θ = π sin φ\` 的伪圆柱投影，是前两者的折中——**面积保真且形状失真被压到可接受的程度**，教科书常用的世界地图就是它。三条并排各 4000 粒 / 共 12000 粒 26ms、占格 1909。改 1.4 换纬度截取范围（墨卡托必须限幅，否则极点发散到无穷）。',
+    tags: ['parameter', '表达式', '地图投影'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -7 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NC=80;NRv=50;kk=floor(u/NC);j=floorMod(u,NC);la=(j/(NC-1)*2.0-1.0)*PI;ph=(kk/(NRv-1)*2.0-1.0)*1.4;x=2*la*0.75;z=-2*1.9*log(max(tan(PI/4.0+ph*0.5),0.001))*0.42;y=0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NC=80;NRv=50;kk=floor(u/NC);j=floorMod(u,NC);la=(j/(NC-1)*2.0-1.0)*PI;ph=(kk/(NRv-1)*2.0-1.0)*1.4;x=2*la*cos(ph)*0.75;z=-2*ph*1.05;y=0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NC=80;NRv=50;kk=floor(u/NC);j=floorMod(u,NC);la=(j/(NC-1)*2.0-1.0)*PI;ph=(kk/(NRv-1)*2.0-1.0)*1.4;th=ph;cc=ph+(ph*ph*ph)/3.0;x=2*la*cos(cc*0.5)*0.75;z=-2*cc*0.95;y=0' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
