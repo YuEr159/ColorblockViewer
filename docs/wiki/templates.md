@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 116 条）
+## 已收录模板（当前 117 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1498,6 +1498,14 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'd1=sqrt(x*x+y*y+z*z)-2.0;d2=sqrt(x*x+z*z)-0.9;k=0.8;h=max(k-abs(d1-d2),0)/k;m=min(d1,d2)-h*h*k*0.25;abs(m)<0.07' 0.14 200 null 1 null
+```
+
+### sierptetra · 谢尔宾斯基四面体（二进制位判据）
+
+三维分形的经典构造：把立方体 2×2×2 剖分后**挖掉四个偶块、只留四个奇块**，然后对每个保留块递归——极限就是谢尔宾斯基四面体。判据非常干净：**三个整数坐标的二进制位中，任意两位不能同时为 1**（`bx·by + by·bz + bz·bx = 0`）。这条做了**三级递归**：每级各自检查一遍二进制的对应位，三级都通过才算命中（`b0+b1+b2 < 0.5`）。它和 `menger` 是同一族「盒计数分形」的不同规则——Menger 用三进制挖中心十字（保留 20/27），谢尔宾斯基四面体用二进制挖对角块（保留 4/8 = 一半）。**两条放在一起就是「不同进制 → 不同分形」的对照**。28000 粒 / 72ms、占格 1598。改 `N=10` 换递归分辨率（N 越大细节越多），改 `b0+b1+b2 < 0.5` 的级数换递归深度。
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2 2 2 'N=10;ix=floor((x+2)*N);iy=floor((y+2)*N);iz=floor((z+2)*N);bx0=floorMod(ix,2);by0=floorMod(iy,2);bz0=floorMod(iz,2);b0=bx0*by0+by0*bz0+bz0*bx0;x1=floor(ix/2);y1=floor(iy/2);z1=floor(iz/2);bx1=floorMod(x1,2);by1=floorMod(y1,2);bz1=floorMod(z1,2);b1=bx1*by1+by1*bz1+bz1*bx1;x2=floor(x1/2);y2=floor(y1/2);z2=floor(z1/2);bx2=floorMod(x2,2);by2=floorMod(y2,2);bz2=floorMod(z2,2);b2=bx2*by2+by2*bz2+bz2*bx2;b0+b1+b2<0.5' 0.08 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
