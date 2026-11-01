@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 140 条）
+## 已收录模板（当前 141 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1882,7 +1882,7 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 /particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 2.6 2.6 2.6 'd=max(max(max(abs(x+y),abs(x-y)),max(abs(y+z),abs(y-z))),max(abs(z+x),abs(z-x)))*0.5-2.0;abs(d)<0.065' 0.13 300 null 1 null
 ```
 
-### covellipsoid · 协方差椭球三态（球 / 扁椭球 / 相关斜椭球）
+### gausselipsoid · 协方差椭球三态（球 / 扁椭球 / 相关斜椭球）
 
 **多元正态分布 `exp(−Q/2)` 的等密度面就是二次型 `Q(x) = c` 的等值面**——而 `Q` 的矩阵就是这个分布的协方差逆矩阵。所以「画正态分布的等密度面」和「画二次型等值面」是同一件事，三条分别演示三种协方差矩阵：左**各向同性**（`Q = x²+y²+z²`，协方差是单位阵，等值面是球）；中**对角但不等**（`Q = 0.25x²+y²+0.25z²`，三个特征值不同，等值面是**扁椭球**——x、z 方向方差大所以拉长）；右**非对角**（`Q = 0.5(x−y)²+0.5z²`，协方差矩阵有非零的非对角元，等值面是**绕 z 轴转 45° 的斜椭球**）。**非对角元就是「相关性」**：x 与 y 正相关时椭球主轴沿 x=y 方向倾斜，这正是主成分分析（PCA）要旋转掉的东西——PCA 做的就是把协方差矩阵对角化，让椭球重新对齐坐标轴。三条各约 3900 粒 / 共 11632 粒 65ms、占格 2873。把 `0.5` 改成别的主轴倾斜角就跟着变。
 
@@ -1898,6 +1898,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'Q=(x-y)*(x-y)*0.5+z*z*0.5;d=(Q-2.0)*0.3;abs(d)<0.06' 0.14 300 null 1 null
+```
+
+### corrugated · 波纹环面三态（管半径按方位角调制）
+
+**管半径本身随方位角起伏** `r(θ) = 1.3 + A·sin(kθ)`——于是环面不再是均匀的甜甜圈，而是**沿周向鼓起 k 处**的波浪管。这看似简单的一步改变了曲面的几何性质：普通环面只有两个主曲率方向（沿管、绕轴），波纹管的**外侧弯曲最剧烈的地方（波峰）与最平缓的地方（波谷）交替出现**，高斯曲率沿周向周期性起伏——这正是波纹管（corrugated tube）在工程上容易在波峰处疲劳开裂的原因。三条 k=3 / 5 / 8 对照：k=3 时波峰只有三处、间隔很宽；k=8 时波密到几乎看不出是个环。**注意这是「一个参数走完全谱」的又一例**：k 就是整数，从 1 数到 8 就能看到从「略变形的环」到「花边环」的全部过渡。三条各 3500 粒 / 共 10500 粒 26ms、占格 5840（是本批占格最高的曲面之一）。改 0.5 换起伏幅度（≥1.3 会自交，环面穿孔）。
+
+标签：`parameter` `表达式` `曲面`
+
+```
+/particleex parameter minecraft:end_rod -10 0 0 1 0.95 0.89 1 0 0 0 0 3499 'u=t;NL=50;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;rr=1.3+0.5*sin(3*th);x=(3.2+rr*cos(ph))*cos(th);z=(3.2+rr*cos(ph))*sin(th);y=rr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3499 'u=t;NL=50;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;rr=1.3+0.5*sin(5*th);x=(3.2+rr*cos(ph))*cos(th);z=(3.2+rr*cos(ph))*sin(th);y=rr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 10 0 0 1 0.95 0.89 1 0 0 0 0 3499 'u=t;NL=50;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;rr=1.3+0.5*sin(8*th);x=(3.2+rr*cos(ph))*cos(th);z=(3.2+rr*cos(ph))*sin(th);y=rr*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
