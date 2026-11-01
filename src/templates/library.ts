@@ -1284,6 +1284,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2.5 2.5 2.5 'px=(x+2.5)/5;py=(y+2.5)/5;pz=(z+2.5)/5;x1=floorMod(floor(px*27.0),3);x2=floorMod(floor(px*9.0),3);x3=floorMod(floor(px*3.0),3);y1=floorMod(floor(py*27.0),3);y2=floorMod(floor(py*9.0),3);y3=floorMod(floor(py*3.0),3);z1=floorMod(floor(pz*27.0),3);z2=floorMod(floor(pz*9.0),3);z3=floorMod(floor(pz*3.0),3);x1!=1 & x2!=1 & x3!=1 & y1!=1 & y2!=1 & y3!=1 & z1!=1 & z2!=1 & z3!=1' 0.07 200 null 1 null",
     ],
   },
+  {
+    id: 'growth3',
+    name: '三种时间生长（螺旋 / 喷泉 / 斐波那契球）',
+    desc: '**\`tickparameter\` 的 t 是全局迭代计数——每 tick 从 t 继续往上吐 cpt 个点，所以「t 的函数」自动变成「随时间的动画」**。三条并排演示三种生长逻辑：左侧**阿基米德螺旋**（\`r ∝ t\`、\`θ ∝ t\`，半径与转角同步增长，画出一条越转越开、始终不闭合的螺线）；中间**抛物线喷泉**（\`y = 1.2·sin(πs)\` 让 t 从 0 走到 1 时高度先升后落，同时方位角按 **黄金角 0.618 圈** ∝ t 递增——于是每一「滴」都落在上一滴的黄金分割处，铺出来的不是均匀圆盘而是**向日葵花盘式的等角分布**）；右侧**斐波那契球**（球面从北到南逐点铺开，方位角每点转 2.399963 弧度，任意时刻看到的都是「已铺开的那一顶帽子」）。**三条的关键差异在 t 的用法**：螺旋是 t 同时进半径与角度（连续曲线），喷泉是 t 的线性分母（进度条式），斐波那契球是 t 的整数序号（离散序列）。三条各约 1600 粒 / 共 5003 粒、跑 90 tick 19ms、占格 3230。改 cpt（第 9 槽）换生长速度——20 是每秒 400 点的节奏。',
+    tags: ['tickparameter', '表达式', '时间驱动'],
+    cmds: [
+      "/particleex tickparameter minecraft:end_rod -12 0 0 1 0.95 0.89 1 0 0 0 0 1600 'th=t*0.04;rr=0.3+t*0.0022;x=rr*cos(th);z=rr*sin(th);y=sin(th*1.7)*0.9' 1 20 3000 'null' 1 null",
+      "/particleex tickparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1600 's=t/1600;ang=2.0*PI*(t*0.618);rr=3.6*s;x=rr*cos(ang);z=rr*sin(ang);y=1.2*sin(s*PI)*3.2' 1 20 3000 'null' 1 null",
+      "/particleex tickparameter minecraft:end_rod 12 0 0 1 0.95 0.89 1 0 0 0 0 1800 'kk=t+1;zz=1.0-2.0*kk/1800;rr=sqrt(max(1.0-zz*zz,0.0));ph=kk*2.399963;x=4.0*rr*cos(ph);y=4.0*zz;z=4.0*rr*sin(ph)' 1 20 3000 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
