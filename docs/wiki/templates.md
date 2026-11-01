@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 133 条）
+## 已收录模板（当前 134 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1772,6 +1772,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex group change parameter g1 'yy=y*1.0;rr=sqrt(x*x+z*z);gg=1.0+0.5*sin(8.0*atan2(y,rr));x=x*gg;z=z*gg;y=y*1.0'
+```
+
+### polarfill3 · 极坐标三重填充（实心球 / 圆锥 / 厚壳）
+
+**`polarparameter` 只认 s1（方位角）、s2（仰角）、dis（半径）三个字段——写 x/y/z 会静默失效**。这一族的关键是 **dis 必须跟着变**：如果只让 s1/s2 转、dis 固定，粒子全落在一个球面上，占格只有 400 出头；一旦让 dis 也在 [0, R] 里扫，就变成了**实心体**——同样的 6000 粒子，占格从 465 涨到 3519。三条演示三种 dis 策略：左**实心球**（dis 用 `|sin|` 快速扫描全半径，s1/s2 快速旋转铺满方向）；中**圆锥**（`s2 = 1.2 − 0.8|sin|` 把仰角限制在 0.4..1.2 弧度，所以只铺出顶角约 46° 的锥体）；右**厚壳**（dis 只在 2.6..4.5 之间振荡，中间空掉，得到一层有厚度的球壳）。三条各 6000 粒 / 共 18000 粒 34ms、占格 10000。**这里 `s2 = asin(sin(...))` 那一步是必须的**：s2 的物理含义是仰角，直接喂 sin 会得到超范围值，asin 才把它映射回 [−π/2, π/2]。改 dis 的系数换三种形态（实心/壳/锥）。
+
+标签：`polarparameter` `表达式` `体积填充`
+
+```
+/particleex polarparameter minecraft:end_rod -12 0 0 1 0.95 0.89 1 0 0 0 0 5999 'a=t*0.05;s1=a*7.0;s2=asin(max(-1.0,min(1.0,sin(a*3.0))));dis=0.2+4.3*abs(sin(t*0.00049))' 1 200 'null' 1 null
+```
+
+```
+/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5999 'a=t*0.02;s1=a*10.0;s2=1.2-abs(sin(a*1.5))*0.8;dis=0.1+3.6*abs(sin(t*0.00053))' 1 200 'null' 1 null
+```
+
+```
+/particleex polarparameter minecraft:end_rod 12 0 0 1 0.95 0.89 1 0 0 0 0 5999 'a=t*0.03;s1=a*9.0;s2=(a*0.7)-floor(a*0.7/2.0)*2.0-1.0;s2=s2*1.4;dis=2.6+1.9*abs(sin(t*0.0012))' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
