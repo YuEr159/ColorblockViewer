@@ -1111,6 +1111,24 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 2 3.6 'r=sqrt(x*x+z*z);abs(r-2.9)<0.2' 0.3 180 null 1 null",
     ],
   },
+  {
+    id: 'sdfrepeat',
+    name: 'SDF 域重复（无限球阵列）',
+    desc: '**域重复（domain repetition）**是 SDF 里最省力的一招：把坐标先折叠回一个周期格子 `p = x − a·round(x/a)`（三轴同做），再算球距离——**一个球的距离场就被复制成了无限阵列**，而计算量只多 3 个 `round`。渲染出来是整齐的 3×3×3 球阵，俯视和等距视角都能看到完美排列。**这是 `round` 在几何里最有用的地方**：`round(x/a)·a` 给出「最近的格点」，相减就是「到最近格点中心的相对坐标」。库里 `crystal` 用 `sin(πx/a)=0` 判格点、`lattice` 用球距，这条用 `round` 折叠——三种判格点手法里它最直接。8526 粒 / 71ms、占格 2640。改 2.4 换阵列周期，改 0.7 换球半径（0.7 时球刚好相切，再大就并成一块）。',
+    tags: ['conditional', '表达式', 'SDF 实体造型'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'a=2.4;px=x-a*round(x/a);py=y-a*round(y/a);pz=z-a*round(z/a);d=sqrt(px*px+py*py+pz*pz)-0.7;abs(d)<0.07' 0.14 200 null 1 null",
+    ],
+  },
+  {
+    id: 'sdfsmooth',
+    name: 'SDF 平滑并集（球与圆柱的圆角焊接）',
+    desc: '**平滑并集（smooth min / smin）**：普通并集 `min(d1,d2)` 会在两实体交界处留下**尖锐的折痕**，而 smin 在两者的距离差小于 `k` 时插入一段平滑过渡——`h = max(k−|d1−d2|,0)/k`，`m = min(d1,d2) − h²k/4`。这条把半径 2.0 的球与半径 0.9 的圆柱焊在一起，`k = 0.8` 让交界面形成**一圈圆润的焊缝**，整块实体看起来像铸件而不是拼装件。俯视能看到贯穿的圆孔（圆柱被球吃掉后留下的通道）。**smin 是 SDF 造型相对传统 CSG 最大的优势**：它让「焊接」变成可调参数，而不是布尔运算的二值结果。3065 粒 / 48ms、占格 811。改 0.8 换焊缝宽度（0.1 趋普通并集、1.5 糊成一团）。',
+    tags: ['conditional', '表达式', 'SDF 实体造型'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 3 3 'd1=sqrt(x*x+y*y+z*z)-2.0;d2=sqrt(x*x+z*z)-0.9;k=0.8;h=max(k-abs(d1-d2),0)/k;m=min(d1,d2)-h*h*k*0.25;abs(m)<0.07' 0.14 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
