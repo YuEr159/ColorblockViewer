@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 134 条）
+## 已收录模板（当前 135 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1790,6 +1790,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex polarparameter minecraft:end_rod 12 0 0 1 0.95 0.89 1 0 0 0 0 5999 'a=t*0.03;s1=a*9.0;s2=(a*0.7)-floor(a*0.7/2.0)*2.0-1.0;s2=s2*1.4;dis=2.6+1.9*abs(sin(t*0.0012))' 1 200 'null' 1 null
+```
+
+### rgbtick3 · 颜色随时间演化三态（色相旋转 / 高度热图 / 明度脉动）
+
+**`rgbatickparameter` 是「表达式既写位置也写颜色」的时间驱动族**——每 tick 吐 cpt 个点，每个点的 `cr/cg/cb` 都能用当次的 t 算出来，于是**颜色本身成了第四维**。三条演示三种把时间接进颜色的写法：左**色相随转角旋转**（`h = θ·0.35`，粒子绕轴转的同时色相也转，画出一条螺旋形的彩虹，像时钟指针扫过）；中**高度热图**（`cr=h, cg=1−|2h−1|, cb=1−h` 的三段线性色标，把喷泉的高度直接读成蓝→绿→红，喷到顶是红、落回地面是蓝）；右**明度脉动**（`h = 0.5+0.5sin(0.01t)` 让整颗球的色相随时间整体呼吸，同一时刻球上所有点的颜色一致，但不同时刻生成的点分层保留各自的相位）。**663 种颜色**说明这三条不是几档离散色而是连续谱。三条各 3000 粒 / 共 9000 粒跑 160 tick、41ms、占格 3471。⚠️ 槽位是 `<位置3> <速度3> <begin> <end> <表达式>`——**没有单独的颜色槽**，颜色必须写在表达式的 cr/cg/cb 里（与 `parameter` 族相反）；写 r/g/b 会被静默忽略。
+
+标签：`rgbatickparameter` `表达式` `时间驱动`
+
+```
+/particleex rgbatickparameter minecraft:end_rod -10 0 0 0 0 0 0 2999 'th=t*0.05;rr=0.5+t*0.0013;x=rr*cos(th);z=rr*sin(th);y=sin(th*2.0)*1.2;h=th*0.35;cr=0.5+0.5*cos(h*6.2832);cg=0.5+0.5*cos(h*6.2832-2.0944);cb=0.5+0.5*cos(h*6.2832-4.1888)' 1 20 3000 'null' 1 null
+```
+
+```
+/particleex rgbatickparameter minecraft:end_rod 0 0 0 0 0 0 0 2999 's=t/3000;ang=2.0*PI*(t*0.618);rr=3.4*s;x=rr*cos(ang);z=rr*sin(ang);y=1.4*sin(s*PI)*3.0;hv=(y+0.01)/4.4;cr=hv;cg=1.0-abs(2.0*hv-1.0);cb=1.0-hv' 1 20 3000 'null' 1 null
+```
+
+```
+/particleex rgbatickparameter minecraft:end_rod 10 0 0 0 0 0 0 2999 'a=t*0.04;la=asin(max(-1.0,min(1.0,sin(a*2.3))));lo=a*4.7;x=3.4*cos(la)*cos(lo);y=3.4*sin(la);z=3.4*cos(la)*sin(lo);h=0.5+0.5*sin(t*0.01);cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 20 3000 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
