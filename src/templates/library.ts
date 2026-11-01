@@ -1138,6 +1138,15 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2 2 2 'N=10;ix=floor((x+2)*N);iy=floor((y+2)*N);iz=floor((z+2)*N);bx0=floorMod(ix,2);by0=floorMod(iy,2);bz0=floorMod(iz,2);b0=bx0*by0+by0*bz0+bz0*bx0;x1=floor(ix/2);y1=floor(iy/2);z1=floor(iz/2);bx1=floorMod(x1,2);by1=floorMod(y1,2);bz1=floorMod(z1,2);b1=bx1*by1+by1*bz1+bz1*bx1;x2=floor(x1/2);y2=floor(y1/2);z2=floor(z1/2);bx2=floorMod(x2,2);by2=floorMod(y2,2);bz2=floorMod(z2,2);b2=bx2*by2+by2*bz2+bz2*bx2;b0+b1+b2<0.5' 0.08 200 null 1 null",
     ],
   },
+  {
+    id: 'hexsym',
+    name: '六方壁纸群（p6m 对称的三角格）',
+    desc: '**六方晶格的距离函数** `u = |x| + |x/2 + z·√3/2| + |x/2 − z·√3/2|`——这是「到最近六方格点距离」的闭式表达：三个绝对值项分别对应三条相隔 120° 的法向，取和后得到的等值线正是**正六边形**。再用 `floorMod(u/a,1)` 折叠到单个晶胞、取 `min(|·−½|, |·−½|)` 得到**六边形环带**。整层约束在 `|y| < 0.12` 上，得到一片**六方密的三角格点阵**——这正是 p6m 壁纸群的几何（六重旋转 + 镜像）。**六方密排在二维的对应物是三轴 60° 的格线**，`|x|+|x/2±z·√3/2|` 就是它的范数。22188 粒 / 53ms、占格 800。改 1.2 换格子大小，改 0.1 换环带宽度。',
+    tags: ['conditional', '表达式', '对称群'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 0.2 3 'a=1.2;u=abs(x)+abs(x*0.5+z*0.866)+abs(x*0.5-z*0.866);v=abs(floorMod(u/a,1)-0.5);w=abs(floorMod((x*0.866+z*0.5)/a,1)-0.5);abs(min(v,w)-0.25)<0.1;abs(y)<0.12' 0.07 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
