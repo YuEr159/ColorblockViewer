@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 125 条）
+## 已收录模板（当前 126 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1624,6 +1624,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 14 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;N=50;ii=floor(u/N);jj=floorMod(u,N);px=(jj/(N-1)*2.0-1.0);pz=(ii/(N-1)*2.0-1.0);rho=sqrt(px*px+pz*pz);th=atan2(pz,px);inside=rho<1.0;val=(6.0*rho*rho*rho*rho-6.0*rho*rho+1.0)*inside;y=1.8*val;x=px*3.6;z=pz*3.6' 1 200 'null' 1 null
+```
+
+### modcircle · 模乘圆（弦的密度即数论）
+
+圆上均匀放 N 个点，把第 i 个点用直线连到第 **i·k mod N** 个点——**乘一个数、取一次余数，就得到一张万花尺式的花纹**。三条分别是 k=2（N=150）、k=51（N=151）、k=76（N=152），**同样的构造换一个乘数就是完全不同的图案**：k 接近 N/2 时弦几乎都穿过圆心附近（聚成密集的星芒），k 与 N 互质且比接近黄金分割时弦均匀铺开成玫瑰花结。这不是巧合——弦 i↔i·k 的包络线是一条**内摆线（epicycloid）**，其尖角数由 k 与 N 的最大公约数决定：gcd 越小花瓣越多越细，gcd 越大越像粗大的星形。**这是数论里"模乘映射的轨道结构"最直接的可视化**，也是数学科普里著名的「乘法圆」（times tables on a circle）。三条各约 5400 粒 / 共 16308 粒 32ms、占格 1642。改 36 换弦的采样密度（越大线条越实），改 k 换乘数。
+
+标签：`parameter` `表达式` `数论`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 5399 'u=t;S=36;Nv=150;k=floor(u/S);s=floorMod(u,S)/(S-1);a=2.0*PI*k/Nv;b=2.0*PI*floorMod(k*2,Nv)/Nv;px=cos(a)*(1.0-s)+cos(b)*s;pz=sin(a)*(1.0-s)+sin(b)*s;x=px*3.8;z=pz*3.8;y=0' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5435 'u=t;S=36;Nv=151;k=floor(u/S);s=floorMod(u,S)/(S-1);a=2.0*PI*k/Nv;b=2.0*PI*floorMod(k*51,Nv)/Nv;px=cos(a)*(1.0-s)+cos(b)*s;pz=sin(a)*(1.0-s)+sin(b)*s;x=px*3.8;z=pz*3.8;y=0' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 5471 'u=t;S=36;Nv=152;k=floor(u/S);s=floorMod(u,S)/(S-1);a=2.0*PI*k/Nv;b=2.0*PI*floorMod(k*76,Nv)/Nv;px=cos(a)*(1.0-s)+cos(b)*s;pz=sin(a)*(1.0-s)+sin(b)*s;x=px*3.8;z=pz*3.8;y=0' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
