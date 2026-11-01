@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 124 条）
+## 已收录模板（当前 125 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1602,6 +1602,28 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 7 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NC=80;NRv=50;kk=floor(u/NC);j=floorMod(u,NC);la=(j/(NC-1)*2.0-1.0)*PI;ph=(kk/(NRv-1)*2.0-1.0)*1.4;th=ph;cc=ph+(ph*ph*ph)/3.0;x=2*la*cos(cc*0.5)*0.75;z=-2*cc*0.95;y=0' 1 200 'null' 1 null
+```
+
+### zernike · 泽尼克像差四模式（离焦 / 散光 / 彗差 / 球差）
+
+**圆形光瞳上的正交多项式基**，每一项对应一种光学像差，把系数做成高度就是一张像差地形图。四条从左到右：**离焦** `2ρ²−1`（碗形，就是近视/远视）、**散光** `ρ²cos2θ`（马鞍，一个方向对焦另一个方向虚）、**彗差** `(3ρ³−2ρ)cosθ`（单侧翘起像彗星尾巴，所以得名）、**球差** `6ρ⁴−6ρ²+1`（中心与边缘焦点不重合，中心下凹边缘翘起）。**这四个式子恰好是 Zernike 多项式的低阶全部成员**，任何光学系统的波前误差都能展开成它们的线性组合——所以选镜片时验光单上的球镜、柱镜、轴位，本质上就是这几个系数。三条约束：`ρ < 1` 裁出圆形光瞳、`θ = atan2(z,x)` 给角向、`y = 1.8·val` 把相位做成高度。四条各 2500 粒 / 共 1 万粒 60ms。改 1.8 换起伏幅度；把 y 改成 0 就得到纯平面的「像差色块」。
+
+标签：`parameter` `表达式` `光学`
+
+```
+/particleex parameter minecraft:end_rod -14 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;N=50;ii=floor(u/N);jj=floorMod(u,N);px=(jj/(N-1)*2.0-1.0);pz=(ii/(N-1)*2.0-1.0);rho=sqrt(px*px+pz*pz);th=atan2(pz,px);inside=rho<1.0;val=(2.0*rho*rho-1.0)*inside;y=1.8*val;x=px*3.6;z=pz*3.6' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod -4.7 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;N=50;ii=floor(u/N);jj=floorMod(u,N);px=(jj/(N-1)*2.0-1.0);pz=(ii/(N-1)*2.0-1.0);rho=sqrt(px*px+pz*pz);th=atan2(pz,px);inside=rho<1.0;val=rho*rho*cos(2.0*th)*inside;y=1.8*val;x=px*3.6;z=pz*3.6' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 4.7 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;N=50;ii=floor(u/N);jj=floorMod(u,N);px=(jj/(N-1)*2.0-1.0);pz=(ii/(N-1)*2.0-1.0);rho=sqrt(px*px+pz*pz);th=atan2(pz,px);inside=rho<1.0;val=(3.0*rho*rho*rho-2.0*rho)*cos(th)*inside;y=1.8*val;x=px*3.6;z=pz*3.6' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 14 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;N=50;ii=floor(u/N);jj=floorMod(u,N);px=(jj/(N-1)*2.0-1.0);pz=(ii/(N-1)*2.0-1.0);rho=sqrt(px*px+pz*pz);th=atan2(pz,px);inside=rho<1.0;val=(6.0*rho*rho*rho*rho-6.0*rho*rho+1.0)*inside;y=1.8*val;x=px*3.6;z=pz*3.6' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
