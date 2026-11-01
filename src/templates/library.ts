@@ -1091,6 +1091,15 @@ export const TEMPLATES: Template[] = [
       "/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NS=20;NP=100;m=floor(u/NP);p=floorMod(u,NP)/NP;eta=m/(NS-1)*PI-PI/2;s2=eta;s1=p*2*PI;c=cos(2*eta);rr=2.8*sqrt(abs(c));dis=rr' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'riemannlog',
+    name: '对数黎曼面（无限层的螺旋楼梯）',
+    desc: '复对数 `w = log(z)` 是**多值函数**：`log(z) = ln|z| + i(θ + 2kπ)`，同一个 `z` 有无穷多个值，差 `2πi`。它的黎曼面是把这些层「摊开」后的曲面——**每绕原点一圈，就升上一层**，永远不闭合。这条模板用极坐标画它：`x = r·cosθ, z = r·sinθ` 给复平面，`y = θ·0.75` **把虚部当高度**，θ 从 −2.5π 扫到 +2.5π（**故意越过 ±2π，展示 5 层重叠**）。侧视就是一条**螺旋楼梯**，每圈升 1.5π·0.75。`sqrt(z)` 的黎曼面只有 2 层、会闭合，`log(z)` 则永不闭合——这是它们最本质的区别。2500 粒 / 6ms、占格 579。改 2.5 换扫过的圈数（≥3 才能看出多层），改 0.75 换每层的升高量。',
+    tags: ['parameter', '表达式', '复变函数'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NR=50;NL=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);r=0.2+k/(NR-1)*2.8;th=(s-0.5)*2*PI*2.5;x=r*cos(th);z=r*sin(th);y=th*0.75' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */

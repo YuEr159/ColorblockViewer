@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 112 条）
+## 已收录模板（当前 113 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1464,6 +1464,14 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NS=20;NP=100;m=floor(u/NP);p=floorMod(u,NP)/NP;eta=m/(NS-1)*PI-PI/2;s2=eta;s1=p*2*PI;c=cos(2*eta);rr=2.8*sqrt(abs(c));dis=rr' 1 200 'null' 1 null
+```
+
+### riemannlog · 对数黎曼面（无限层的螺旋楼梯）
+
+复对数 `w = log(z)` 是**多值函数**：`log(z) = ln|z| + i(θ + 2kπ)`，同一个 `z` 有无穷多个值，差 `2πi`。它的黎曼面是把这些层「摊开」后的曲面——**每绕原点一圈，就升上一层**，永远不闭合。这条模板用极坐标画它：`x = r·cosθ, z = r·sinθ` 给复平面，`y = θ·0.75` **把虚部当高度**，θ 从 −2.5π 扫到 +2.5π（**故意越过 ±2π，展示 5 层重叠**）。侧视就是一条**螺旋楼梯**，每圈升 1.5π·0.75。`sqrt(z)` 的黎曼面只有 2 层、会闭合，`log(z)` 则永不闭合——这是它们最本质的区别。2500 粒 / 6ms、占格 579。改 2.5 换扫过的圈数（≥3 才能看出多层），改 0.75 换每层的升高量。
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NR=50;NL=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);r=0.2+k/(NR-1)*2.8;th=(s-0.5)*2*PI*2.5;x=r*cos(th);z=r*sin(th);y=th*0.75' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
