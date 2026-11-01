@@ -1331,6 +1331,17 @@ export const TEMPLATES: Template[] = [
       "/particleex rgbatickparameter minecraft:end_rod 10 0 0 0 0 0 0 2999 'a=t*0.04;la=asin(max(-1.0,min(1.0,sin(a*2.3))));lo=a*4.7;x=3.4*cos(la)*cos(lo);y=3.4*sin(la);z=3.4*cos(la)*sin(lo);h=0.5+0.5*sin(t*0.01);cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 20 3000 'null' 1 null",
     ],
   },
+  {
+    id: 'flow3',
+    name: '三种速度场（单涡 / 涡对 / 周期驻波流）',
+    desc: '**\`normal\` 族的精髓是「速度表达式每 tick 算一次」，于是形态是解出来的而不是画出来的**。三条各给一个经典二维流场：左**Lamb-Oseen 涡**（\`v_θ = (1−e^(−r²/σ²))/r\`——高斯型涡核，中心附近近似刚体旋转（速度 ∝ r）、远处衰减成 1/r 的势涡，这正是真实黏性涡的剖面）；中**涡对**（两个反旋涡叠加速度场，粒子被夹在两涡之间来回卷绕，是二维湍流里最基本的自推进结构，飞机翼尖涡就是一对）；右**周期驻波流**（\`vx = 0.35·sin(1.2z)\`、\`vz = 0.35·sin(1.2x)\`——正弦互相正交，形成一圈圈的胞状环流，类似于瑞利-贝纳尔对流的简化平面版）。**这三条的跨度都会自己长大**：20TPS 显式积分下任何非零速度都把粒子推开，70 tick 后边长约 22 格，所以三条并排放在 ±20 格。共 6000 粒、180ms、占格 4012。改 0.30 / 0.22 / 0.35 换流速（越大扩散越快）。',
+    tags: ['normal', '速度表达式', '流场'],
+    cmds: [
+      "/particleex normal minecraft:end_rod -20 0 0 1 0.95 0.89 1 0 0 0 3.0 0.35 3.0 2000 3000 'rr=sqrt(x*x+z*z)+0.001;rc=rr/1.2;sp=0.30*(1.0-exp(-rc*rc*3.0))/rc;vx=-z/rr*sp;vy=0.0;vz=x/rr*sp' 1 null",
+      "/particleex normal minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.0 0.35 3.0 2000 3000 'dx1=x-1.3;dz1=z;rr1=sqrt(dx1*dx1+dz1*dz1)+0.001;dx2=x+1.3;dz2=z;rr2=sqrt(dx2*dx2+dz2*dz2)+0.001;sp1=0.22*(1.0-exp(-rr1*rr1*0.7))/rr1;sp2=0.22*(1.0-exp(-rr2*rr2*0.7))/rr2;vx=-dz1/rr1*sp1+dz2/rr2*sp2;vy=0.0;vz=dx1/rr1*sp1-dx2/rr2*sp2' 1 null",
+      "/particleex normal minecraft:end_rod 20 0 0 1 0.95 0.89 1 0 0 0 3.0 0.35 3.0 2000 3000 'vx=0.35*sin(z*1.2);vy=0.0;vz=0.35*sin(x*1.2)' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
