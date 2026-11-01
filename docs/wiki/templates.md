@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 118 条）
+## 已收录模板（当前 120 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1514,6 +1514,30 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3 0.2 3 'a=1.2;u=abs(x)+abs(x*0.5+z*0.866)+abs(x*0.5-z*0.866);v=abs(floorMod(u/a,1)-0.5);w=abs(floorMod((x*0.866+z*0.5)/a,1)-0.5);abs(min(v,w)-0.25)<0.1;abs(y)<0.12' 0.07 200 null 1 null
+```
+
+### besseldrum · 贝塞尔鼓面模态（J₀ 级数曲面）
+
+**圆鼓被敲响时的振动模态**：半径方向由零阶贝塞尔函数 `J₀(k·r)` 描述、角向由 `cos(m·θ)` 描述，位移 `y = 1.5·J₀(2.2r)·cos(mθ)` 直接就是鼓面的瞬时形状。**J₀ 用 14 项泰勒级数实现**（`J₀(x) = Σ (−1)ⁱ (x/2)²ⁱ / (i!)²`，x ≤ 7 时误差小于 1e-4）——引擎没有内置贝塞尔函数，但幂级数足够收敛，这也说明任何特殊函数只要能展开幂级数就能用。m=0 是**轴对称模态**：中心一个峰、外面一圈反向的谷、边缘再翻回向上——鼓皮振动的经典「呼吸」形；m=2 是**四瓣模态**，四个峰与四个谷交替（节线是两条互相垂直的直径）。两条命令左右并排，各 3200 粒。改 2.2 换径向波数（越大节圆越多），改 m 换角向瓣数（m=1 哑铃、m=3 六瓣）。
+
+标签：`parameter` `表达式` `特殊函数`
+
+```
+/particleex parameter minecraft:end_rod -4 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=64;NR=50;k=floor(u/NL);sa=floorMod(u,NL)/(NL-1);rr=k/(NR-1)*3.0;th=sa*2*PI;x=rr*cos(th);z=rr*sin(th);jq=(rr*2.2)*(rr*2.2)*(-0.25);term=1.0;j0=1.0;term=term*jq/1;j0=j0+term;term=term*jq/4;j0=j0+term;term=term*jq/9;j0=j0+term;term=term*jq/16;j0=j0+term;term=term*jq/25;j0=j0+term;term=term*jq/36;j0=j0+term;term=term*jq/49;j0=j0+term;term=term*jq/64;j0=j0+term;term=term*jq/81;j0=j0+term;term=term*jq/100;j0=j0+term;term=term*jq/121;j0=j0+term;term=term*jq/144;j0=j0+term;term=term*jq/169;j0=j0+term;term=term*jq/196;j0=j0+term;j0;y=1.5*j0*cos(0*th)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 4 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=64;NR=50;k=floor(u/NL);sa=floorMod(u,NL)/(NL-1);rr=k/(NR-1)*3.0;th=sa*2*PI;x=rr*cos(th);z=rr*sin(th);jq=(rr*2.2)*(rr*2.2)*(-0.25);term=1.0;j0=1.0;term=term*jq/1;j0=j0+term;term=term*jq/4;j0=j0+term;term=term*jq/9;j0=j0+term;term=term*jq/16;j0=j0+term;term=term*jq/25;j0=j0+term;term=term*jq/36;j0=j0+term;term=term*jq/49;j0=j0+term;term=term*jq/64;j0=j0+term;term=term*jq/81;j0=j0+term;term=term*jq/100;j0=j0+term;term=term*jq/121;j0=j0+term;term=term*jq/144;j0=j0+term;term=term*jq/169;j0=j0+term;term=term*jq/196;j0=j0+term;j0;y=1.5*j0*cos(2*th)' 1 200 'null' 1 null
+```
+
+### zoneplate · 菲涅尔波带片（内疏外密的同心环）
+
+`floor(r²/λf)` 取整再按奇偶分带——**环带的边界在 `r²` 上等间距**，换算到半径就是 `r ∝ √n`，于是**越往外环越密、最内圈反倒最宽**。这正是菲涅尔波带片的构造（也是牛顿环的条纹间距规律），和等间距同心环的观感完全不同：靠近中心是一大片空白，外圈密集到几乎连成一片。**用平方项做判据而不是线性项，就是「衍射结构」与「装饰花纹」的分界**。只保留奇数带（`floorMod(n,2)<1`），6909 粒 / 11ms、占格 968。改 0.28 换第一带的半径（也就是焦距），改 2 换保留奇带/偶带。
+
+标签：`conditional` `表达式` `光学`
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.2 0.15 3.2 'rr=sqrt(x*x+z*z);n=floor(rr*rr/0.28);floorMod(n,2)<1' 0.1 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
