@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 126 条）
+## 已收录模板（当前 127 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1642,6 +1642,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 5471 'u=t;S=36;Nv=152;k=floor(u/S);s=floorMod(u,S)/(S-1);a=2.0*PI*k/Nv;b=2.0*PI*floorMod(k*76,Nv)/Nv;px=cos(a)*(1.0-s)+cos(b)*s;pz=sin(a)*(1.0-s)+sin(b)*s;x=px*3.8;z=pz*3.8;y=0' 1 200 'null' 1 null
+```
+
+### dupinfamily · Dupin 圆纹曲面三态（环面 / 角环面 / 纺锤环面）
+
+**同一条公式 `(R + r·cos v)·(cos u, sin u)`，R 与 r 的比值一变，曲面就跨越三种拓扑**。R > r 是普通**环面**（甜甜圈，中间有个真正的洞）；R = r 是**角环面**（horn torus）——洞收缩到只剩下中心一个相切点，整张面在那里自己碰到自己；R < r 是**纺锤环面**（spindle torus）——洞已经消失并翻了出来，管子在中轴附近自交，形成一片「双层壳」。**这不是三张不同的曲面，而是同一族曲面的三个参数区间**，Dupin 圆纹曲面因此是拓扑学教科书里「参数连续变动导致拓扑突变」的标准例子。左侧内径 R−r = 2（有洞）、中间内径 0（相切）、右侧内径为负（自交）。三条各 2500 粒 / 共 7500 粒 24ms、占格 3840。改 R/r 比值扫过整个族；把 cos(ph)、sin(ph) 换成 cos(k·ph) 得到花瓣状的广义圆纹曲面。
+
+标签：`parameter` `表达式` `拓扑`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);th=k/(NRv-1)*2.0*PI;ph=s*2.0*PI;rr=3+1*cos(ph);x=rr*cos(th);z=rr*sin(th);y=1*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);th=k/(NRv-1)*2.0*PI;ph=s*2.0*PI;rr=2+2*cos(ph);x=rr*cos(th);z=rr*sin(th);y=2*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);th=k/(NRv-1)*2.0*PI;ph=s*2.0*PI;rr=1+2*cos(ph);x=rr*cos(th);z=rr*sin(th);y=2*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
