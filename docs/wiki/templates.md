@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 127 条）
+## 已收录模板（当前 128 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1660,6 +1660,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;k=floor(u/NL);s=floorMod(u,NL)/(NL-1);th=k/(NRv-1)*2.0*PI;ph=s*2.0*PI;rr=1+2*cos(ph);x=rr*cos(th);z=rr*sin(th);y=2*sin(ph)' 1 200 'null' 1 null
+```
+
+### colorspace · 色彩空间三态（RGB 立方体 / HLS 双锥 / HSV 球）
+
+把**颜色本身当成几何**：位置坐标就是色彩坐标，粒子颜色就是它所在位置的那一点色彩。左边是 **RGB 立方体**——三个轴分别是红、绿、蓝的强度，八个角对应黑/红/绿/蓝/黄/品红/青/白，所以**立方体主对角线就是灰度轴**（从黑到白）。中间是 **HLS 双锥**——竖直方向是亮度（0 黑、1 白），水平半径是饱和度，绕一圈是色相；因为亮度趋近 0 或 1 时饱和度必然趋零，形状自然收成两个尖锥。右边是 **HSV 球**——色相绕赤道、明度走南北极，是「色相环 × 明度」的球面摆法。**RGB 立方是最容易误解的颜色模型**：它本质上是一个正方体而不是色轮，两色之间的插值走直线穿过立方体内部（这就是为什么 RGB 渐变经常出现发灰的中间色）。三态共 6844 粒 / 2788 色种 / 28ms、占格 4330。改 14 换立方体分辨率（14³=2744 点），改 2.5 换尺寸。
+
+标签：`rgbaparameter` `表达式` `颜色场`
+
+```
+/particleex rgbaparameter minecraft:end_rod -7 0 0 0 0 0 0 2743 'u=t;N=14;a=floor(u/(N*N));rem=floorMod(u,N*N);b=floor(rem/N);c=floorMod(rem,N);x=(a/(N-1)-0.5)*5.0;y=(b/(N-1)-0.5)*5.0;z=(c/(N-1)-0.5)*5.0;cr=a/(N-1);cg=b/(N-1);cb=c/(N-1)' 1 200 'null' 1 null
+```
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 2499 'u=t;N=50;kk=floor(u/N);j=floorMod(u,N);hh=j/(N-1);ll=kk/(N-1);ss=1.0-abs(2.0*ll-1.0);ang=2.0*PI*hh;x=ss*cos(ang)*2.5;z=ss*sin(ang)*2.5;y=(ll-0.5)*5.0;hv=hh*6.0;cr=max(0.0,min(1.0,abs(hv-3.0)-1.0));cg=max(0.0,min(1.0,2.0-abs(hv-2.0)));cb=max(0.0,min(1.0,2.0-abs(hv-4.0)))' 1 200 'null' 1 null
+```
+
+```
+/particleex rgbaparameter minecraft:end_rod 7 0 0 0 0 0 0 1599 'u=t;N=40;kk=floor(u/N);j=floorMod(u,N);th=j/(N-1)*2.0*PI;ph=kk/(N-1)*PI;ss=sin(ph);x=ss*cos(th)*2.5;z=ss*sin(th)*2.5;y=cos(ph)*2.5;hh=th/(2.0*PI);hv=hh*6.0;cr=max(0.0,min(1.0,abs(hv-3.0)-1.0));cg=max(0.0,min(1.0,2.0-abs(hv-2.0)));cb=max(0.0,min(1.0,2.0-abs(hv-4.0)))' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
