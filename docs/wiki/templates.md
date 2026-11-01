@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 110 条）
+## 已收录模板（当前 112 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1448,6 +1448,22 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 6399 'u=floor(t/80)/79*2*PI;v=floorMod(t,80)/79*2*PI;x=2.4*sin(3*u)*cos(v);y=2.4*sin(4*u+1.5708)*sin(v);z=2.4*sin(5*u)*cos(u+1.0)' 1 500 'null' 1 null
+```
+
+### lamepolar · 超椭圆旋转体（Lamé 曲线的球面化）
+
+把二维的超椭圆（Lamé 曲线）`(|x|/a)^n + (|y|/b)^n = 1` 改写成极坐标形式 `r = 1/(|cosθ|^n + |sinθ|^n)^(1/n)`，再让 `θ` 走**极角**、方位角绕轴旋转。当 `n = 2.6` 时**截面已经明显方于圆、但又不到直角**——旋转得到的实体是一个**四角略钝的柱状体**，侧视是规则矩形轮廓、俯视是带圆角的方形。`n → ∞` 趋正方体、`n → 2` 退化为球，`n < 2` 则是**星形**（内凹，与超二次曲面的 `e > 1` 同一族但走的是极坐标路线）。2000 粒 / 6ms、占格 752。改 2.6 换方/圆程度，改 2.6 的分母换整体尺寸。
+
+```
+/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NS=20;NP=100;m=floor(u/NP);p=floorMod(u,NP)/NP;eta=m/(NS-1)*PI-PI/2;s2=eta;s1=p*2*PI;n=2.6;c=abs(cos(eta));s=abs(sin(eta));rr=2.6/pow(pow(c,n)+pow(s,n),1/n);dis=rr' 1 200 'null' 1 null
+```
+
+### lemnisphere · 双纽线旋转体（上下对合的双叶）
+
+双纽线（lemniscate）的极坐标式 `r² = cos(2θ)` 只在 `|θ| < 45°` 与 `|θ| > 135°` 有实解——这两个区间正好是**赤道两侧的两片扇形**，绕轴旋转后各成一个「碗」。两片碗在赤道处收窄、在极点处张开，合起来是**上下对称、中间掐腰的双叶**，形似沙漏或两个对扣的半球。这是极坐标方程天然带「定义域断裂」的例子：`sqrt(cos 2θ)` 在 `cos 2θ < 0` 处是虚数，我们取 `abs` 后得到镜像的两叶——**真正的双纽线没有腰，只有两个分开的环**，而旋转后它们被赤道连在一起。2000 粒 / 7ms、占格 584。改 2.8 换整体尺寸。
+
+```
+/particleex polarparameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NS=20;NP=100;m=floor(u/NP);p=floorMod(u,NP)/NP;eta=m/(NS-1)*PI-PI/2;s2=eta;s1=p*2*PI;c=cos(2*eta);rr=2.8*sqrt(abs(c));dis=rr' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
