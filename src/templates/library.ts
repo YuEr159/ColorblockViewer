@@ -1166,6 +1166,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.2 0.15 3.2 'rr=sqrt(x*x+z*z);n=floor(rr*rr/0.28);floorMod(n,2)<1' 0.1 200 null 1 null",
     ],
   },
+  {
+    id: 'orbital',
+    name: '氢原子电子云（3s / 3p / 3d 轨道等值面）',
+    desc: '**波函数 `ψ = R(r)·Y(θ,φ)` 的等概率密度面**，`|ψ|² > 阈值` 的地方就长粒子。三条命令从左到右是 3s（球对称）、3p（哑铃）、3d（四叶），都取 n=3 主量子数——**同一族里径向节点数逐级递增**。径向部分用拉盖尔多项式（3s 是 `(27−18p+2p²)e^(−p/2)`，含**两个径向节点**，所以剖面上能看到「球壳里套球壳」的双层结构；3p 是 `p(6−p)e^(−p/2)`，一个节点；3d 是 `p²e^(−p/2)`，无节点），角向部分依次是常数、`cosθ`、`(3cos²θ−1)` 和 `sin²θ·cos2φ`。**库仑势里的球谐阶数决定了角向叶瓣数**，这是量子力学最直观的一张图。三条各 4–8 千粒 / 共 23k 粒 150ms。**阈值越高壳层越薄**（3s 改 4→10 只剩内壳），`p=2r/3` 里的 3 是主量子数，改成 2 或 4 就换成 2s / 4s 轨道。',
+    tags: ['conditional', '表达式', '量子力学'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -18 0 0 1 0.95 0.89 1 0 0 0 9 9 9 'rr=sqrt(x*x+y*y+z*z)+0.001;ct=y/rr;p=2.0*rr/3.0;st=sqrt(max(1.0-ct*ct,0.0));rad=(27.0-18.0*p+2.0*p*p)*exp(-p*0.5);ang=1.0;psi=rad*ang;d=psi*psi;d>4' 0.4 200 null 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 9 9 9 'rr=sqrt(x*x+y*y+z*z)+0.001;ct=y/rr;p=2.0*rr/3.0;st=sqrt(max(1.0-ct*ct,0.0));rad=p*(6.0-p)*exp(-p*0.5);ang=ct;psi=rad*ang;d=psi*psi;d>2' 0.4 200 null 1 null",
+      "/particleex conditional minecraft:end_rod 18 0 0 1 0.95 0.89 1 0 0 0 9 9 9 'rr=sqrt(x*x+y*y+z*z)+0.001;ct=y/rr;p=2.0*rr/3.0;st=sqrt(max(1.0-ct*ct,0.0));rad=p*p*exp(-p*0.5);ang=(st*st*cos(2.0*atan2(z,x)));psi=rad*ang;d=psi*psi;d>1.5' 0.4 200 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
