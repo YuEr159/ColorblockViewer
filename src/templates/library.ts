@@ -1364,6 +1364,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 10 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=40;NA=80;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ax=kk/(NA-1);th=ss*2.0*PI+ax*4*PI;rr=1.8*(1.0+2.6*ax);x=rr*cos(th);y=(ax-0.5)*8.0;z=rr*sin(th)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'wigner',
+    name: 'Wigner-Seitz 胞三态（立方 / 截角八面体 / 菱形十二面体）',
+    desc: '**三种布拉维格子的第一布里渊区（= Wigner-Seitz 胞）**——固体物理里决定能带结构的那个几何体。左**简单立方 SC**：\`max(|x|,|y|,|z|) = a/2\`，就是一个立方体（L∞ 范数的等值面）。中**体心立方 BCC**：\`d = ½·max(|x±y±z|)\` 取四个对角线，得到**截角八面体**（8 个正六边形 + 6 个正方形）——因为 BCC 的最近邻是 8 个体对角方向 + 6 个轴向次近邻，Wigner-Seitz 胞被这 14 个邻点切成 14 个面。右**面心立方 FCC**：\`d = ½·max(|x±y|)、max(|y±z|)、max(|z±x|)\` 三组取大，得到**菱形十二面体**（12 个菱形面）——FCC 有 12 个最近邻，正好对应 12 个面。**这不是三个随手挑的形状：面数 = 最近邻数**，这是 Wigner-Seitz 构造的定义性质。三条各约 5600 粒 / 共 16794 粒 65ms、占格 3464。改 0.065 换壳层厚度（越小越接近理想的多面体表面）。',
+    tags: ['conditional', '表达式', '晶体学'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 2.6 2.6 2.6 'd=max(max(abs(x),abs(y)),abs(z))-2.0;abs(d)<0.065' 0.13 300 null 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2.6 2.6 2.6 'd=max(max(abs(x+y+z),abs(x+y-z)),max(abs(x-y+z),abs(-x+y+z)))*0.5-2.0;abs(d)<0.065' 0.13 300 null 1 null",
+      "/particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 2.6 2.6 2.6 'd=max(max(max(abs(x+y),abs(x-y)),max(abs(y+z),abs(y-z))),max(abs(z+x),abs(z-x)))*0.5-2.0;abs(d)<0.065' 0.13 300 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
