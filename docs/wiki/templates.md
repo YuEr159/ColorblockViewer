@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 108 条）
+## 已收录模板（当前 109 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1432,6 +1432,14 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NU=80;NV=60;k=floor(u/NV);s=floorMod(u,NV)/(NV-1);a=k/(NU-1)*2*PI;b=s*2*PI;x4=cos(a);y4=sin(a);z4=cos(b)*0.7;w4=sin(b)*0.7;sc=2.6/(2.8+w4);x=x4*3.2*sc;y=y4*3.2*sc;z=z4*3.2*sc' 1 200 'null' 1 null
+```
+
+### hcp · 密排六方点阵（HCP 的 ABAB 堆垛）
+
+金属三种基本格子（SC/BCC/FCC）之外最常见的第四种：**密排六方**。做法是先按六方格子求出每个原子最近的格点，再判「到该格点的距离 < 0.42」；关键在于 `oy = floorMod(hy,2)·0.5a`——**奇数层整体沿 x 平移半个晶格**，这正是 ABAB 堆垛：第二层原子正好落在第一层的三角空隙里，这才是「密排」（空间利用率 74%，与 FCC 并列最高）。侧视能看到层间明显错位、正视是交替的锯齿排列。这三向视图合起来是 HCP 与 FCC 最本质的区别：**FCC 是 ABCABC、HCP 是 ABAB，周期不同**。18480 粒 / 121ms、占格 3060。改 1.2 换晶格常数，改 0.42 换原子球半径。
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'a=1.2;hx=floor((x+a*0.5)/a);hz=floor((z+a*0.866)/a);hy=floor((y+a*0.4)/(a*0.8165));oy=floorMod(hy,2)*0.5*a;dx=x-hx*a;dz=z-hz*a*0.866-oy;dy=y-hy*a*0.8165;d=sqrt(dx*dx+dz*dz+dy*dy);d<0.42' 0.12 200 null 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
