@@ -1342,6 +1342,17 @@ export const TEMPLATES: Template[] = [
       "/particleex normal minecraft:end_rod 20 0 0 1 0.95 0.89 1 0 0 0 3.0 0.35 3.0 2000 3000 'vx=0.35*sin(z*1.2);vy=0.0;vz=0.35*sin(x*1.2)' 1 null",
     ],
   },
+  {
+    id: 'nbttypes',
+    name: '三种贴图粒子球（item / block / block_crumble）',
+    desc: '**\`type{NBT}\` 让粒子带上真实贴图**——这是 ColorBlock 里唯一能画出「不是小圆点」的粒子的方式。三条各用一种贴图类型：\`item{item:"minecraft:diamond"}\` 画出**物品图标**（钻石的菱形贴图）、\`block{block_state:"minecraft:gold_block"}\` 画出**方块贴图**（金块那张 16×16 的方脸）、\`block_crumble{block_state:"minecraft:dirt"}\` 画出**方块碎屑**（泥土的小碎块，原版破坏方块时的那个）。**三种的语义差别很关键**：\`item\` 是整张图标平铺、\`block\` 是按方块模型的朝向贴、\`block_crumble\` 是破碎的小片——同一个 \`block_state\` 字段，换外层类型观感完全不同。**注意 NBT 字段名必须带下划线**（\`block_state\` 不是 blockState），写错会被静默忽略变成默认贴图。三条各铺一颗球壳（\`|r−3| < 0.08\`）、共 12966 粒 50ms、占格 4884。改 0.08 换壳厚、改 \`minecraft:diamond\` 换任意物品（含模组物品）、改 \`gold_block\` 换任意方块。',
+    tags: ['particle', 'type{NBT}', '贴图'],
+    cmds: [
+      "/particleex conditional minecraft:item{item:\"minecraft:diamond\"} -12 0 0 1 0.95 0.89 1 0 0 0 3.2 3.2 3.2 'rr=sqrt(x*x+y*y+z*z);abs(rr-3.0)<0.08' 0.16 400 null 1 null",
+      "/particleex conditional minecraft:block{block_state:\"minecraft:gold_block\"} 0 0 0 1 0.95 0.89 1 0 0 0 3.2 3.2 3.2 'rr=sqrt(x*x+y*y+z*z);abs(rr-3.0)<0.08' 0.16 400 null 1 null",
+      "/particleex conditional minecraft:block_crumble{block_state:\"minecraft:dirt\"} 12 0 0 1 0.95 0.89 1 0 0 0 3.2 3.2 3.2 'rr=sqrt(x*x+y*y+z*z);abs(rr-3.0)<0.08' 0.16 400 null 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
