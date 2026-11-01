@@ -1264,6 +1264,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;NRv=40;kk=floor(u/NL);s=floorMod(u,NL)/(NL-1);uu=(kk/(NRv-1)*2.0-1.0)*1.4;vv=s*2.0*PI;ct=cos(1.5708);st=sin(1.5708);hx=uu*cos(vv);hy=uu*sin(vv);hz=vv;cx=cosh(uu)*cos(vv);cy=uu;cz=cosh(uu)*sin(vv);x=ct*hx+st*cx;y=ct*hz+st*cy;z=ct*hy+st*cz' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'beammodes',
+    name: '简支梁振型（3 / 4 / 6 阶弯曲模态）',
+    desc: '**结构力学里最基础的一张图**：一根两端简支的梁，第 n 阶弯曲振型的挠曲线就是 \`y(x) = sin(nπx/L)\`——正弦曲线本身就是梁的自由振型。**节点数 = n − 1 是这条曲线的全部信息**：三阶有两个不动点、四阶三个、六阶五个，这些节点位置永远不动（节点处振幅恒为零），所以敲击一根梁时，**位置就在节点上时无论怎么敲都激发不出那个模态**——这是模态测试找节点、避免共振的物理依据。每条做成 z 方向 2.4 格宽的薄板而不是单根线，才能看出「梁」是一整片而不是一根筋。三条 3/4/6 阶各 3000 粒 / 共 9000 粒 21ms、占格 1502。改 n 换阶数（n 越大节点越密，三阶变七阶就是 6 个节点）；把 2.4 改成 0 就退化成单根线（占格会掉到 1/8）。',
+    tags: ['parameter', '表达式', '力学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -2 0 0 1 0.95 0.89 1 0 0 0 0 2999 'u=t;NZ=30;NXv=100;kk=floor(u/NZ);s=floorMod(u,NZ)/(NZ-1);xx=(kk/(NXv-1));amp=sin(3*PI*xx);x=(xx-0.5)*11.0;y=amp*1.3;z=(s-0.5)*2.4+-0.8' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2999 'u=t;NZ=30;NXv=100;kk=floor(u/NZ);s=floorMod(u,NZ)/(NZ-1);xx=(kk/(NXv-1));amp=sin(4*PI*xx);x=(xx-0.5)*11.0;y=amp*1.3;z=(s-0.5)*2.4+0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 2 0 0 1 0.95 0.89 1 0 0 0 0 2999 'u=t;NZ=30;NXv=100;kk=floor(u/NZ);s=floorMod(u,NZ)/(NZ-1);xx=(kk/(NXv-1));amp=sin(6*PI*xx);x=(xx-0.5)*11.0;y=amp*1.3;z=(s-0.5)*2.4+0.8' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
