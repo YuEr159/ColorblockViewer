@@ -1441,6 +1441,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;rr=hypot(xx,zz)/6.4;ph=atan2(zz,xx);x=xx;z=zz;y=pow(rr,7.0)*sin(7.0*ph)*2.8' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'arrayfactor',
+    name: '均匀直线阵天线方向图三态（余弦和式）',
+    desc: "**这是相控阵雷达天线方向图的标准公式画成三维极坐标**——N 个等间距天线阵元，相邻两元之间的相位差 ψ = π·cosθ（阵元间距取半波长 λ/2），总辐射强度就是「阵列因子」AF(ψ)。教科书写作 sin(Nψ/2)/sin(ψ/2)，但它有个**分母为零**的病态点（ψ→0 时 0/0），所以这里改写成**余弦和式**：偶数 N 时 AF = 2[cos(ψ/2) + cos(3ψ/2) + … + cos((N−1)ψ/2)]，恒等变形、没有任何除零风险。极坐标绘制：半径 = |AF|/N，方向 = (θ, φ)。**N 越大，主瓣越窄、侧瓣越多**：N=4 时主瓣宽厚只有一圈侧瓣；N=10 时主瓣收成细针、侧瓣密布成环——这正是阵列天线「阵元越多指向性越好」的直接图像。主瓣沿 z 轴两端射出（端射，未加相位扫描），中间的横纹就是各个侧瓣环。三条各 3600 粒 / 共 10800 粒 29ms、占格 1528。把 psi 改成 PI*cos(th)+扫描相移 即可让主瓣偏转（相位扫描）。",
+    tags: ['parameter', '表达式', '电磁'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;psi=PI*cos(th);AF=2.0*cos(1.0*psi*0.5)+2.0*cos(3.0*psi*0.5);rr=3.0*abs(AF)/4.0;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;psi=PI*cos(th);AF=2.0*cos(1.0*psi*0.5)+2.0*cos(3.0*psi*0.5)+2.0*cos(5.0*psi*0.5);rr=3.0*abs(AF)/6.0;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;psi=PI*cos(th);AF=2.0*cos(1.0*psi*0.5)+2.0*cos(3.0*psi*0.5)+2.0*cos(5.0*psi*0.5)+2.0*cos(7.0*psi*0.5)+2.0*cos(9.0*psi*0.5);rr=3.0*abs(AF)/10.0;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
