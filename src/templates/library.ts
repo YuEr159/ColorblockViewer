@@ -1485,6 +1485,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=80;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;rr=(0.75+0.75*cos(tt))*2.4;px=rr*cos(tt);sg=ss*2.0*PI;x=px*cos(sg);z=px*sin(sg);y=rr*sin(tt)*0.55' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'rectdrum',
+    name: '矩形鼓驻波模态三态（振幅着色）',
+    desc: "**矩形的鼓面上，每一阶驻波都是 (m,n) 两个整数决定的鼓包图案**——y = sin(mπu)·sin(nπv)，四条边始终钉在 0（这就是「边缘固定的边界条件」），中间冒出 m×n 个鼓包，鼓包之间是节线。这条正好补上库里 `besseldrum` 留的空白：那个是**圆形**鼓，模态由贝塞尔函数零点决定、鼓包是环状且不对称；矩形鼓的模态是**纯正弦乘积**，鼓包成整齐的棋盘，代价也低得多。三条 (m,n) = (1,2) / (2,2) / (3,3)：第一个是一条横着的波浪，第二个是四鼓包的棋盘，第三个是九鼓包。**颜色不是装饰，它就是振幅**：cr = |amp| 让波峰波谷都点亮成红，cg = 1−amp² 在零振幅处（节线）最绿、在鼓包顶最暗，于是节线在成片上就是一道道绿色的网。三条各 3600 粒 / 共 10800 粒 29ms、占格 3446、共 155 种颜色。改 m/n 换模态，改 0.9 换鼓包高度。",
+    tags: ['rgbaparameter', '表达式', '波动'],
+    cmds: [
+      "/particleex rgbaparameter minecraft:end_rod -9 0 0 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss;amp=sin(1.0*PI*uu)*sin(2.0*PI*vv);x=(uu-0.5)*9.0;y=0.9*amp;z=(vv-0.5)*9.0;hh=abs(amp);cr=hh;cg=1.0-hh*hh;cb=1.0-hh' 1 200 'null' 1 null",
+      "/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss;amp=sin(2.0*PI*uu)*sin(2.0*PI*vv);x=(uu-0.5)*9.0;y=0.9*amp;z=(vv-0.5)*9.0;hh=abs(amp);cr=hh;cg=1.0-hh*hh;cb=1.0-hh' 1 200 'null' 1 null",
+      "/particleex rgbaparameter minecraft:end_rod 9 0 0 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss;amp=sin(3.0*PI*uu)*sin(3.0*PI*vv);x=(uu-0.5)*9.0;y=0.9*amp;z=(vv-0.5)*9.0;hh=abs(amp);cr=hh;cg=1.0-hh*hh;cb=1.0-hh' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
