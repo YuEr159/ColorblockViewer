@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 141 条）
+## 已收录模板（当前 142 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1916,6 +1916,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 10 0 0 1 0.95 0.89 1 0 0 0 0 3499 'u=t;NL=50;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;rr=1.3+0.5*sin(8*th);x=(3.2+rr*cos(ph))*cos(th);z=(3.2+rr*cos(ph))*sin(th);y=rr*sin(ph)' 1 200 'null' 1 null
+```
+
+### blochball · 布洛赫球三重球壳（量子态空间）
+
+**一个量子比特的所有纯态都住在这个球的表面上**——北极是 |0⟩、南极是 |1⟩、赤道是 |+⟩/|−⟩ 这些等权叠加态。球面上的每一点 (θ, φ) 对应一个纯态，而**球内**的点对应混合态：半径就是纯度，越靠球心越混。三条由外到内是三个纯度层（R=3.5 / 2.2 / 1.1），各自都是一整张球面。**颜色用了双参数色相** `h = θ/π·0.5 + φ/2π·0.5`——极角与方位角各占一半权重，于是球面上**处处不同色**（1942 种），比单用纬度只能出 70 条离散色带好一个数量级，这是「两个角度都要编码进一条色带」时的标准折中写法。三层共 10944 粒 35ms、占格 2792。改三个半径换纯度分层；把 h 的权重倒过来（φ 占大头）会得到纵向条纹而不是斜向过渡。
+
+标签：`rgbaparameter` `表达式` `量子`
+
+```
+/particleex rgbaparameter minecraft:end_rod -8 0 0 0 0 0 0 3647 'u=t;NL=76;NRv=48;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=3.5;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph);h=th/PI*0.5+ss*0.5;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
+```
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 3647 'u=t;NL=76;NRv=48;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=2.2;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph);h=th/PI*0.5+ss*0.5;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
+```
+
+```
+/particleex rgbaparameter minecraft:end_rod 8 0 0 0 0 0 0 3647 'u=t;NL=76;NRv=48;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=1.1;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph);h=th/PI*0.5+ss*0.5;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
