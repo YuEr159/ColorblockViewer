@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 142 条）
+## 已收录模板（当前 143 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -1934,6 +1934,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex rgbaparameter minecraft:end_rod 8 0 0 0 0 0 0 3647 'u=t;NL=76;NRv=48;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=1.1;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph);h=th/PI*0.5+ss*0.5;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
+```
+
+### hypergeo · 庞加莱圆盘测地线族（双曲直线）
+
+**双曲几何里的「直线」在庞加莱圆盘里画成与边界正交的圆弧**——这是这个模型的全部含义。一条这样的弧就是一个「双曲直线」，两条不同的弧之间满足双曲公理：过直线外一点有**无穷多条**平行线（欧氏几何只有一条）。三条命令各画一组：**每条弧的圆心在圆外距 a 处、半径 sqrt(a²−1)**，这样它与单位圆严格正交，才是合法的双曲直线。la 从 0 到 9 让 a 按 1.15 的几何级数递增（1.08 → 4.2），于是有 10 层疏密不同的弧，ii 让每层绕 20 个方向旋转。**中点那个空洞不是 bug**：所有与边界正交的弧都不经过圆心，所以圆心附近必然是空的——这正是双曲几何里「中心到任何测地线的距离都为正」的视觉体现。三条各 11000 粒 / 共 33000 粒 67ms、占格 1938。改正交条件 `lim=acos((1/a−a)/sqrt(a²−1))` 会改变弧落在圆盘内的哪一段，改 1.15 换层的疏密梯度。
+
+标签：`parameter` `表达式` `非欧几何`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 10999 'u=t;NP=55;MM=20;LL=10;per=MM*NP;la=floor(u/per);rem=floorMod(u,per);ii=floor(rem/NP);ss=floorMod(rem,NP)/(NP-1);aa=1.08*pow(1.15,la);rad=sqrt(aa*aa-1.0);lim=acos((1.0/aa-aa)/rad);th0=lim+(2.0*PI-2.0*lim)*ss;px=aa+rad*cos(th0);pz=rad*sin(th0);ang=ii/(MM-1)*2.0*PI;qx=px*cos(ang)-pz*sin(ang);qz=px*sin(ang)+pz*cos(ang);x=qx*4.2;y=0.0;z=qz*4.2' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 10999 'u=t;NP=55;MM=20;LL=10;per=MM*NP;la=floor(u/per);rem=floorMod(u,per);ii=floor(rem/NP);ss=floorMod(rem,NP)/(NP-1);aa=1.08*pow(1.15,la);rad=sqrt(aa*aa-1.0);lim=acos((1.0/aa-aa)/rad);th0=lim+(2.0*PI-2.0*lim)*ss;px=aa+rad*cos(th0);pz=rad*sin(th0);ang=ii/(MM-1)*2.0*PI;qx=px*cos(ang)-pz*sin(ang);qz=px*sin(ang)+pz*cos(ang);x=qx*4.2;y=0.0;z=qz*4.2' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 10999 'u=t;NP=55;MM=20;LL=10;per=MM*NP;la=floor(u/per);rem=floorMod(u,per);ii=floor(rem/NP);ss=floorMod(rem,NP)/(NP-1);aa=1.08*pow(1.15,la);rad=sqrt(aa*aa-1.0);lim=acos((1.0/aa-aa)/rad);th0=lim+(2.0*PI-2.0*lim)*ss;px=aa+rad*cos(th0);pz=rad*sin(th0);ang=ii/(MM-1)*2.0*PI;qx=px*cos(ang)-pz*sin(ang);qz=px*sin(ang)+pz*cos(ang);x=qx*4.2;y=0.0;z=qz*4.2' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
