@@ -1452,6 +1452,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;psi=PI*cos(th);AF=2.0*cos(1.0*psi*0.5)+2.0*cos(3.0*psi*0.5)+2.0*cos(5.0*psi*0.5)+2.0*cos(7.0*psi*0.5)+2.0*cos(9.0*psi*0.5);rr=3.0*abs(AF)/10.0;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'gibbs2d',
+    name: '二维傅里叶方波曲面三态（Gibbs 现象）',
+    desc: "**这张曲面上每一个「台阶」都在告诉你：用光滑的正弦波拼方形，边角永远拼不干净**。一维方波的傅里叶级数只含奇次谐波 sin(kx)/k（k=1,3,5…），把两条一维的级数相乘就得到二维棋盘方波——正负交替的方形平台，平台之间是陡峭的过渡带。**三条只差级数项数（3 / 9 / 25 项）**，看上去只是台阶边缘越来越陡，但真正要盯的是**过渡带的高度**：N=3 时峰谷是 ±1.741，N=9 时 ±1.696, N=25 时 ±1.642——几乎没降。这就是 **Gibbs 现象**：无论加多少项，间断点附近的过冲只能收敛到理论端值 ≈1.39×平台高度，永远不会消失。项数增加只是把过冲**挤窄**，不能把它压平。三条各 3600 粒 / 共 10800 粒 52ms、占格 10800（满格）。改 PI/4.5 换格子尺寸，改 2.0 换高差。",
+    tags: ['parameter', '表达式', '傅里叶'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -19 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*18.0;zz=(ss-0.5)*18.0;tx=xx*PI/4.5;tz=zz*PI/4.5;fx=sin(1.0*tx)+sin(3.0*tx)/3.0+sin(5.0*tx)/5.0;fz=sin(1.0*tz)+sin(3.0*tz)/3.0+sin(5.0*tz)/5.0;x=xx;y=2.0*fx*fz;z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*18.0;zz=(ss-0.5)*18.0;tx=xx*PI/4.5;tz=zz*PI/4.5;fx=sin(1.0*tx)+sin(3.0*tx)/3.0+sin(5.0*tx)/5.0+sin(7.0*tx)/7.0+sin(9.0*tx)/9.0+sin(11.0*tx)/11.0+sin(13.0*tx)/13.0+sin(15.0*tx)/15.0+sin(17.0*tx)/17.0;fz=sin(1.0*tz)+sin(3.0*tz)/3.0+sin(5.0*tz)/5.0+sin(7.0*tz)/7.0+sin(9.0*tz)/9.0+sin(11.0*tz)/11.0+sin(13.0*tz)/13.0+sin(15.0*tz)/15.0+sin(17.0*tz)/17.0;x=xx;y=2.0*fx*fz;z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 19 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*18.0;zz=(ss-0.5)*18.0;tx=xx*PI/4.5;tz=zz*PI/4.5;fx=sin(1.0*tx)+sin(3.0*tx)/3.0+sin(5.0*tx)/5.0+sin(7.0*tx)/7.0+sin(9.0*tx)/9.0+sin(11.0*tx)/11.0+sin(13.0*tx)/13.0+sin(15.0*tx)/15.0+sin(17.0*tx)/17.0+sin(19.0*tx)/19.0+sin(21.0*tx)/21.0+sin(23.0*tx)/23.0+sin(25.0*tx)/25.0+sin(27.0*tx)/27.0+sin(29.0*tx)/29.0+sin(31.0*tx)/31.0+sin(33.0*tx)/33.0+sin(35.0*tx)/35.0+sin(37.0*tx)/37.0+sin(39.0*tx)/39.0+sin(41.0*tx)/41.0+sin(43.0*tx)/43.0+sin(45.0*tx)/45.0+sin(47.0*tx)/47.0+sin(49.0*tx)/49.0;fz=sin(1.0*tz)+sin(3.0*tz)/3.0+sin(5.0*tz)/5.0+sin(7.0*tz)/7.0+sin(9.0*tz)/9.0+sin(11.0*tz)/11.0+sin(13.0*tz)/13.0+sin(15.0*tz)/15.0+sin(17.0*tz)/17.0+sin(19.0*tz)/19.0+sin(21.0*tz)/21.0+sin(23.0*tz)/23.0+sin(25.0*tz)/25.0+sin(27.0*tz)/27.0+sin(29.0*tz)/29.0+sin(31.0*tz)/31.0+sin(33.0*tz)/33.0+sin(35.0*tz)/35.0+sin(37.0*tz)/37.0+sin(39.0*tz)/39.0+sin(41.0*tz)/41.0+sin(43.0*tz)/43.0+sin(45.0*tz)/45.0+sin(47.0*tz)/47.0+sin(49.0*tz)/49.0;x=xx;y=2.0*fx*fz;z=zz' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
