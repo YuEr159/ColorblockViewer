@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 147 条）
+## 已收录模板（当前 148 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2024,6 +2024,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 19 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*18.0;zz=(ss-0.5)*18.0;tx=xx*PI/4.5;tz=zz*PI/4.5;fx=sin(1.0*tx)+sin(3.0*tx)/3.0+sin(5.0*tx)/5.0+sin(7.0*tx)/7.0+sin(9.0*tx)/9.0+sin(11.0*tx)/11.0+sin(13.0*tx)/13.0+sin(15.0*tx)/15.0+sin(17.0*tx)/17.0+sin(19.0*tx)/19.0+sin(21.0*tx)/21.0+sin(23.0*tx)/23.0+sin(25.0*tx)/25.0+sin(27.0*tx)/27.0+sin(29.0*tx)/29.0+sin(31.0*tx)/31.0+sin(33.0*tx)/33.0+sin(35.0*tx)/35.0+sin(37.0*tx)/37.0+sin(39.0*tx)/39.0+sin(41.0*tx)/41.0+sin(43.0*tx)/43.0+sin(45.0*tx)/45.0+sin(47.0*tx)/47.0+sin(49.0*tx)/49.0;fz=sin(1.0*tz)+sin(3.0*tz)/3.0+sin(5.0*tz)/5.0+sin(7.0*tz)/7.0+sin(9.0*tz)/9.0+sin(11.0*tz)/11.0+sin(13.0*tz)/13.0+sin(15.0*tz)/15.0+sin(17.0*tz)/17.0+sin(19.0*tz)/19.0+sin(21.0*tz)/21.0+sin(23.0*tz)/23.0+sin(25.0*tz)/25.0+sin(27.0*tz)/27.0+sin(29.0*tz)/29.0+sin(31.0*tz)/31.0+sin(33.0*tz)/33.0+sin(35.0*tz)/35.0+sin(37.0*tz)/37.0+sin(39.0*tz)/39.0+sin(41.0*tz)/41.0+sin(43.0*tz)/43.0+sin(45.0*tz)/45.0+sin(47.0*tz)/47.0+sin(49.0*tz)/49.0;x=xx;y=2.0*fx*fz;z=zz' 1 200 'null' 1 null
+```
+
+### springtube · 螺旋弹簧管三态（疏密与粗细对照）
+
+**这是一根真正有粗细的弹簧，不是一条螺旋线**——中心线是半径 1.6 的圆柱螺旋，再沿每一点的**局部法平面**铺一个半径 0.35~0.55 的圆截面，于是得到一根实体管。关键在于截面方向的取法：必须用切向的垂直方向（cos φ, 0, sin φ）与竖直方向 (0,1,0) 张成，**不能直接写 (cos sg, sin sg, 0)**——后者在螺旋扭转时会变成一根扁带，而不是圆管。三条的区别在**匝数 / 螺距 / 管径的比例**：5 匝配 5.0 螺距是疏绕的粗弹簧，12 匝配 9.0 螺距是密绕的细弹簧，8 匝居中。匝数上升时弹簧被拉长，但正因为**管径同步变细**，相邻两圈的间隙才始终保持可见，不会糊成一根柱。三条各 6300 / 9000 / 12600 粒，共 27900 粒 66ms、占格 1728。改 R 换弹簧圈的半径，改 pitch 换疏密，改 tube 换粗细。
+
+标签：`parameter` `表达式` `曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 6299 'u=t;NL=140;NRv=45;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=tt*5*2.0*PI;R=1.6;cy=(tt-0.5)*5;cx=R*cos(ph);cz=R*sin(ph);sg=ss*2.0*PI;x=cx+0.55*cos(sg)*cos(ph);y=cy+0.55*sin(sg);z=cz+0.55*cos(sg)*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 8999 'u=t;NL=200;NRv=45;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=tt*8*2.0*PI;R=1.6;cy=(tt-0.5)*7;cx=R*cos(ph);cz=R*sin(ph);sg=ss*2.0*PI;x=cx+0.45*cos(sg)*cos(ph);y=cy+0.45*sin(sg);z=cz+0.45*cos(sg)*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 12599 'u=t;NL=280;NRv=45;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=tt*12*2.0*PI;R=1.6;cy=(tt-0.5)*9;cx=R*cos(ph);cz=R*sin(ph);sg=ss*2.0*PI;x=cx+0.35*cos(sg)*cos(ph);y=cy+0.35*sin(sg);z=cz+0.35*cos(sg)*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
