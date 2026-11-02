@@ -1474,6 +1474,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 12599 'u=t;NL=280;NRv=45;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=tt*12*2.0*PI;R=1.6;cy=(tt-0.5)*9;cx=R*cos(ph);cz=R*sin(ph);sg=ss*2.0*PI;x=cx+0.35*cos(sg)*cos(ph);y=cy+0.35*sin(sg);z=cz+0.35*cos(sg)*sin(ph)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'limaconrev',
+    name: '利马松旋转体三态（蚶线绕轴）',
+    desc: "**利马松（蚶线）r = b + a·cosθ 绕轴旋转成三维实体**——这条曲线的形状全靠 b/a 的比值：b > a 时是外凸的心形（无内环），b = a 时是**心形线**，b < a 时内侧凹进去、出现一个套着的小环。三条正好跨过这个分界点，于是旋转之后：第一个像**带浅坑的陀螺**，第二个是标准的**心形旋转体**（顶部有心尖），第三个的内环放大成了**贯通的内腔**——剖面图里能直接看到中心那片空白。**截面圆被压扁到 0.55 倍**是必要的：不压扁就是正球面旋转体，压扁之后这个曲面才有「厚盘」的体积感，占格也因此从一千多涨到三千多。三条各 3200 粒 / 共 9600 粒 26ms、占格 3172。把 0.55 改回 1.0 可直接看正圆柱对称的版本，改 2.4 换整体尺寸。",
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=80;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;rr=(0.55+1*cos(tt))*2.4;px=rr*cos(tt);sg=ss*2.0*PI;x=px*cos(sg);z=px*sin(sg);y=rr*sin(tt)*0.55' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=80;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;rr=(0.85+1*cos(tt))*2.4;px=rr*cos(tt);sg=ss*2.0*PI;x=px*cos(sg);z=px*sin(sg);y=rr*sin(tt)*0.55' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3199 'u=t;NL=80;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;rr=(0.75+0.75*cos(tt))*2.4;px=rr*cos(tt);sg=ss*2.0*PI;x=px*cos(sg);z=px*sin(sg);y=rr*sin(tt)*0.55' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
