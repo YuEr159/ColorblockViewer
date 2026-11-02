@@ -1419,6 +1419,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 10999 'u=t;NP=55;MM=20;LL=10;per=MM*NP;la=floor(u/per);rem=floorMod(u,per);ii=floor(rem/NP);ss=floorMod(rem,NP)/(NP-1);aa=1.08*pow(1.15,la);rad=sqrt(aa*aa-1.0);lim=acos((1.0/aa-aa)/rad);th0=lim+(2.0*PI-2.0*lim)*ss;px=aa+rad*cos(th0);pz=rad*sin(th0);ang=ii/(MM-1)*2.0*PI;qx=px*cos(ang)-pz*sin(ang);qz=px*sin(ang)+pz*cos(ang);x=qx*4.2;y=0.0;z=qz*4.2' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'bezier3',
+    name: '双三次贝塞尔曲面三态（16 控制点）',
+    desc: "**双三次 Bezier 曲面是 CAD 里所有自由曲面的始祖**——16 个控制点排成 4×4，横向、纵向各做一次三次 Bezier 插值，就得到一张光滑曲面。表达式把 16 个高度值直接写成字面量 h00…h33，先沿 t 方向三次插值出 4 个中间值 r0…r3，再沿 s 方向插值出最终高度。**三条的区别只在控制点**：单峰把中间 4 点抬到 4.2 得到圆润的丘；鞍形只抬两个对角点得到马鞍（一升一降，正是 z=xy 的形状）；双峰把四个角交替抬高抬出棋盘式起伏。**Bezier 的关键性质在这里看得很清楚**：曲面一定落在控制点的凸包内、且只在角点处穿过控制点——所以单峰的边缘始终归零、鞍形能保持四个角贴地。三条各 2500 粒 / 共 7500 粒 42ms、占格 3361。改 (s-0.5)*9.0 的系数换平面尺度，改 h 矩阵换任何形状——这就是「16 个数字生成一张曲面」的通用模板。",
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);s=ii/(NRv-1);tt=ss;b0s=(1.0-s)*(1.0-s)*(1.0-s);b1s=3.0*s*(1.0-s)*(1.0-s);b2s=3.0*s*s*(1.0-s);b3s=s*s*s;b0t=(1.0-tt)*(1.0-tt)*(1.0-tt);b1t=3.0*tt*(1.0-tt)*(1.0-tt);b2t=3.0*tt*tt*(1.0-tt);b3t=tt*tt*tt;h00=0.00;h01=1.20;h02=1.20;h03=0.00;h10=1.20;h11=4.20;h12=4.20;h13=1.20;h20=1.20;h21=4.20;h22=4.20;h23=1.20;h30=0.00;h31=1.20;h32=1.20;h33=0.00;r0=h00*b0t+h01*b1t+h02*b2t+h03*b3t;r1=h10*b0t+h11*b1t+h12*b2t+h13*b3t;r2=h20*b0t+h21*b1t+h22*b2t+h23*b3t;r3=h30*b0t+h31*b1t+h32*b2t+h33*b3t;yy=b0s*r0+b1s*r1+b2s*r2+b3s*r3;x=(s-0.5)*9.0;y=yy;z=(tt-0.5)*9.0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);s=ii/(NRv-1);tt=ss;b0s=(1.0-s)*(1.0-s)*(1.0-s);b1s=3.0*s*(1.0-s)*(1.0-s);b2s=3.0*s*s*(1.0-s);b3s=s*s*s;b0t=(1.0-tt)*(1.0-tt)*(1.0-tt);b1t=3.0*tt*(1.0-tt)*(1.0-tt);b2t=3.0*tt*tt*(1.0-tt);b3t=tt*tt*tt;h00=0.00;h01=3.00;h02=0.00;h03=0.00;h10=0.00;h11=0.00;h12=0.00;h13=0.00;h20=0.00;h21=0.00;h22=0.00;h23=0.00;h30=0.00;h31=0.00;h32=3.00;h33=0.00;r0=h00*b0t+h01*b1t+h02*b2t+h03*b3t;r1=h10*b0t+h11*b1t+h12*b2t+h13*b3t;r2=h20*b0t+h21*b1t+h22*b2t+h23*b3t;r3=h30*b0t+h31*b1t+h32*b2t+h33*b3t;yy=b0s*r0+b1s*r1+b2s*r2+b3s*r3;x=(s-0.5)*9.0;y=yy;z=(tt-0.5)*9.0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);s=ii/(NRv-1);tt=ss;b0s=(1.0-s)*(1.0-s)*(1.0-s);b1s=3.0*s*(1.0-s)*(1.0-s);b2s=3.0*s*s*(1.0-s);b3s=s*s*s;b0t=(1.0-tt)*(1.0-tt)*(1.0-tt);b1t=3.0*tt*(1.0-tt)*(1.0-tt);b2t=3.0*tt*tt*(1.0-tt);b3t=tt*tt*tt;h00=0.00;h01=3.50;h02=0.00;h03=3.50;h10=0.00;h11=0.00;h12=0.00;h13=0.00;h20=3.50;h21=0.00;h22=3.50;h23=0.00;h30=0.00;h31=3.50;h32=0.00;h33=3.50;r0=h00*b0t+h01*b1t+h02*b2t+h03*b3t;r1=h10*b0t+h11*b1t+h12*b2t+h13*b3t;r2=h20*b0t+h21*b1t+h22*b2t+h23*b3t;r3=h30*b0t+h31*b1t+h32*b2t+h33*b3t;yy=b0s*r0+b1s*r1+b2s*r2+b3s*r3;x=(s-0.5)*9.0;y=yy;z=(tt-0.5)*9.0' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
