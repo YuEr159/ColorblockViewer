@@ -1430,6 +1430,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);s=ii/(NRv-1);tt=ss;b0s=(1.0-s)*(1.0-s)*(1.0-s);b1s=3.0*s*(1.0-s)*(1.0-s);b2s=3.0*s*s*(1.0-s);b3s=s*s*s;b0t=(1.0-tt)*(1.0-tt)*(1.0-tt);b1t=3.0*tt*(1.0-tt)*(1.0-tt);b2t=3.0*tt*tt*(1.0-tt);b3t=tt*tt*tt;h00=0.00;h01=3.50;h02=0.00;h03=3.50;h10=0.00;h11=0.00;h12=0.00;h13=0.00;h20=3.50;h21=0.00;h22=3.50;h23=0.00;h30=0.00;h31=3.50;h32=0.00;h33=3.50;r0=h00*b0t+h01*b1t+h02*b2t+h03*b3t;r1=h10*b0t+h11*b1t+h12*b2t+h13*b3t;r2=h20*b0t+h21*b1t+h22*b2t+h23*b3t;r3=h30*b0t+h31*b1t+h32*b2t+h33*b3t;yy=b0s*r0+b1s*r1+b2s*r2+b3s*r3;x=(s-0.5)*9.0;y=yy;z=(tt-0.5)*9.0' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'saddlen',
+    name: 'n 阶调和鞍面族（花瓣鞍点）',
+    desc: "**这是一个调和多项式的实部**——把复数 (x+iz)ⁿ 展开，虚部就是 ρⁿ·sin(nφ)。它是拉普拉斯方程的解（Δf=0），所以这族曲面在数学物理里有个正式名字：**球谐函数在赤道面的截面**，也叫「鞍点族」。n=2 就是普通马鞍 z=xy 的形状，n 越大花瓣越多。**颜色深浅在这里就是高度**：三条各 3600 粒 / 共 10800 粒 25ms、占格 3656。ρ=hypot(x,z)/6.4 把平面半径归一化到 [0,1] 再取 n 次幂，这个归一化不能省——否则高次幂会让边缘的峰值把中心压成一片平地。改 2.8 换起伏幅度，改 6.4 换花瓣的收拢速度。",
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;rr=hypot(xx,zz)/6.4;ph=atan2(zz,xx);x=xx;z=zz;y=pow(rr,3.0)*sin(3.0*ph)*2.8' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;rr=hypot(xx,zz)/6.4;ph=atan2(zz,xx);x=xx;z=zz;y=pow(rr,5.0)*sin(5.0*ph)*2.8' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;rr=hypot(xx,zz)/6.4;ph=atan2(zz,xx);x=xx;z=zz;y=pow(rr,7.0)*sin(7.0*ph)*2.8' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
