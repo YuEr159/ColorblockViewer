@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 180 条）
+## 已收录模板（当前 181 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2614,6 +2614,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;NL=100;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;hh=0.8*sin(22.0*rr);x=rr*cos(ph);y=hh*(1.0+0.3*cos(ph));z=rr*sin(ph)' 1 200 'null' 1 null
+```
+
+### planewave · 双光束干涉条纹三态（平面波叠加）
+
+**两束平面波以夹角 2α 相交，叠加出一组平行直条纹**——这是光学里双光束干涉的教科书模型，也是全息、干涉光刻、声学相控阵的共同基本原理。两条波 `sin k(x·cosα ± z·sinα)` 的行进方向关于 z 轴对称，它们的相位差只依赖 x（`2k·x·sinα`），于是**条纹永远平行于对称轴、间距为 π/(k·sinα)**——α 越小条纹越宽，α=90° 时两束反向、条纹最密。**真正有意思的是 α 很小时**：条纹间距大于整个显示区域，曲面上只看得到一两道缓坡，几乎认不出是干涉。**三条走的是夹角 15° / 30° / 60°**：15° 时条纹极宽、整个曲面像被拉出一道斜脊；30° 时四五条清晰条纹；60° 时条纹密到接近采样极限，边缘开始出现**混叠的锯齿**（跟 `ripplewave` 同样的问题，这里是因为 55×55 的网格追不上 60° 下的条纹频率）。**注意 y 只取 amp 的 0.5 倍幅度**（`1.6*amp`，amp 本身是两波之和的一半），因为两波完全同相时叠加峰值是 2，直接乘会冲出画面。三条各 3025 粒，共 9075 粒 27ms、占格 4254。改夹角换条纹间距，改 1.2 换波长。
+
+标签：`parameter` `表达式` `波动`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3024 'u=t;NL=55;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;ca=cos(15*PI/180.0);sa=sin(15*PI/180.0);wa=sin(1.2*(xx*ca+zz*sa));wb=sin(1.2*(xx*ca-zz*sa));amp=(wa+wb)*0.5;x=xx;y=1.6*amp;z=zz' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3024 'u=t;NL=55;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;ca=cos(30*PI/180.0);sa=sin(30*PI/180.0);wa=sin(1.2*(xx*ca+zz*sa));wb=sin(1.2*(xx*ca-zz*sa));amp=(wa+wb)*0.5;x=xx;y=1.6*amp;z=zz' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3024 'u=t;NL=55;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;ca=cos(60*PI/180.0);sa=sin(60*PI/180.0);wa=sin(1.2*(xx*ca+zz*sa));wb=sin(1.2*(xx*ca-zz*sa));amp=(wa+wb)*0.5;x=xx;y=1.6*amp;z=zz' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
