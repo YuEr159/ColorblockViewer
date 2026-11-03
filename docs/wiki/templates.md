@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 164 条）
+## 已收录模板（当前 165 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2326,6 +2326,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 2.3 2.3 2.3 'rr=sqrt(x*x+y*y+z*z);d1=rr-2;cx=x-floor(x*4.0/(2.0*2)+0.5)*2.0*2/4.0;cy=y-floor(y*4.0/(2.0*2)+0.5)*2.0*2/4.0;dh=sqrt(cx*cx+cy*cy)-0.26;m=max(d1,dh);abs(m)<0.08' 0.1 200 'null' 1 null
+```
+
+### tripletube · 三叶结管三态（粗细谱）
+
+**三叶结的经典参数式 cx = sin t + 2sin 2t、cy = cos t − 2cos 2t、cz = −sin 3t，加上一个圆截面就成了有体积的实体管**。这三个分量各自是三个不同的三角函数，让曲线在三个方向上都绕动，所以从任意角度看都能看出「结」的结构——这是它比环面结更适合做单条展示的原因：环面结（库里 `torusknot`、`trefoil2`）缠在一个环面上，必须整体看才有结的观感；三叶结在自身坐标系里就有一个明显的「三瓣轮」形状，**从俯视看像一片三叶草**，从侧面看三瓣被拉开。**管粗细的取值必须小心**：0.4 时管子细得几乎只剩线；0.6 刚好有实体的分量；0.85 时相邻两瓣的管子已经**开始粘连**——三叶结最窄处的间距是有限的，管半径超过约 0.7 就会自交。**截面方向用 (cos t, 0, sin t) 与 y 轴的组合近似**，代价是截面上会出现轻微的压扁（不是完美圆管），但对视觉影响极小，换来了免去计算 Frenet 标架的复杂度。三条各 2240 粒，共 6720 粒 26ms、占格 3343。改 tubeR 换粗细（上限 0.7），改 k 换整体尺寸。
+
+标签：`parameter` `表达式` `管状曲面`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 2239 'u=t;NL=16;NRv=140;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;cx=(sin(tt)+2.0*sin(2.0*tt))*1.2;cy=(cos(tt)-2.0*cos(2.0*tt))*1.2;cz=(-sin(3.0*tt))*1.2;sg=ss*2.0*PI;x=cx+0.4*cos(sg)*cos(tt);y=cy+0.4*sin(sg);z=cz+0.4*cos(sg)*sin(tt)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2239 'u=t;NL=16;NRv=140;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;cx=(sin(tt)+2.0*sin(2.0*tt))*1.2;cy=(cos(tt)-2.0*cos(2.0*tt))*1.2;cz=(-sin(3.0*tt))*1.2;sg=ss*2.0*PI;x=cx+0.6*cos(sg)*cos(tt);y=cy+0.6*sin(sg);z=cz+0.6*cos(sg)*sin(tt)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 2239 'u=t;NL=16;NRv=140;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;cx=(sin(tt)+2.0*sin(2.0*tt))*1.2;cy=(cos(tt)-2.0*cos(2.0*tt))*1.2;cz=(-sin(3.0*tt))*1.2;sg=ss*2.0*PI;x=cx+0.85*cos(sg)*cos(tt);y=cy+0.85*sin(sg);z=cz+0.85*cos(sg)*sin(tt)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
