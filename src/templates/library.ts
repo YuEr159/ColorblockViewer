@@ -1726,6 +1726,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;nx=sin(th)*cos(ph);ny=cos(th);nz=sin(th)*sin(ph);s=0.57735;d1=s*(nx+ny+nz);d2=s*(nx-ny-nz);d3=s*(-nx+ny-nz);d4=s*(-nx-ny+nz);pd=max(max(d1,d2),max(d3,d4));rr=3.4*(1.0+0.9*pd);x=rr*nx;y=rr*ny;z=rr*nz' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'nesttorus',
+    name: '嵌套环族三态（层数谱）',
+    desc: "**一层层套起来的甜甜圈，每一层的半径都在长大、同时上下错开**——这是一个把「经典环面公式」按层展开的族。单看每一层都是标准的环面 `(R + r·cos φ)·(cos θ, sin θ)` 加 `r·sin φ` 的高度；三处小改动让它们形成立体构图：**Rl 每层递增 dr**（环越来越大）、**rl 每层略微收窄**（管径随层变小，避免上层压迫下层）、**y 加 dh·(lay−0.5)·layers**（整层上下挪开）。**层数决定这个结构的气质**：3 层时三个大小悬殊的环像一座宝塔；5 层时是密叠的弹簧盘；8 层时上下几乎连成一片筒，只在侧面留出缝隙。**核心技巧是 `lay` 这个「第几层」变量**：`li = ii mod layers` 取的是截面角 φ 的离散档（把一圈截面切成 layers 个点），`base = ii / layers` 才是层的序号——**两个整数维度被一个循环变量装下**，这正是把一维 t 撑成二维网格的标准写法。三条各 5400 粒，共 16200 粒 39ms、占格 6380。改 layers 换层数（同时改 1.0/(layers−1) 的分母），改 dh 换层间距（太大就彼此分离）。",
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 5399 'u=t;NL=90;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,3);base=floor(ii/3);lay=(base/(60/3.0-1.0));th=ss*2.0*PI;ph=(li/(3.0-1.0))*2.0*PI;Rl=2.4+0.9*lay;rl=2.4*0.34*(1.0-0.3*lay);x=(Rl+rl*cos(ph))*cos(th);y=rl*sin(ph)+0.7*(lay-0.5)*3;z=(Rl+rl*cos(ph))*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5399 'u=t;NL=90;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,5);base=floor(ii/5);lay=(base/(60/5.0-1.0));th=ss*2.0*PI;ph=(li/(5.0-1.0))*2.0*PI;Rl=2.4+0.7*lay;rl=2.4*0.34*(1.0-0.3*lay);x=(Rl+rl*cos(ph))*cos(th);y=rl*sin(ph)+0.5*(lay-0.5)*5;z=(Rl+rl*cos(ph))*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 5399 'u=t;NL=90;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,8);base=floor(ii/8);lay=(base/(60/8.0-1.0));th=ss*2.0*PI;ph=(li/(8.0-1.0))*2.0*PI;Rl=2.4+0.5*lay;rl=2.4*0.34*(1.0-0.3*lay);x=(Rl+rl*cos(ph))*cos(th);y=rl*sin(ph)+0.4*(lay-0.5)*8;z=(Rl+rl*cos(ph))*sin(th)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
