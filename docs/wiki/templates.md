@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 163 条）
+## 已收录模板（当前 164 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2308,6 +2308,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 3.4000000000000004 3.4000000000000004 3.4000000000000004 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);shell=abs(rr-3.2)<0.5;win=abs(sin(8.0*th))>0.55;win2=abs(sin(12.0*ph))>0.55;shell&win&win2' 0.14 200 'null' 1 null
+```
+
+### multihole · 多孔球三态（周期折叠钻孔）
+
+**这是 SDF 里最实用的一招：把「重复」写进距离场，一个球就变成了一片多孔板**——`cx = x − floor(x·n/2R + 0.5)·2R/n` 是**格内坐标**，作用是把任意 x 折叠到一个边长 2R/n 的单元格里（`floor(...+0.5)` 保证折叠以单元格中心为原点，而不是以格边为原点）；对 x 与 y 各做一次，就得到一个**在 xy 平面周期重复的孔心阵列**；`dh = √(cx²+cy²) − 孔半径` 是「到一个孔的距离」，**用 max(d1, dh) 求差集**，于是球体上被凿出一排排贯穿的圆孔。**这就是程序化建模里最常用的 domain repetition 技巧**：与其手写 n² 个圆柱的并集，不如把坐标折叠进一个格子，代价与孔数无关。**三条走的是孔径与孔距的比例**：(2,0.42) 只有 2×2 四个大孔、孔壁很薄，像一只打孔很粗的骰子；(3,0.34) 是标准的多孔球；(4,0.26) 孔更密也更小，像一颗筛子。**注意孔半径与格距必须同步调**——格距是 2R/n，孔半径超过格距一半就会连通成大洞（本模板第一版就是这样把球挖穿的）。三条各约 7900 粒，共 23664 粒 163ms、占格 2354。改 nn 换孔数（n×n），改 0.08 换孔壁厚。
+
+标签：`conditional` `表达式` `SDF 实体造型`
+
+```
+/particleex conditional minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 2.3 2.3 2.3 'rr=sqrt(x*x+y*y+z*z);d1=rr-2;cx=x-floor(x*2.0/(2.0*2)+0.5)*2.0*2/2.0;cy=y-floor(y*2.0/(2.0*2)+0.5)*2.0*2/2.0;dh=sqrt(cx*cx+cy*cy)-0.42;m=max(d1,dh);abs(m)<0.08' 0.1 200 'null' 1 null
+```
+
+```
+/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2.3 2.3 2.3 'rr=sqrt(x*x+y*y+z*z);d1=rr-2;cx=x-floor(x*3.0/(2.0*2)+0.5)*2.0*2/3.0;cy=y-floor(y*3.0/(2.0*2)+0.5)*2.0*2/3.0;dh=sqrt(cx*cx+cy*cy)-0.34;m=max(d1,dh);abs(m)<0.08' 0.1 200 'null' 1 null
+```
+
+```
+/particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 2.3 2.3 2.3 'rr=sqrt(x*x+y*y+z*z);d1=rr-2;cx=x-floor(x*4.0/(2.0*2)+0.5)*2.0*2/4.0;cy=y-floor(y*4.0/(2.0*2)+0.5)*2.0*2/4.0;dh=sqrt(cx*cx+cy*cy)-0.26;m=max(d1,dh);abs(m)<0.08' 0.1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
