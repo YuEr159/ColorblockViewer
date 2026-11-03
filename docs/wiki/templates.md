@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 186 条）
+## 已收录模板（当前 187 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2722,6 +2722,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),1.8);sr=signum(st)*pow(abs(st),1.8);modu=1.0+0.28*cos(6.0*th)*cos(4.0*ph);rr=3.4*modu;x=rr*sr*cos(ph);y=rr*sc;z=rr*sr*sin(ph)' 1 200 'null' 1 null
+```
+
+### vortexlattice · 六方涡旋柱阵列三态（管径谱）
+
+**第二类超导体在磁场里的磁通量子，会自己排成六方格点**——每条磁通线（涡旋）穿透材料时，周围环绕着超导电流，涡旋之间存在相互排斥；排斥作用在「六方最密堆积」时能量最低，于是几百条涡旋自然排成**蜂窝状的格子**。这条把它画出来：每一个六方格点竖一根柱，柱是**空心圆管**（周向只采样表面，不是实心圆柱）。**六方排列的关键是奇偶行错位**：`cx = (col + 0.5·(row mod 2))·a`，偶数行从 0 开始、奇数行整体平移半个格距，行距则是 `a·√3/2`——这两条合起来才是六方，缺一条就退化成正方格阵。**三条走的是管半径 0.32 / 0.46 / 0.60**：细管时是一根根独立的针、格间大片留白能看清六方骨架；中等时柱面开始有体积感；0.60 时相邻柱外壁之间只剩 0.4 格间隙（a=1.6），几乎要贴在一起，整片变成**多孔蜂窝**——这正是涡旋间距缩小时的物理图像（磁场越强、涡旋越密）。**索引拆成三段**：`kk` 挑柱号、`hh` 挑高度层、`ss` 扫周向一圈，所以每根柱由 8 个高度层 × 12 个周向点构成，柱体本身是空心的（想变实心还要再拆一个半径层）。三条各 4704 粒，共 14112 粒 34ms、占格 10624（库内最高）。改 a 换晶格常数（同时要压 tr 否则柱会相交），改 LW 换阵列边长，改 H 换柱高。
+
+标签：`parameter` `表达式` `固体物理`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 4703 'u=t;NL=12;NHv=8;kk=floor(u/(NL*NHv));rem=floorMod(u,NL*NHv);hh=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);row=floor(kk/7);col=floorMod(kk,7);cx=(col+0.5*floorMod(row,2))*1.6;cz=row*1.6*0.866;th=ss*2.0*PI;x=cx+0.32*cos(th);z=cz+0.32*sin(th);y=(hh/(NHv-1)-0.5)*4' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4703 'u=t;NL=12;NHv=8;kk=floor(u/(NL*NHv));rem=floorMod(u,NL*NHv);hh=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);row=floor(kk/7);col=floorMod(kk,7);cx=(col+0.5*floorMod(row,2))*1.6;cz=row*1.6*0.866;th=ss*2.0*PI;x=cx+0.46*cos(th);z=cz+0.46*sin(th);y=(hh/(NHv-1)-0.5)*4' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 4703 'u=t;NL=12;NHv=8;kk=floor(u/(NL*NHv));rem=floorMod(u,NL*NHv);hh=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);row=floor(kk/7);col=floorMod(kk,7);cx=(col+0.5*floorMod(row,2))*1.6;cz=row*1.6*0.866;th=ss*2.0*PI;x=cx+0.6*cos(th);z=cz+0.6*sin(th);y=(hh/(NHv-1)-0.5)*4' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
