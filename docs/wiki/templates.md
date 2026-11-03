@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 174 条）
+## 已收录模板（当前 175 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2506,6 +2506,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;h=0.16*(xx*xx-zz*zz);w=abs(sin(4.0*xx*PI/9.0))*abs(sin(4.0*zz*PI/9.0));x=xx;y=h*(0.35+0.65*w);z=zz' 1 200 'null' 1 null
+```
+
+### dualcolor · 双通道色场实心球三态（经度×半径混色）
+
+**一个实心球，颜色按「转到哪边」和「离中心多远」两件事混合决定**——色相 `h = 0.5·(φ/2π) + 0.5·(r/R)`，经度与半径各占一半权重。转到球的一侧颜色偏一变、往里走颜色再变一变，两者叠加的结果是：**同一半径的球面上颜色绕一圈走完半个色环，而沿半径方向又线性偏移**，于是整个球内部呈现出**一圈圈螺旋状的色带**——这跟单纯按半径上色（库里 `heatsphere` 那条）完全不同，后者只有同心色层，这条会让色带在球里「拧」起来。**实现的关键是把半径当作第三维**：`ti = ii mod NTheta` 走纬度、`ri = ii / NTheta` 走半径，半径层数（NRad 4/8/14）决定色阶被切成多少级。**层数越多色越连续**：4 层时能明显看出 4 个同心色环；14 层时色带过渡细腻、色种数涨到 295（上限受 RGB 量化与采样点数限制）。**rgbaparameter 没有颜色槽**，颜色必须写 cr/cg/cb——这是它与 parameter 族最大的区别。三条各 4800 粒，共 14400 粒 39ms、占格 3453、295 种颜色。改 NRad 换色阶层数，改 h 的权重比（反过来 0.8·fr + 0.2·ss 就接近纯半径热图）。
+
+标签：`rgbaparameter` `表达式` `颜色`
+
+```
+/particleex rgbaparameter minecraft:end_rod -8 0 0 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,15);ri=floor(ii/15);th=ti/(15-1)*PI;ph=ss*2.0*PI;fr=ri/(4-1);rho=fr*3.2;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph);h=0.5*(ss)+0.5*fr;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
+```
+
+```
+/particleex rgbaparameter minecraft:end_rod 0 0 0 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,7);ri=floor(ii/7);th=ti/(7-1)*PI;ph=ss*2.0*PI;fr=ri/(8-1);rho=fr*3.2;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph);h=0.5*(ss)+0.5*fr;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
+```
+
+```
+/particleex rgbaparameter minecraft:end_rod 8 0 0 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,4);ri=floor(ii/4);th=ti/(4-1)*PI;ph=ss*2.0*PI;fr=ri/(14-1);rho=fr*3.2;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph);h=0.5*(ss)+0.5*fr;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
