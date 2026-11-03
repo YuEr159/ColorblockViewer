@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 183 条）
+## 已收录模板（当前 184 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2668,6 +2668,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);h=0.35*sin(3.0*(xx*xx+zz*zz)/(2.0*12));x=xx;y=h;z=zz' 1 200 'null' 1 null
+```
+
+### multipole · 多极等势面三态（偶极/四极/八极）
+
+**这是「等势面」而不是「场线」——两者的形状完全不同**。点电荷的势是 1/r，多极展开后第 l 阶项的势是 `Pₗ(cosθ)/r^(l+1)`；令势等于常数，就得到 `r ∝ |Pₗ(cosθ)|^(1/(l+1))`，这就是等势面的形状。**分母里那个 l+1 次方根是关键**：它把勒让德多项式的正负号「压平」成形状的凹凸，而且**阶数越高，幂次越接近 1，角向结构就越明显**。**三条是 l = 1 / 2 / 3**：偶极的等势面是两个相切的球面（上下两个瓣）；四极是**腰鼓**——赤道处被压细、两极鼓起两个大瓣，中间还有一层薄薄的环形连接；八极是更复杂的「两个鼓 + 一个小腰带」三层结构。**注意 `abs(pl)` 不能省**：勒让德多项式在 θ 中间某处会穿过零，等势面在那里「断开」——现实中多极场的等势面在这些位置确实分成互不相连的几张，用 abs 是为了让曲面在视觉上连续（否则 pow(负数, 分数) 会返回 NaN、粒子整片消失）。**这个族在原子核物理里叫「多极形变」**：椭球形变核对应四极、梨形对应八极，与这里的形状完全同源。三条各 3660 粒，共 10980 粒 29ms、占格 4311。改 l 换阶数（l=4 会得到密纹腰鼓），改 R 换整体尺寸。
+
+标签：`parameter` `表达式` `静电学`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);pl=ct;mag=pow(abs(pl),0.5000);rr=3.6*mag;x=rr*sin(th)*cos(ph);y=rr*ct;z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);pl=(3.0*ct*ct-1.0)*0.5;mag=pow(abs(pl),0.3333);rr=3.6*mag;x=rr*sin(th)*cos(ph);y=rr*ct;z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);pl=(5.0*ct*ct*ct-3.0*ct)*0.5;mag=pow(abs(pl),0.2500);rr=3.6*mag;x=rr*sin(th)*cos(ph);y=rr*ct;z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
