@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 175 条）
+## 已收录模板（当前 176 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2524,6 +2524,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex rgbaparameter minecraft:end_rod 8 0 0 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,4);ri=floor(ii/4);th=ti/(4-1)*PI;ph=ss*2.0*PI;fr=ri/(14-1);rho=fr*3.2;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph);h=0.5*(ss)+0.5*fr;cr=h;cg=1.0-abs(2.0*h-1.0);cb=1.0-h' 1 200 'null' 1 null
+```
+
+### spherewrap · 球面螺旋缠绕三态（频率失配纹理）
+
+**这是「球面上的螺旋缠绕」，也是把球面玩出复杂纹理的最短写法**——标准球面是 `x=R sinθ cosφ, y=R cosθ, z=R sinθ sinφ`，三个坐标对角的依赖都是 1 倍；这条把最后一项的角度换成 k 倍（`sin(kφ)` 而另外两项仍是 φ），于是**经度在转一圈时，z 方向已经振荡了 k 次**，球面被折成一圈圈互相穿插的螺旋环。**k 就是缠绕的复杂度**：k=3 时球面被分为三组平行的螺旋带，纹理疏朗、每一带都看得清走向；k=5 时五组交错，形成类似**编织球**的图案；k=8 时密到像一层**螺旋细纹的壳**，只有斜看才能辨出方向。**这个结构在数学上和 Hopf 纤维化有关**（球面 S³ 上的一族圆在 S² 上的投影），但这里用的是更简单的二维参数化——**用一个「频率失配」就得到了拓扑上非平凡的纹理**，代价方面比真正的 4D 投影低得多（库里 `hypertorus` 与 `tesseract` 需要四维坐标）。三条各 8000 粒，共 24000 粒 44ms、**占格 9774**（全库第二高）。改 k 换缠绕次数（必须是整数才闭合），改 R 换球径。
+
+标签：`parameter` `表达式` `球面几何`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=80;NRv=100;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);a1=ii/(NRv-1)*2.0*PI;a2=ss*2.0*PI;x=3.4*sin(a1)*cos(a2);y=3.4*cos(a1);z=3.4*sin(a1)*sin(3.0*a2)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=80;NRv=100;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);a1=ii/(NRv-1)*2.0*PI;a2=ss*2.0*PI;x=3.4*sin(a1)*cos(a2);y=3.4*cos(a1);z=3.4*sin(a1)*sin(5.0*a2)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=80;NRv=100;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);a1=ii/(NRv-1)*2.0*PI;a2=ss*2.0*PI;x=3.4*sin(a1)*cos(a2);y=3.4*cos(a1);z=3.4*sin(a1)*sin(8.0*a2)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
