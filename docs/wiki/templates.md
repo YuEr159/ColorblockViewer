@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 150 条）
+## 已收录模板（当前 151 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2078,6 +2078,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex rgbaparameter minecraft:end_rod 9 0 0 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss;amp=sin(3.0*PI*uu)*sin(3.0*PI*vv);x=(uu-0.5)*9.0;y=0.9*amp;z=(vv-0.5)*9.0;hh=abs(amp);cr=hh;cg=1.0-hh*hh;cb=1.0-hh' 1 200 'null' 1 null
+```
+
+### hyperboloid · 单叶双曲面三态（冷却塔曲面）
+
+**单叶双曲面是唯一一种能由两条直线族完全铺满的曲面**——这个性质让它成了直纹面（ruled surface）的教科书主角，也解释了为什么冷却塔会做成这个形状：混凝土是直的，把它斜着排一圈就能围出曲面。方程 x²+z² = a²(1+y²/c²)，半径按 **cosh** 膨胀，所以在腰部最细、上下两端向外张开。**三条控制两个参数**：喉部半径 a（1.0 / 0.6 / 2.0）与张开率（0.35 / 0.8 / 0.9）。左条张得很慢，几乎是根直筒；中条腰细且张开急促，是标准冷却塔；右条腰粗同时张开快，像一只旋开的碗。**注意它和单叶双曲面上的「直纹」不是一回事**：曲面上真实的直线（母线）在粒子渲染里会表现为表面上的斜向纹理，而正确参数化（cosh）给出的是光滑回转面——把 sin/cos 换成 (t·cosθ ± sinθ) 那组线性式就能直接画出母线。三条各 3600 粒 / 共 10800 粒 38ms、占格 1996。改 2.2 换高度范围，改 a 换腰径。
+
+标签：`parameter` `表达式` `曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1)*2.0*PI;vv=(ss-0.5)*2.2;rr=1*cosh(0.35*vv);x=rr*cos(uu);z=rr*sin(uu);y=2.2*vv' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1)*2.0*PI;vv=(ss-0.5)*2.2;rr=0.6*cosh(0.8*vv);x=rr*cos(uu);z=rr*sin(uu);y=2.2*vv' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1)*2.0*PI;vv=(ss-0.5)*2.2;rr=2*cosh(0.9*vv);x=rr*cos(uu);z=rr*sin(uu);y=2.2*vv' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
