@@ -1902,6 +1902,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 4703 'u=t;NL=12;NHv=8;kk=floor(u/(NL*NHv));rem=floorMod(u,NL*NHv);hh=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);row=floor(kk/7);col=floorMod(kk,7);cx=(col+0.5*floorMod(row,2))*1.6;cz=row*1.6*0.866;th=ss*2.0*PI;x=cx+0.6*cos(th);z=cz+0.6*sin(th);y=(hh/(NHv-1)-0.5)*4' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'hopffiber',
+    name: 'Hopf 纤维化三态（S³ 正交投影）',
+    desc: "**三维空间里画不出互不相交又两两链接的整族圆——但在四维球 S³ 上可以，投影下来就成了这张图**。Hopf 纤维化把 S³ 切成**一族大圆**：每根纤维由 (θ,φ) 两个角度标记，纤维内的 ψ 绕一圈正好走完一个大圆。相邻的两根纤维（φ 相近）在三维投影里是**互相穿插的链环**——这是 Hopf 不变量 1 的几何含义，也是这条模板和库里所有「缠绕」类模板的本质区别：那些是真的在三维里缠绕，这条是**四维里根本不相交、投影后才看起来相扣**。**投影方式决定了画面**：球极投影（除以 1−w）会在 θ→0 处把纤维放大到无穷、整个图爆散（跨度能到 50 格以上且中心一片空白），所以这里改用**正交投影**——直接取 S³ 的前三个坐标 `(sin(θ/2)cos ξ₁, cos(θ/2)cos ξ₂, sin(θ/2)sin ξ₁)`，代价是丢掉了第十维信息、每根纤维被压扁成椭圆，换来的是**整个结构稳定落在 3.4 格半径内**。**ψ 必须走满 4π**：Hopf 纤维在 ψ ∈ [0,2π) 时只走半圈，粒子会断成半圆弧，写满 4π 才闭合——这一条不写对的图看起来像「一堆散乱弧线」而不是环。**三条走的是纤维密度 7×24 / 11×36 / 16×52**：最疏时能一根根数清环、看清两两相扣；最密时整张图糊成**层状的圆环面堆叠**，因为 S³ 沿 θ 方向的切片本来就是嵌套环面，投影后仍保留了这种分层——这就是图里上密下疏的来由（θ 小时环面半径小、纤维挤在一起）。三条各 6720 / 17424 / 39936 粒，共 64080 粒 115ms、占格 15518。改 NPh 换纤维数，改 θ 区间换取 S³ 的哪一段。",
+    tags: ['parameter', '表达式', '拓扑'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 6719 'u=t;NL=40;NPv=24;kk=floor(u/(NL*NPv));rem=floorMod(u,NL*NPv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);th=(0.22+0.56*kk/(7-1.0))*PI;ph=jj/(NPv-1.0)*2.0*PI;ps=ss*4.0*PI;e1=(ps+ph)*0.5;e2=(ps-ph)*0.5;st=sin(th*0.5);ct=cos(th*0.5);x=st*cos(e1)*3.4;y=ct*cos(e2)*3.4;z=st*sin(e1)*3.4' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 17423 'u=t;NL=44;NPv=36;kk=floor(u/(NL*NPv));rem=floorMod(u,NL*NPv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);th=(0.22+0.56*kk/(11-1.0))*PI;ph=jj/(NPv-1.0)*2.0*PI;ps=ss*4.0*PI;e1=(ps+ph)*0.5;e2=(ps-ph)*0.5;st=sin(th*0.5);ct=cos(th*0.5);x=st*cos(e1)*3.4;y=ct*cos(e2)*3.4;z=st*sin(e1)*3.4' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 39935 'u=t;NL=48;NPv=52;kk=floor(u/(NL*NPv));rem=floorMod(u,NL*NPv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);th=(0.22+0.56*kk/(16-1.0))*PI;ph=jj/(NPv-1.0)*2.0*PI;ps=ss*4.0*PI;e1=(ps+ph)*0.5;e2=(ps-ph)*0.5;st=sin(th*0.5);ct=cos(th*0.5);x=st*cos(e1)*3.4;y=ct*cos(e2)*3.4;z=st*sin(e1)*3.4' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
