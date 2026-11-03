@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 154 条）
+## 已收录模板（当前 155 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2150,6 +2150,20 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 1199 'u=t;NL=20;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*4.0;vv=(ss-0.5)*4.0;sg=1.0;x=uu+vv;z=sg*(uu-vv);y=(x*x-z*z)*0.28' 1 200 'null' 1 null
+```
+
+### geonet · 球面大圆网两态（共轴测地线族）
+
+**这十几圈线其实是「同一个圆」被绕了不同角度**——x=cos t、y=sin t·cos α、z=sin t·sin α 这条公式里，t 让点绕一圈，α 决定这一圈所在的**大圆平面**倾斜多少。α 取满 [−π/2, π/2] 就得到一族共轴的球面大圆，它们两两相交于球面的两个对极点，把球面切成一片片**月牙形的球面二角形**（lune）。这正是球面几何里最基础的剖分方式：每条大圆都是球面上的「直线」（测地线），任意两条必相交于两点——**球面上没有平行线**，这是球面几何与欧氏几何最大的分歧。三条的区别只在**条数**：24 条大圆时每个二角形宽 7.5°，一眼能数清；96 条时密到像编织的网。**每条大圆用 150/300 个点采样**是必需的——点太少就会在视觉上断成虚线段。两条各 3600 / 14400 粒，共 18000 粒 26ms、占格 4114。改条数换疏密，改 3.5 换球半径。
+
+标签：`parameter` `表达式` `球面几何`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=150;NRv=24;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;al=(ss-0.5)*PI;x=3.5*cos(tt);y=3.5*sin(tt)*cos(al);z=3.5*sin(tt)*sin(al)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 47999 'u=t;NL=500;NRv=96;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;al=(ss-0.5)*PI;x=3.5*cos(tt);y=3.5*sin(tt)*cos(al);z=3.5*sin(tt)*sin(al)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
