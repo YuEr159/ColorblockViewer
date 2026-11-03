@@ -1748,6 +1748,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ri=floorMod(ii,5);qi=floor(ii/5);ti=floorMod(qi,3);hi=floor(qi/3);h0=hi/(4.0-1.0);tt=h0*4.0*2.0*PI;rr=1.8+(3.2-1.8)*ri/(5-1);ph=tt+ti*2.0*PI/3.0+(ss-0.5)*1.6;x=rr*cos(ph);y=(h0-0.5)*8.0;z=rr*sin(ph)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'vault',
+    name: '双曲拱网壳三态（鞍面周期开窗）',
+    desc: "**在一张马鞍面上按周期函数「开窗」**——基础曲面是 y = a(x²−z²)（库里 `saddle` 那条），这里乘上一个调制因子 `w = |sin(kx)|·|sin(kz)|`：**只要有一项接近零，整片区域的高度就被压回平面**，于是曲面被切成一块块由「脊」连起来的方形面板，脊之间有浅坑。**这个效果在建筑上叫网壳/空间桁架**：双曲抛物面本身就常用作屋面（因为它由直母线生成、可以用直梁拼），而按网格开窗之后，视觉上正好对应「骨架 + 面板」的构造。**三条走的是网格密度 k = 1 / 2 / 4**：k=1 时每个方向只有一个周期，曲面几乎是连续的鞍；k=2 时切成 2×2 的四块，鞍的四角高翘得很清楚；k=4 时 4×4 十六块，脊线密到像一张**编织的浅盘**。**注意高度 y 没有被完全压平**：`0.35 + 0.65·w` 保证调制最低也留 35% 的原高度，否则曲面会退化成一堆零散的残片、看不出是同一张鞍。三条各 2500 粒，共 7500 粒 22ms、占格 3848。改 k 换网格密度，改 0.35 换「压平」的深度（0 是完全压平、1 是不调制）。",
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;h=0.16*(xx*xx-zz*zz);w=abs(sin(1.0*xx*PI/9.0))*abs(sin(1.0*zz*PI/9.0));x=xx;y=h*(0.35+0.65*w);z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;h=0.16*(xx*xx-zz*zz);w=abs(sin(2.0*xx*PI/9.0))*abs(sin(2.0*zz*PI/9.0));x=xx;y=h*(0.35+0.65*w);z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 2499 'u=t;NL=50;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;h=0.16*(xx*xx-zz*zz);w=abs(sin(4.0*xx*PI/9.0))*abs(sin(4.0*zz*PI/9.0));x=xx;y=h*(0.35+0.65*w);z=zz' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
