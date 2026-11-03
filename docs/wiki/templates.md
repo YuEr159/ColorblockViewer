@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 156 条）
+## 已收录模板（当前 157 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2182,6 +2182,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 6399 'u=t;NL=40;NRv=160;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);leaf=floor(ii/20.0);base=floorMod(ii,20.0);u0=base/19.0;ang=leaf*2.0*PI/8.0+u0*3.0*2.0*PI;vv=(ss-0.5)*2.4;x=vv*cos(ang);z=vv*sin(ang);y=(u0-0.5)*7.0' 1 200 'null' 1 null
+```
+
+### revsector · 旋转体切片三态（扫掠角 90/180/360）
+
+**同一条轮廓曲线，转过的角度决定你看到的是一个「切片」还是完整的回转体**——轮廓取 rr = 3·sign(t)·|sin(πt)|^0.55（超椭圆截面，比圆更饱满、两端收得更陡），沿 y 轴从下到上走一遍，同时绕轴扫过 span 角度。**span 是唯一变化的量**：90° 只转四分之一圈，得到的是一片**有厚度的扇形瓣**（能看到轮廓的内侧）；180° 是半片壳、从侧面看像一个剖开的碗；360° 转满整圈，各个角度上完全闭合，成为**一个实心的胖陀螺/糖果形**——这时它跟普通的超椭球已经没有区别了。**这三条连起来看，就是「旋转体如何从曲线生成」的全过程**：轮廓是自变量、扫掠角是因变量、曲面是它们的像。**注意 y 项里那个 rr·0.4·sin(πt)** 是让轮廓的上下两端略微内收（不是纯圆柱），去掉它之后 360° 那条会变成一个正椭球，反而失去辨识度。三条各 3000 / 4500 / 7000 粒，共 14500 粒 35ms、占格 2749。改 e 换超椭圆的方正程度（e=1 是正圆），改 span 换切片角度。
+
+标签：`parameter` `表达式` `回转体`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 2999 'u=t;NL=60;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=ss*90*PI/180.0;yy=(tt-0.5)*7.0;ct=cos(tt*PI);st=sin(tt*PI);rr=3.0*signum(st)*pow(abs(st),0.55);x=rr*cos(ph);z=rr*sin(ph);y=yy+rr*0.4*sin(tt*PI)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4499 'u=t;NL=90;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=ss*180*PI/180.0;yy=(tt-0.5)*7.0;ct=cos(tt*PI);st=sin(tt*PI);rr=3.0*signum(st)*pow(abs(st),0.55);x=rr*cos(ph);z=rr*sin(ph);y=yy+rr*0.4*sin(tt*PI)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 6999 'u=t;NL=140;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=ss*360*PI/180.0;yy=(tt-0.5)*7.0;ct=cos(tt*PI);st=sin(tt*PI);rr=3.0*signum(st)*pow(abs(st),0.55);x=rr*cos(ph);z=rr*sin(ph);y=yy+rr*0.4*sin(tt*PI)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
