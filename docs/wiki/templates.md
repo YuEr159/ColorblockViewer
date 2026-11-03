@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 152 条）
+## 已收录模板（当前 153 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2114,6 +2114,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=3.6*(1.0+0.26*cos(12.0*th)*cos(10.0*ph));x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+### wraptorus · 缠绕环面三态（截面随主环拧转）
+
+**这不是普通环面，而是把管截面沿主环方向「拧」过的环面**——普通环面的截面角 φ 与主环角 θ 独立，截面一圈一圈平行地铺过去；这里写成 tw = φ + k·θ，**截面角跟着主环角同步旋转**，于是原本平行的截面变成了一组螺旋盘绕的截面，环面被拧成一根绕了 k 圈的粗绳。k 就是**缠绕圈数**：k=3 时管子自己绕了 3 圈、表面上的螺旋条纹疏而清晰；k=9 时绕 9 圈，条纹密到糊成一片带细纹的管壁。**这个概念在数学上叫环面上的螺旋线缠绕**（torus knot 的「绕管方向」分量），(p,q) 环面结就是取 1 维的曲线版本；这里保留整个截面，所以得到的是**有体积的缠绕管**，占格比单条结线高得多。**注意与库里 `corrugated` 的区别**：那个是把管半径按方位角调制成波浪（r 随 θ 起伏），**半径变**；这条是完全拧转相位（tw 里加 k·θ），**半径不变、截面方向变**。三条各 3600 / 5600 / 8000 粒，共 17200 粒 34ms、占格 4174。改 k 换缠绕圈数（k=0 退化成普通环面）。
+
+标签：`parameter` `表达式` `曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=90;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;tw=ph+3.0*th;rr=3.2+(1.2+0.5*cos(tw))*cos(tw);yy=(1.2+0.5*cos(tw))*sin(tw);x=rr*cos(th);z=rr*sin(th);y=yy' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5599 'u=t;NL=140;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;tw=ph+6.0*th;rr=3.2+(1.2+0.45*cos(tw))*cos(tw);yy=(1.2+0.45*cos(tw))*sin(tw);x=rr*cos(th);z=rr*sin(th);y=yy' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=200;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;tw=ph+9.0*th;rr=3.2+(1.2+0.4*cos(tw))*cos(tw);yy=(1.2+0.4*cos(tw))*sin(tw);x=rr*cos(th);z=rr*sin(th);y=yy' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
