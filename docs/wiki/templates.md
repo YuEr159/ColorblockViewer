@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 169 条）
+## 已收录模板（当前 170 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2416,6 +2416,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,12);ri=floor(ii/12);th=ti/(12-1)*PI;ph=ss*2.0*PI;fr=ri/(5-1);rho=fr*3.4;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),2.2);sr=signum(st)*pow(abs(st),2.2);x=rho*sr*cos(ph);y=rho*sc;z=rho*sr*sin(ph)' 1 200 'null' 1 null
+```
+
+### supknot · 超截面环面结三态（圆/方/尖星）
+
+**这是同一根 (3,2) 环面结，管截面从圆变成方、再变成尖星的过程**——环面结的中心线 `rad = 3.0 + 1.2·cos(qθ)`（绕大环 p 圈、绕管 q 圈）没变，变的是**截面的形状参数 e**：`signum(cos s)·|cos s|^e` 与 `signum(sin s)·|sin s|^e` 是超椭圆的参数方程，**e=1 时是圆、e<1 时趋方、e>1 时趋尖**。这跟库里 `tripletube`（三叶结，参数式 sin t+2sin2t）是完全不同的曲线，跟 `trefoil2`/`torusknot`（(2,3)、(5,2) 的圆管）也只差截面。**这三条最值得比较的是「同一根线、三种实体」**：圆截面的 (3,2) 是一件圆润的雕塑，方截面立刻变成**机械零件**（像一根六角扳手弯成的结），尖星截面则像一根**带棱的刺藤**——差别全在**截面上那一行 pow**。**signum 不能省**：`pow` 遇负数底数会返回 NaN，而 cos/sin 在 s>π/2 后就是负的，必须先用 signum 保住符号、再对绝对值取幂。三条各 2100 粒，共 6300 粒 25ms、占格 3932。改 e 换截面形状（0.3 极方、2.4 出尖棱），改 tubeR 换粗细（>0.9 时相邻两圈开始粘连），改 p/q 换结型。
+
+标签：`parameter` `表达式` `管状曲面`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 2099 'u=t;NL=14;NRv=150;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;sg=ss*2.0*PI;cbt=cos(2.0*tt);sbt=sin(2.0*tt);rad=3.0+1.2*cbt;cpt=cos(3.0*tt);spt=sin(3.0*tt);cs=signum(cos(sg))*pow(abs(cos(sg)),1);sn=signum(sin(sg))*pow(abs(sin(sg)),1);x=(rad+0.45*cs)*cpt;y=0.45*sn+1.2*sbt;z=(rad+0.45*cs)*spt' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2099 'u=t;NL=14;NRv=150;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;sg=ss*2.0*PI;cbt=cos(2.0*tt);sbt=sin(2.0*tt);rad=3.0+1.2*cbt;cpt=cos(3.0*tt);spt=sin(3.0*tt);cs=signum(cos(sg))*pow(abs(cos(sg)),0.4);sn=signum(sin(sg))*pow(abs(sin(sg)),0.4);x=(rad+0.45*cs)*cpt;y=0.45*sn+1.2*sbt;z=(rad+0.45*cs)*spt' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 2099 'u=t;NL=14;NRv=150;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;sg=ss*2.0*PI;cbt=cos(2.0*tt);sbt=sin(2.0*tt);rad=3.0+1.2*cbt;cpt=cos(3.0*tt);spt=sin(3.0*tt);cs=signum(cos(sg))*pow(abs(cos(sg)),2.4);sn=signum(sin(sg))*pow(abs(sin(sg)),2.4);x=(rad+0.45*cs)*cpt;y=0.45*sn+1.2*sbt;z=(rad+0.45*cs)*spt' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
