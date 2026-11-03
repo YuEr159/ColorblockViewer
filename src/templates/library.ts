@@ -1781,6 +1781,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=80;NRv=100;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);a1=ii/(NRv-1)*2.0*PI;a2=ss*2.0*PI;x=3.4*sin(a1)*cos(a2);y=3.4*cos(a1);z=3.4*sin(a1)*sin(8.0*a2)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'sphvol',
+    name: '球谐体积实体三态（瓣状实心球）',
+    desc: "**把球谐的格窗直接「灌满」成实体**——库里 `bumpsphere` 只在球面上起伏（一层皮），`sphvol` 用 `rho = fr · R · shape` 让**每一个半径层都按同一个 shape 缩放**，于是球谐调制出来的不是表面凹凸，而是**整块实体的截面形状**：从外到内每一层都是同样的格窗轮廓，只是按比例缩小。**这带来一个有趣的观感**：外层看是带鼓包的球，但如果哪里被切掉一角，你看到的是内部也呈同样的瓣状——**体积形状完全继承了表面的角向分布**。**三层索引拆 t**：`ti = ii mod NTheta` 沿纬度、`ri = ii / NTheta` 沿半径，NRad（4/5/6）决定径向分几层。**三条走的是密度谱**：(m,n) = (4,4) / (8,6) / (12,10)，A 随密度从 0.35 降到 0.25 以保持瓣的自交边界安全。**注意 rho 里乘了 shape，所以球心的粒子会向各瓣方向偏移**，这跟「先填球再从外面雕形」完全不同——每一粒都在它所属的那个瓣的辐射线上。三条各 4800 粒，共 14400 粒 38ms、占格 5546。改 A 换起伏幅度（>0.6 强烈自交），改 NRad 换径向层数。",
+    tags: ['parameter', '表达式', '体积填充'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,15);ri=floor(ii/15);th=ti/(15-1)*PI;ph=ss*2.0*PI;fr=ri/(4-1);shape=1.0+0.35*cos(4.0*th)*cos(4.0*ph);rho=fr*3.4*shape;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,12);ri=floor(ii/12);th=ti/(12-1)*PI;ph=ss*2.0*PI;fr=ri/(5-1);shape=1.0+0.3*cos(8.0*th)*cos(6.0*ph);rho=fr*3.4*shape;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,10);ri=floor(ii/10);th=ti/(10-1)*PI;ph=ss*2.0*PI;fr=ri/(6-1);shape=1.0+0.25*cos(12.0*th)*cos(10.0*ph);rho=fr*3.4*shape;x=rho*sin(th)*cos(ph);y=rho*cos(th);z=rho*sin(th)*sin(ph)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
