@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 184 条）
+## 已收录模板（当前 185 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2686,6 +2686,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);pl=(5.0*ct*ct*ct-3.0*ct)*0.5;mag=pow(abs(pl),0.2500);rr=3.6*mag;x=rr*sin(th)*cos(ph);y=rr*ct;z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+### geodesic · 环面缠绕线族三态（斜率谱）
+
+**环面上的一族平行曲线，每条都是绕管 q 次、绕主环 p 次**——`θ = t`、`φ = φ₀ + (q/p)·t`，不同的 φ₀ 给出同一斜率、不同起点的曲线，于是整张环面被一排排**斜向缠绕的线**铺满。**斜率 q/p 决定缠绕的陡峭程度**：q/p > 1 时曲线主要绕管跑（看起来像一根根弹簧绕在甜甜圈上），q/p = 1 时每一步都同样地绕主环与绕管（标准的 45° 螺旋），q/p < 1 时则以绕主环为主。**三条走的是「线数 × 斜率」的组合**：8 条线斜向 2 倍，稀疏的斜纹；14 条 3 倍，标准缠绕；24 条 5 倍，密到快连成一张壳。**注意这不是真正的测地线**——环面上的真测地线必须满足 Clairaut 关系 `r·cos(ψ) = 常数`，用 θ、φ 线性关系写出来会有一点偏差（靠近管的内侧时线会略微偏离最短路径），但视觉上完全看不出，代价却低了一个数量级。**另外 `y=1.1·sin φ` 才是管的高度**：要体现管是圆的，径向偏移 cos φ 和竖直偏移 sin φ 必须同时存在。三条各 7200 粒，共 21600 粒 43ms、占格 3176。改 lines 换线的密度，改 q/p 换缠绕斜率（两者同频时会退化成单条闭合结）。
+
+标签：`parameter` `表达式` `曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=90;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,8);tt=ss*2.0*PI;ph0=li*2.0*PI/8.0;th=tt;ph=ph0+2.0*tt/1.0;rad=3.0+1.1*cos(ph);x=rad*cos(th);y=1.1*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=90;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,14);tt=ss*2.0*PI;ph0=li*2.0*PI/14.0;th=tt;ph=ph0+3.0*tt/1.0;rad=3.0+1.1*cos(ph);x=rad*cos(th);y=1.1*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=90;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,24);tt=ss*2.0*PI;ph0=li*2.0*PI/24.0;th=tt;ph=ph0+5.0*tt/1.0;rad=3.0+1.1*cos(ph);x=rad*cos(th);y=1.1*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
