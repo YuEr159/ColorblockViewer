@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 172 条）
+## 已收录模板（当前 173 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2470,6 +2470,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 5399 'u=t;NL=90;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,8);base=floor(ii/8);lay=(base/(60/8.0-1.0));th=ss*2.0*PI;ph=(li/(8.0-1.0))*2.0*PI;Rl=2.4+0.5*lay;rl=2.4*0.34*(1.0-0.3*lay);x=(Rl+rl*cos(ph))*cos(th);y=rl*sin(ph)+0.4*(lay-0.5)*8;z=(Rl+rl*cos(ph))*sin(th)' 1 200 'null' 1 null
+```
+
+### volhelix · 体积螺旋片三态（薄面加厚）
+
+**这不是一条螺旋线，而是一条「有宽度和厚度的螺旋片」**——把螺旋面再叠上两个自由度：半径 `rr` 在 rMin 到 rMax 之间取 5 档、相位 `ph` 在三个错开的角度上取 3 档（ti 参数），再加上 ss 给出的一小段相位展宽（厚），于是一片螺旋叶在**径向与角向都被填充**，成了一块有体积的螺旋板。**这就是「薄壳 → 实体」的通用配方**：一个薄面再乘上两个小维度，代价只是每个维度 3~5 个采样档。**三条走的是叶片宽度与圈数**：turns=2 时螺旋只绕两圈、径向从 0.8 跨到 3.2，是一块**粗壮的螺旋桨叶**；turns=4 时绕四圈、径向收窄到 1.8~3.2，是一片**层层叠起的螺旋楼梯**——圈数越多，同样的高度里塞进越多的层，视觉上越像堆叠的薄片而不是连续的螺旋。**注意 y 方向只从 −4 到 +4 而 turns 到 4**，所以相邻两层在竖直方向几乎贴在一起，这让「楼梯」的观感更强。三条各 4800 粒，共 14400 粒 31ms、占格 2184。改 thick 换叶片厚度（>2 层与层之间会粘连），改 NRad/NTh 换填充密度。
+
+标签：`parameter` `表达式` `体积填充`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ri=floorMod(ii,5);qi=floor(ii/5);ti=floorMod(qi,3);hi=floor(qi/3);h0=hi/(4.0-1.0);tt=h0*2.0*2.0*PI;rr=0.8+(3.2-0.8)*ri/(5-1);ph=tt+ti*2.0*PI/3.0+(ss-0.5)*0.9;x=rr*cos(ph);y=(h0-0.5)*8.0;z=rr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ri=floorMod(ii,5);qi=floor(ii/5);ti=floorMod(qi,3);hi=floor(qi/3);h0=hi/(4.0-1.0);tt=h0*3.0*2.0*PI;rr=1.2+(3.2-1.2)*ri/(5-1);ph=tt+ti*2.0*PI/3.0+(ss-0.5)*1.2;x=rr*cos(ph);y=(h0-0.5)*8.0;z=rr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ri=floorMod(ii,5);qi=floor(ii/5);ti=floorMod(qi,3);hi=floor(qi/3);h0=hi/(4.0-1.0);tt=h0*4.0*2.0*PI;rr=1.8+(3.2-1.8)*ri/(5-1);ph=tt+ti*2.0*PI/3.0+(ss-0.5)*1.6;x=rr*cos(ph);y=(h0-0.5)*8.0;z=rr*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
