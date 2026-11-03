@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 160 条）
+## 已收录模板（当前 161 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2254,6 +2254,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*2.8;vv=(ss-0.5)*2.8;h=(log(cos(uu))-log(cos(vv)))*2.6;x=uu*1.6;z=vv*1.6;y=h' 1 200 'null' 1 null
+```
+
+### polarwave · 极坐标波纹盘三态（乘性半径调制）
+
+**这是一张「先做极坐标映射、再做乘法调制」的曲面**——平面网格 (u,v) 里 u 决定半径、v 决定角度，本可以画出平平的同心圆环；接着给半径乘上一个 `1 + A·sin(6πu)`，**同一个 u 上的整圈圆环就一起往里缩或往外胀**，于是圆环变成了一圈圈上下起伏的「波纹裙摆」。**振幅必须写成乘性 (1 + A·sin) 而不是加性**：加性写法 A 一旦超过基础半径，半径会变负、圆环翻到对侧，图形自己穿过自己（这是本模板第一版踩到的坑）。y 方向再叠一层 `sin(8πu)` 与 `cos(3v)` 的乘积，让纵向起伏也随方位角转动，于是整个曲面既沿半径起伏、又沿角度扭转。**三条在拉大振幅 A（0.25 / 0.45 / 0.65）**：A 小时是一叠轻微起伏的同心盘，A 大时圆环被拉成明显的**花瓣状深槽**，一层层错开像螺旋楼梯的剖面。三条各 3600 粒 / 共 10800 粒 28ms、占格 5164。改 6.0 / 8.0 换径向波数，改 3.0 换角向波数，改 0.6+uu·3.0 换内径与外径。
+
+标签：`parameter` `表达式` `极坐标`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss*2.0*PI;rr=(0.6+uu*3.0)*(1.0+0.25*sin(6.0*uu*PI));x=rr*cos(vv);z=rr*sin(vv);y=(0.35+0.25*1.4)*sin(8.0*uu*PI)*(1.0+0.25*cos(vv*3.0))' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss*2.0*PI;rr=(0.6+uu*3.0)*(1.0+0.45*sin(6.0*uu*PI));x=rr*cos(vv);z=rr*sin(vv);y=(0.35+0.45*1.4)*sin(8.0*uu*PI)*(1.0+0.45*cos(vv*3.0))' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss*2.0*PI;rr=(0.6+uu*3.0)*(1.0+0.65*sin(6.0*uu*PI));x=rr*cos(vv);z=rr*sin(vv);y=(0.35+0.65*1.4)*sin(8.0*uu*PI)*(1.0+0.65*cos(vv*3.0))' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
