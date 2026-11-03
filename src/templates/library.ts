@@ -1616,6 +1616,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1);vv=ss*2.0*PI;rr=(0.6+uu*3.0)*(1.0+0.65*sin(6.0*uu*PI));x=rr*cos(vv);z=rr*sin(vv);y=(0.35+0.65*1.4)*sin(8.0*uu*PI)*(1.0+0.65*cos(vv*3.0))' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'cavmode',
+    name: '球腔声学模态三态（Y22/Y33/Y44 严格球谐）',
+    desc: "**这是一个封闭球腔的驻波模态，也是严格意义上的球谐函数 Y_lm**——不是把半径用两个余弦随便一晃（库里 `bumpsphere` 那条），而是**真正乘上勒让德多项式 P_l(cosθ)**：P₂=(3c²−1)/2、P₃=(5c³−3c)/2、P₄=(35c⁴−30c²+3)/8，再乘 cos(mφ)。**这套组合是数学物理里最核心的一组基底**：氢原子的角度分布、球面鼓的振动模态、球腔里的声场，全都由它展开。**注意极点处的行为**：P_l 在 θ=0 与 θ=π 处不为零（P₂ 在两极是 1、P₃ 在两极是 ±1），所以球谐模态在**两极总是有位移**，而赤道附近可能因为 cos(mφ) 而出现 m 条**经向节线**——这就是为什么三条的瓣数不同：Y₂₂ 两瓣、Y₃₃ 三瓣、Y₄₄ 四瓣，而且每个瓣在两极都汇合。**勒让德多项式特意显式展开而没有调用内置函数**：表达式引擎没有 P_l 的直接实现，但 l ≤ 4 的多项式手写只有几项，展开写在这里代价最低、也最可控。三条各 3660 粒 / 共 10980 粒 29ms、占格 5630。改 A 换振幅（>0.5 会自交），改三项多项式的系数就是换 (l,m)。",
+    tags: ['parameter', '表达式', '球谐'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);p2=(3.0*ct*ct-1.0)*0.5;amp=p2*cos(2.0*ph);rr=3.4*(1.0+0.22*amp);x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);p2=(5.0*ct*ct*ct-3.0*ct)*0.5;amp=p2*cos(3.0*ph);rr=3.4*(1.0+0.22*amp);x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);p2=(35.0*ct*ct*ct*ct-30.0*ct*ct+3.0)*0.125;amp=p2*cos(4.0*ph);rr=3.4*(1.0+0.22*amp);x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
