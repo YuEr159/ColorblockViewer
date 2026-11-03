@@ -1627,6 +1627,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);p2=(35.0*ct*ct*ct*ct-30.0*ct*ct+3.0)*0.125;amp=p2*cos(4.0*ph);rr=3.4*(1.0+0.22*amp);x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'holesphere',
+    name: '球面网壳三态（纵横窗棂求交）',
+    desc: "**这是一个开满方孔的球壳，也是库里占格最高的模板（10481 格）**——做法是把三个条件求交：`abs(rr−R)<t` 先把采样点限制在一层球壳里（否则只是空心的两张薄皮）；`abs(sin(nLat·θ))>0.55` 与 `abs(sin(nLon·φ))>0.55` 各控制**南北方向**与**东西方向**的开口。**二值乘法而不是加法**是关键：正弦的绝对值大于阈值的地方就像「窗棂」留下、小于的地方像「窗洞」抠掉，用逻辑与连接两个方向就得到**纵横交叉的骨架**——这正是建筑上的「球面网壳（reticulated shell）」：受力的骨架只占表面一小部分，却能撑住整个穹顶。**三条走的是窗棂密度**：(4,4) 开口最大、每块骨板都宽厚，像一只镂空的灯笼；(6,8) 是标准的网壳；(8,12) 密到快退化成完整球壳。**阈值 0.55 是「开口率」的旋钮**：调到 0.95 只剩极细的骨架线，调到 0.2 则几乎全实。**代价集中在条件求值**：每次采样都要 acos+atan2+两次 sin，所以步长放宽到 0.14、范围收到 R+0.2 才把总耗时从 359ms 压到 163ms——**这是本库唯一必须用 0.14 步长的模板**。三条共 54762 粒、占格 10481。改阈值换开口率，改 nLat/nLon 换窗格数。",
+    tags: ['conditional', '表达式', '球面几何'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 3.4000000000000004 3.4000000000000004 3.4000000000000004 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);shell=abs(rr-3.2)<0.5;win=abs(sin(4.0*th))>0.55;win2=abs(sin(4.0*ph))>0.55;shell&win&win2' 0.14 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.4000000000000004 3.4000000000000004 3.4000000000000004 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);shell=abs(rr-3.2)<0.5;win=abs(sin(6.0*th))>0.55;win2=abs(sin(8.0*ph))>0.55;shell&win&win2' 0.14 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 3.4000000000000004 3.4000000000000004 3.4000000000000004 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);shell=abs(rr-3.2)<0.5;win=abs(sin(8.0*th))>0.55;win2=abs(sin(12.0*ph))>0.55;shell&win&win2' 0.14 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
