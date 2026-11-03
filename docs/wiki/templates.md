@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 168 条）
+## 已收录模板（当前 169 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2398,6 +2398,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,10);ri=floor(ii/10);th=ti/(10-1)*PI;rr=2.9+(3.2-2.9)*ri/(6-1);ph=ss*2.0*PI;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+### supvol · 实心超椭球三态（指数控制方圆）
+
+**把「超二次曲面的指数」和「体积填充」两件事凑在一起**，就得到了一个**实心的、带方角的立体**——库里 `superellipsoid` 只有一层表面，这条把它填满，同时让 e 继续控制形状：e=1 是球、e<1 趋方、e>1 趋尖。**实现靠的是把 t 拆成三层索引**：`ti = ii mod 12` 沿纬度扫 12 个值、`ri = ii / 12` 沿半径扫 5 个值，`rho = ri/4 · R` 让半径从球心一路涨到 R，于是每个 (θ,φ) 方向上都被切成 5 段、填满了从中心到表面的整条半径。**这个「三层索引」是本库信息密度最高的一种拆法**——一个 t 同时承载三个自变量，代价只是每个维度约 5~12 个采样点，对形状的影响主要是表面稍微「阶梯化」。**三条走的是指数 e**：e=1 时是标准实心球；e=0.45 时方角非常明显，得到一个**圆角立方体**（这也是 SDF 里最难高效做的形状之一，这里用参数化直接得到了）；e=2.2 时反向收尖，变成一个**带尖棱的橄榄形**。三条各 4800 粒，共 14400 粒 32ms、占格 3770。**注意 e 越小越方，与常见「指数越大越方」的直觉相反**（因为这里指数作用在 cos/sin 上，小于 1 的幂会把峰值压平、把谷值拉宽）。
+
+标签：`parameter` `表达式` `体积填充`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,12);ri=floor(ii/12);th=ti/(12-1)*PI;ph=ss*2.0*PI;fr=ri/(5-1);rho=fr*3.2;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),1);sr=signum(st)*pow(abs(st),1);x=rho*sr*cos(ph);y=rho*sc;z=rho*sr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,12);ri=floor(ii/12);th=ti/(12-1)*PI;ph=ss*2.0*PI;fr=ri/(5-1);rho=fr*3.4;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),0.45);sr=signum(st)*pow(abs(st),0.45);x=rho*sr*cos(ph);y=rho*sc;z=rho*sr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,12);ri=floor(ii/12);th=ti/(12-1)*PI;ph=ss*2.0*PI;fr=ri/(5-1);rho=fr*3.4;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),2.2);sr=signum(st)*pow(abs(st),2.2);x=rho*sr*cos(ph);y=rho*sc;z=rho*sr*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
