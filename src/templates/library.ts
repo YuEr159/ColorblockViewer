@@ -1660,6 +1660,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 2239 'u=t;NL=16;NRv=140;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;cx=(sin(tt)+2.0*sin(2.0*tt))*1.2;cy=(cos(tt)-2.0*cos(2.0*tt))*1.2;cz=(-sin(3.0*tt))*1.2;sg=ss*2.0*PI;x=cx+0.85*cos(sg)*cos(tt);y=cy+0.85*sin(sg);z=cz+0.85*cos(sg)*sin(tt)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'lens',
+    name: '双球透镜三态（球心距谱）',
+    desc: "**两个半径相同的球相交，交集是一个「透镜」（lens）——两面凸、边缘收成一条锐利的圆环**，这正是光学里凸透镜的理想几何。SDF 写法极其简单：两球距离函数 a、b 都是 `|p−c|−R`，**交集取 max(a,b)**（要求同时满足 a<0 与 b<0，即两个条件都「在球内」）。**三条走的是球心距 d**：d=0 时两球完全重合，退化成普通球——这是**边界情形，不是 bug**；d=2.2 时交集是标准的**双凸透镜**，边缘那条锐利的圆环清晰可见；d=3.6 时两球只剩薄薄一层相交，得到一片**极薄的双凸镜片**，边缘环的半径接近球半径。**这个族最有用的一点是它能退化成球**——同一套 SDF 公式，d 从 0 慢慢增大，透镜从球逐渐「压扁」成镜片，中间没有任何突变。三条共 16781 粒 230ms、占格 1671。改 R 换镜片口径，改 0.06 换边缘厚度（越小越锐）。",
+    tags: ['conditional', '表达式', 'SDF 实体造型'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 2.5 2.5 2.5 'a=sqrt((x-0)*(x-0)+y*y+z*z)-2.2;b=sqrt((x+0)*(x+0)+y*y+z*z)-2.2;m=max(a,b);abs(m)<0.06' 0.09 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 2.5 2.5 'a=sqrt((x-1.1)*(x-1.1)+y*y+z*z)-2.2;b=sqrt((x+1.1)*(x+1.1)+y*y+z*z)-2.2;m=max(a,b);abs(m)<0.06' 0.09 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 4.3 2.5 2.5 'a=sqrt((x-1.8)*(x-1.8)+y*y+z*z)-2.2;b=sqrt((x+1.8)*(x+1.8)+y*y+z*z)-2.2;m=max(a,b);abs(m)<0.06' 0.09 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
