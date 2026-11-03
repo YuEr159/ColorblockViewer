@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 159 条）
+## 已收录模板（当前 160 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2236,6 +2236,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 3079 'u=t;NL=14;NRv=220;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;kk=(6-5)/5;w1=6-5;cx=w1*cos(tt)+2.5*cos(kk*tt);cz=w1*sin(tt)-2.5*sin(kk*tt);sg=ss*2.0*PI;x=cx+0.45*cos(sg)*cos(tt);y=0.0+0.45*sin(sg);z=cz+0.45*cos(sg)*sin(tt)' 1 200 'null' 1 null
+```
+
+### scherk · Scherk 第一曲面（对数极小曲面）
+
+**这是 Scherk 第一曲面，一张由两个对数之比给定的极小曲面**——z = ln(cos x / cos y)，在方形区域 |x|,|y| < π/2 内成立，四个角上 cos 趋近零、z 冲向 ±∞，所以**曲面往四角竖直地立起来**。它是极小曲面（平均曲率处处为零）里最有名的一族之一：Scherk 曲面本身是「周期性的双周期极小曲面」，把一块这样的鞍沿两个方向镜像拼接，就能铺满整个空间、切出一串**互相正交的塔**。**这里只画一个基本域**，因此看到的是从中心地平往四条对角方向升起、中心交汇成一个**十字形的鞍点**——注意不是四个独立的峰，而是**一张连续曲面上的一整块**，中央那一小片是曲面最平坦的地方。**三条只差缩放系数 a（1.2 / 1.8 / 2.6）**：a 越大，同样的水平范围内高度变化越剧烈，四角竖壁涨得越高；a=1.2 时几乎只是一片微拱的薄片，a=2.6 时四角已顶出画面上方很远——这说明极小曲面的「陡峭」不是形状变了，而是**同一张曲面被不同地拉伸**。三条各 3600 粒 / 共 10800 粒 25ms、占格 2237。改 2.8 换基本域覆盖范围（超过 π 就 Invalid），改 s 换水平尺度。
+
+标签：`parameter` `表达式` `极小曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*2.8;vv=(ss-0.5)*2.8;h=(log(cos(uu))-log(cos(vv)))*1.2;x=uu*1.6;z=vv*1.6;y=h' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*2.8;vv=(ss-0.5)*2.8;h=(log(cos(uu))-log(cos(vv)))*1.8;x=uu*1.6;z=vv*1.6;y=h' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*2.8;vv=(ss-0.5)*2.8;h=(log(cos(uu))-log(cos(vv)))*2.6;x=uu*1.6;z=vv*1.6;y=h' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
