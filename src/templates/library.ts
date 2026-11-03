@@ -1715,6 +1715,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 2099 'u=t;NL=14;NRv=150;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;sg=ss*2.0*PI;cbt=cos(2.0*tt);sbt=sin(2.0*tt);rad=3.0+1.2*cbt;cpt=cos(3.0*tt);spt=sin(3.0*tt);cs=signum(cos(sg))*pow(abs(cos(sg)),2.4);sn=signum(sin(sg))*pow(abs(sin(sg)),2.4);x=(rad+0.45*cs)*cpt;y=0.45*sn+1.2*sbt;z=(rad+0.45*cs)*spt' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'orbithyb',
+    name: 'sp²/sp³ 杂化轨道三态（键方向取 max）',
+    desc: "**这是化学课上 sp² 与 sp³ 杂化轨道的真实几何形状**——碳原子的四个键不是随手伸出去的，而是沿**正四面体的四个顶点**方向（sp³，键角 109.5°）；三个键则均匀分布在平面上（sp²，键角 120°）。这里的写法很巧：**不直接构造四种花瓣，而是对表面的每个方向算「它离最近的那个键方向有多近」**。d₁…d₄ 是方向向量 n 与四个**单位键方向**的点积（点积越接近 1，方向越贴合），取 `max` 就得到**沿四个键方向隆起、其他地方凹陷**的曲面——这正是杂化轨道的角向分布。**球面参数化保证了曲面是闭合的**：n 本身就是单位向量（nx,ny,nz 由 θ、φ 算出），rr 只是它的长度，所以无论 pd 怎么变，曲面永远是「从原点出发的星形」。**三条对照**：sp² 是赤道面上三瓣的「螺旋桨」；sp³ 是四面体四瓣，从正上方看是**四角星**；第三条把振幅加大到 0.9，四瓣拉得极长、中间几乎断开成一团四刺。三条各 3660 粒，共 10980 粒 30ms、占格 7749。改 A 换花瓣长度（>1.2 时曲面开始自交），改 d 向量组换杂化类型。",
+    tags: ['parameter', '表达式', '量子化学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;nx=sin(th)*cos(ph);ny=cos(th);nz=sin(th)*sin(ph);d1=nx;d2=-0.5*nx+0.866025*nz;d3=-0.5*nx-0.866025*nz;pd=max(max(d1,d2),d3);rr=3.4*(1.0+0.55*pd);x=rr*nx;y=rr*ny;z=rr*nz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;nx=sin(th)*cos(ph);ny=cos(th);nz=sin(th)*sin(ph);s=0.57735;d1=s*(nx+ny+nz);d2=s*(nx-ny-nz);d3=s*(-nx+ny-nz);d4=s*(-nx-ny+nz);pd=max(max(d1,d2),max(d3,d4));rr=3.4*(1.0+0.55*pd);x=rr*nx;y=rr*ny;z=rr*nz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;nx=sin(th)*cos(ph);ny=cos(th);nz=sin(th)*sin(ph);s=0.57735;d1=s*(nx+ny+nz);d2=s*(nx-ny-nz);d3=s*(-nx+ny-nz);d4=s*(-nx-ny+nz);pd=max(max(d1,d2),max(d3,d4));rr=3.4*(1.0+0.9*pd);x=rr*nx;y=rr*ny;z=rr*nz' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
