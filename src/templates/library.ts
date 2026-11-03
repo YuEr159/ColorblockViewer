@@ -1529,6 +1529,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=200;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;tw=ph+9.0*th;rr=3.2+(1.2+0.4*cos(tw))*cos(tw);yy=(1.2+0.4*cos(tw))*sin(tw);x=rr*cos(th);z=rr*sin(th);y=yy' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'ruledsaddle',
+    name: '双曲抛物面两族直母线（菱形网）',
+    desc: "**双曲抛物面 y=(x²−z²)/a 是少数几种能由两族直线完全铺成的曲面**——马鞍不是弯的船帆，它是**无数根笔直的木条斜着交叉搭出来的**。这一点用普通曲面参数化（直接填网格）看不出来：填出来的只是光滑曲面，母线的存在完全被抹掉。这条改成**沿母线采样**：x=u+v、z=±(u−v)、y 由曲面方程定，u 固定时 v 扫一根直线，u 取 40 个值就得到 40 根平行母线。**两条命令只差 sg=±1，得到的是两族方向相反的母线**：一族斜向 (+45°)，一族斜向 (−45°)，两族交叉就织成菱形的网——**这正是「双曲抛物面」实际建造时的做法**（薄壳屋顶就是按这套母线布钢筋的）。**第三条把 u 采样密度减半（NL 从 60 到 20），母线变稀**，菱形网格放大，能一眼看出每根母线的走向。与库里 `saddle` 的区别：那条 3600 粒铺满曲面、占格 682；这条只沿母线打点、网格之间是空的，**同一张曲面、两种截然不同的视觉与数学含义**。三条各 2400 / 2400 / 1200 粒，共 6000 粒 18ms、占格 2178。改 sg 换族方向，改 0.28 换鞍的陡峭度。",
+    tags: ['parameter', '表达式', '直纹面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*4.0;vv=(ss-0.5)*4.0;sg=1.0;x=uu+vv;z=sg*(uu-vv);y=(x*x-z*z)*0.28' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=60;NRv=40;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*4.0;vv=(ss-0.5)*4.0;sg=-1.0;x=uu+vv;z=sg*(uu-vv);y=(x*x-z*z)*0.28' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 1199 'u=t;NL=20;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1)-0.5)*4.0;vv=(ss-0.5)*4.0;sg=1.0;x=uu+vv;z=sg*(uu-vv);y=(x*x-z*z)*0.28' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
