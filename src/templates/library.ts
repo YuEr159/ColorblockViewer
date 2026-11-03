@@ -1847,6 +1847,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 5499 'u=t;NL=100;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);r1=sqrt((xx-1.2)*(xx-1.2)+zz*zz)+0.01;r2=sqrt((xx+1.2)*(xx+1.2)+zz*zz)+0.01;hh=0.9*cos(4.0*(r1-r2));x=xx;y=hh;z=zz' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'grin',
+    name: '薄透镜波前相位面三态（焦距谱）',
+    desc: "**这是一片「薄透镜」的透射波前**——理想薄透镜对入射平面波的相位延迟是 `φ(x,z) = k·(x²+z²)/(2f)`，其中 f 是焦距。相位每变化 2π 就出现一圈完整的波，所以把相位取正弦后就得到**一族同心圆环：靠近中心环距大（相位变化慢），远离中心环距越来越密（相位变化快）**。这跟库里 `zoneplate`（菲涅尔波带片）是同一个物理的两种画法：波带片画的是 |sin| 的明暗带（二元掩模），这条画的是连续相位面，**相当于一片真实玻璃透镜的表面轮廓**。**f 是焦距**：f=4 时曲率极大，相位在半径 4 内振荡很多次、环极密，像一片**强会聚的短焦透镜**；f=12 时曲率平缓，整个面上只有两三圈缓慢起伏，是一片**弱会聚的长焦透镜**——焦距越长，波前越接近平面，这正是「长焦镜头玻璃更平」的数学来源。**注意相位里没有 sqrt**：`x²+z²` 直接乘 k/(2f)，这是**抛物线近似**（旁轴近似）；严格的球面波前需要用 `sqrt(x²+z²+f²)−f`，在 f 远大于孔径时两者几乎重合，在 f=4、孔径 4 时已经能看到中心附近略有偏差。三条各 7200 粒，共 21600 粒 47ms、占格 2314。改 f 换焦距，改 k 换波数。",
+    tags: ['parameter', '表达式', '光学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);h=0.35*sin(3.0*(xx*xx+zz*zz)/(2.0*4));x=xx;y=h;z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);h=0.35*sin(3.0*(xx*xx+zz*zz)/(2.0*7));x=xx;y=h;z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);h=0.35*sin(3.0*(xx*xx+zz*zz)/(2.0*12));x=xx;y=h;z=zz' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
