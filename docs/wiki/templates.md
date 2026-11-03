@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 158 条）
+## 已收录模板（当前 159 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2218,6 +2218,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);a=cos(5.0*th);b=cos(3.0*ph);v=a*b;abs(rr-3.6)<0.35&abs(v)<0.1' 0.12 200 'null' 1 null
+```
+
+### tubetrochoid · 管状内旋线三态（万花尺实体管）
+
+**内旋线（hypotrochoid）是万花尺画出的花——但库里那条是「线」，这条把它做成了有体积的管**。曲线公式 cx=(R−r)cos t + d·cos((R−r)t/r)、cz=(R−r)sin t − d·sin((R−r)t/r)，R 是定圆半径、r 是滚动圆半径、d 是笔尖到滚动圆心的距离；三个数一改，花的瓣数、内凹深度全都跟着变。**加厚成管的关键在于截面方向**：不能简单用 (0,1,0) 做副法向（曲线在 xz 平面里，那样得到的管会是扁的），必须用切线的垂直方向 cos(tt), 0, sin(tt) 与竖直方向张成圆截面，管子才是圆的。**三条走的是「R/r 比」**：(4,1) 是 4 瓣的星形内旋线，(5,2) 是 5 瓣带内凹的重瓣，(6,5) 两圆几乎等大、d 又大，曲线被压成几乎没有自交的大圆——**分母 r 越大、比值越接近 1，花瓣越少越圆**，这是参数化最直观的一条规律。三条各 2520 / 2520 / 3080 粒，共 8120 粒 26ms、占格 1544。改 d 换花瓣的尖钝（d 越大越尖），改 tubeR 换管粗细（0.8 以上相邻瓣会粘连）。
+
+标签：`parameter` `表达式` `管状曲面`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 2519 'u=t;NL=14;NRv=180;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;kk=(4-1)/1;w1=4-1;cx=w1*cos(tt)+1.6*cos(kk*tt);cz=w1*sin(tt)-1.6*sin(kk*tt);sg=ss*2.0*PI;x=cx+0.35*cos(sg)*cos(tt);y=0.0+0.35*sin(sg);z=cz+0.35*cos(sg)*sin(tt)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 2519 'u=t;NL=14;NRv=180;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;kk=(5-2)/2;w1=5-2;cx=w1*cos(tt)+2.2*cos(kk*tt);cz=w1*sin(tt)-2.2*sin(kk*tt);sg=ss*2.0*PI;x=cx+0.4*cos(sg)*cos(tt);y=0.0+0.4*sin(sg);z=cz+0.4*cos(sg)*sin(tt)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 3079 'u=t;NL=14;NRv=220;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;kk=(6-5)/5;w1=6-5;cx=w1*cos(tt)+2.5*cos(kk*tt);cz=w1*sin(tt)-2.5*sin(kk*tt);sg=ss*2.0*PI;x=cx+0.45*cos(sg)*cos(tt);y=0.0+0.45*sin(sg);z=cz+0.45*cos(sg)*sin(tt)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
