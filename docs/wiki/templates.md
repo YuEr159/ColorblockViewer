@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 167 条）
+## 已收录模板（当前 168 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2380,6 +2380,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 9999 'u=t;NL=10;NRv=1000;ii=floor(u/NL);rr=floorMod(u,NL)/(NL-1);kk=ii;ga=2.399963;yy=1.0-2.0*(kk+0.5)/1000.0;rad=sqrt(1.0-yy*yy);ph=ga*kk;nx=rad*cos(ph);ny=yy;nz=rad*sin(ph);t1x=-nz;t1z=nx;t1l=sqrt(t1x*t1x+t1z*t1z);t1x=t1x/(t1l+0.000001);t1z=t1z/(t1l+0.000001);t2x=ny*t1z;t2y=nz*t1x-nx*t1z;t2z=-ny*t1x;aa=rr*2.0*PI;R=3.4;cr=0.11;x=(nx+cr*cos(aa)*t1x+cr*sin(aa)*t2x)*R;y=(ny+cr*sin(aa)*t2y)*R;z=(nz+cr*cos(aa)*t1z+cr*sin(aa)*t2z)*R' 1 200 'null' 1 null
+```
+
+### volshell · 厚壁球壳三态（半径成为第三维）
+
+**这是「厚壁球壳」，而不是两层球面皮**——库里绝大多数球壳模板都只画外表面，一层零厚度的皮在体素里占不了几格；这条把**半径也当成一个采样维度**：外层索引拆成两半，`ti = ii mod 10` 沿纬度走、`ri = ii / 10` 沿半径走（六层），于是粒子在 Rin 到 Rout 之间被均匀填满，形成一个**真正有厚度、中间有一个空腔的球壳**。**这就是「参数曲面」与「体积」的分界**：参数曲面用两个参数（θ,φ）只能画一张二维面，想要体积就必须**再引入一个自变量**，而 `parameter` 族每个粒子只给一个 t，所以要把 t 拆成两层索引——这正是库里 `duallissa` 用的那套「整数位装一个参数、小数位装另一个参数」的推广。**三条走的是壁厚**：Rin=1.8 时壁厚 1.4、空腔很大，像一层厚厚的碗；Rin=2.4 时壁与空腔各占一半；Rin=2.9 时壁只剩 0.3、接近一层薄皮——**同一个公式，壁厚连续可调**。三条各 4800 粒，共 14400 粒 31ms、占格 4172。改 6 换径向层数（越大壁越密实），改 Rin/Rout 换壁厚。
+
+标签：`parameter` `表达式` `体积填充`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,10);ri=floor(ii/10);th=ti/(10-1)*PI;rr=1.8+(3.2-1.8)*ri/(6-1);ph=ss*2.0*PI;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,10);ri=floor(ii/10);th=ti/(10-1)*PI;rr=2.4+(3.2-2.4)*ri/(6-1);ph=ss*2.0*PI;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 4799 'u=t;NL=80;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ti=floorMod(ii,10);ri=floor(ii/10);th=ti/(10-1)*PI;rr=2.9+(3.2-2.9)*ri/(6-1);ph=ss*2.0*PI;x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
