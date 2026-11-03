@@ -1550,6 +1550,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 47999 'u=t;NL=500;NRv=96;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1)*2.0*PI;al=(ss-0.5)*PI;x=3.5*cos(tt);y=3.5*sin(tt)*cos(al);z=3.5*sin(tt)*sin(al)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'multileaf',
+    name: '多叶螺旋面三态（多线螺纹几何）',
+    desc: "**同一根轴，k 张螺旋面同时旋转——它们在轴心处相接，向外分成 k 片刀锋般的叶片**。这跟单片 helicoid（库里 `helicoid`）的关键区别不在形状，而在于**层与层之间的相位**：单片螺旋面每转一圈上升高度 h，k 叶螺旋面在**同一高度截面**上同时穿出 k 片，相邻叶片在高度方向错开 h/k 的相位。所以从轴心往外看，你看到的是 k 条从中心辐射出去、边转边升的曲线族；从上往下看，k 片叶子把圆周等分成 k 份，每一份里叶片都在扭转。**这正是多线螺纹（multi-start thread）的几何**：一根螺栓上的 k 条独立螺纹螺旋，就是这 k 片叶子。三条把叶数从 3 / 5 到 8：3 叶时叶片厚实、每片看得清走向；5 叶是最常见的「多头螺纹」观感；8 叶密到快糊成一张蜂巢。**注意片数必须整除采样密度**（NRv = leaves × 20），否则相位会错位、叶片断裂——这就是为什么模板里把 NRv 写成 `leaves·20` 而不是固定值。三条各 2400 / 4000 / 6400 粒，共 12800 粒 31ms、占格 2017。改 turns 换螺旋上升的圈数（大于 1 叶片会绕轴卷回）。",
+    tags: ['parameter', '表达式', '螺旋面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 2399 'u=t;NL=40;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);leaf=floor(ii/20.0);base=floorMod(ii,20.0);u0=base/19.0;ang=leaf*2.0*PI/3.0+u0*2.0*2.0*PI;vv=(ss-0.5)*2.4;x=vv*cos(ang);z=vv*sin(ang);y=(u0-0.5)*7.0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NL=40;NRv=100;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);leaf=floor(ii/20.0);base=floorMod(ii,20.0);u0=base/19.0;ang=leaf*2.0*PI/5.0+u0*2.0*2.0*PI;vv=(ss-0.5)*2.4;x=vv*cos(ang);z=vv*sin(ang);y=(u0-0.5)*7.0' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 6399 'u=t;NL=40;NRv=160;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);leaf=floor(ii/20.0);base=floorMod(ii,20.0);u0=base/19.0;ang=leaf*2.0*PI/8.0+u0*3.0*2.0*PI;vv=(ss-0.5)*2.4;x=vv*cos(ang);z=vv*sin(ang);y=(u0-0.5)*7.0' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
