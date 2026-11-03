@@ -1836,6 +1836,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3024 'u=t;NL=55;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);xx=(ii/(NRv-1)-0.5)*9.0;zz=(ss-0.5)*9.0;ca=cos(60*PI/180.0);sa=sin(60*PI/180.0);wa=sin(1.2*(xx*ca+zz*sa));wb=sin(1.2*(xx*ca-zz*sa));amp=(wa+wb)*0.5;x=xx;y=1.6*amp;z=zz' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'cylwave',
+    name: '双源柱面波干涉三态（双曲线条纹）',
+    desc: "**两个点源发出柱面波，波前到达每一点的时间差决定该点的亮暗**——这就是声学/电磁学里双源干涉的完整形式。与库里 `planewave`（两束平面波）的关键区别在于**波前形状**：平面波的波前是直线，两条直线的相位差**只沿一个方向线性增长**，所以产生的是平行直条纹；柱面波的波前是圆，两条圆的相位差 `r₁ − r₂` 是**双曲函数**，于是干涉条纹（相位为常数的轨迹）是**一族双曲线**——它们在两源之间密集、向外张开，中间那条直的「中央极大」正是两点连线的垂直平分线。**这正是杨氏双缝实验的完整版**：小学课本只讲远处的平行条纹，实际近场就是这张双曲线图。**三条走的是波数 k = 1.6 / 2.8 / 4.0**：k 越大波长越短，双曲线族越密；k=4.0 时条纹已经密到接近 4 格半径内的采样极限。**注意 r1/r2 里那个 +0.01**：两源正上方 r1 或 r2 会趋近 0，虽然不会除零但相位会跳变，加个小量让波函数平滑。三条各 5500 粒，共 16500 粒 35ms、占格 2939。改 d 换源间距（越近条纹越密），改 k 换波长。",
+    tags: ['parameter', '表达式', '波动'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 5499 'u=t;NL=100;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);r1=sqrt((xx-1.2)*(xx-1.2)+zz*zz)+0.01;r2=sqrt((xx+1.2)*(xx+1.2)+zz*zz)+0.01;hh=0.9*cos(1.6*(r1-r2));x=xx;y=hh;z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5499 'u=t;NL=100;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);r1=sqrt((xx-1.2)*(xx-1.2)+zz*zz)+0.01;r2=sqrt((xx+1.2)*(xx+1.2)+zz*zz)+0.01;hh=0.9*cos(2.8*(r1-r2));x=xx;y=hh;z=zz' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 5499 'u=t;NL=100;NRv=55;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;xx=rr*cos(ph);zz=rr*sin(ph);r1=sqrt((xx-1.2)*(xx-1.2)+zz*zz)+0.01;r2=sqrt((xx+1.2)*(xx+1.2)+zz*zz)+0.01;hh=0.9*cos(4.0*(r1-r2));x=xx;y=hh;z=zz' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
