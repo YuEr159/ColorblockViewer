@@ -1803,6 +1803,17 @@ export const TEMPLATES: Template[] = [
       "/particleex normal minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 3.2 3.2 3.2 6000 200 'rr=sqrt(x*x+z*z)+0.001;ax=0.14*(1.0-rr/3.4);vx=ax*x/rr;vz=ax*z/rr;vy=0.03' 1 null",
     ],
   },
+  {
+    id: 'petaltorus',
+    name: '多瓣环面三态（管心径向起伏）',
+    desc: "**普通环面的管心是一条半径恒定的圆；这条把「管心到轴的距离」按方位角做了 n 重调制**——`throat = R + amp·cos(nθ)`，于是管心本身绕着轴**起伏成一圈 n 个波峰的波浪环**，再把这个波浪管沿它自己扫一圈，就得到**像花环一样有 n 个瓣的环面**。**这和库里 `corrugated` 的关键区别**：那个调的是「管的粗细」（r(θ) 随方位起伏，管心仍是圆），这条调的是**管心的位置**（管径不变、整根管在径向来回摆）——视觉上前者是鼓胀的管壁，后者是**外轮廓有 n 个凸起的花瓣环**。**n 就是瓣数**：n=4 时四个大瓣、每瓣之间有明显收腰；n=6 是匀称的六瓣花环；n=9 时瓣密到轮廓接近锯齿，俯视像一枚**齿轮**。**amp 不能超过 R − r**：超过之后相邻两瓣之间的管会自交（管心摆到最内处时，整根管会翻到轴的另一侧），画面会出现穿插的乱线。三条各 4000 粒，共 12000 粒 32ms、占格 3352。改 n 换瓣数，改 amp 换瓣的深度，改 r 换管粗。",
+    tags: ['parameter', '表达式', '曲面'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NL=80;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;throat=3+0.9*cos(4.0*th);rad=throat+0.9*cos(ph);x=rad*cos(th);y=0.9*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NL=80;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;throat=3+0.9*cos(6.0*th);rad=throat+0.9*cos(ph);x=rad*cos(th);y=0.9*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NL=80;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;throat=3+0.9*cos(9.0*th);rad=throat+0.9*cos(ph);x=rad*cos(th);y=0.9*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
