@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 166 条）
+## 已收录模板（当前 167 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2362,6 +2362,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 4.3 2.5 2.5 'a=sqrt((x-1.8)*(x-1.8)+y*y+z*z)-2.2;b=sqrt((x+1.8)*(x+1.8)+y*y+z*z)-2.2;m=max(a,b);abs(m)<0.06' 0.09 200 'null' 1 null
+```
+
+### caparray · 球面圆盖阵列三态（局部切平面铺设）
+
+**这是一个「由许多小圆片铺满球面」的结构，也是把「局部切平面」这套工具完整用上一遍的样板**——先用黄金角（2.399963 rad）把 N 个点均匀撒在球面上（这是库里 `fibonaccisphere` 用的同一套斐波那契球算法），然后**在每个点上建立局部切平面**：t1 = (−nz, 0, nx)/|·| 是水平方向的切向量，t2 = n × t1 是竖直方向的切向量，两者与法向 n 正交，构成一个局部直角坐标系。最后 `cr·cos(aa)·t1 + cr·sin(aa)·t2` 就在这个切平面里画一个半径 cr 的小圆——**每个小圆都贴着球面**，远看是一球面上整齐的鳞片。**这是自动生成「球面点阵」的标准做法**：不求解析解、只在局部展开，对任意 N 都成立，也不用处理极点的奇异性（黄金角天然绕开极点）。**t1l 加 0.000001 是必要的保护**：靠近两极时 nx、nz 都趋近 0，不加保护会除零得到 NaN、整个粒子消失。**三条只有密度不同**：200 个盖、每个半径 0.22 时是疏朗的鳞片；500 个 0.15 是标准覆盖；1000 个 0.11 时快连成一张壳。三条各约 5700 粒，共 17000 粒 57ms、占格 5092。改 capR 换鳞片大小（太大互相重叠），改 N 换密度。
+
+标签：`parameter` `表达式` `球面几何`
+
+```
+/particleex parameter minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 0 1999 'u=t;NL=10;NRv=200;ii=floor(u/NL);rr=floorMod(u,NL)/(NL-1);kk=ii;ga=2.399963;yy=1.0-2.0*(kk+0.5)/200.0;rad=sqrt(1.0-yy*yy);ph=ga*kk;nx=rad*cos(ph);ny=yy;nz=rad*sin(ph);t1x=-nz;t1z=nx;t1l=sqrt(t1x*t1x+t1z*t1z);t1x=t1x/(t1l+0.000001);t1z=t1z/(t1l+0.000001);t2x=ny*t1z;t2y=nz*t1x-nx*t1z;t2z=-ny*t1x;aa=rr*2.0*PI;R=3.4;cr=0.22;x=(nx+cr*cos(aa)*t1x+cr*sin(aa)*t2x)*R;y=(ny+cr*sin(aa)*t2y)*R;z=(nz+cr*cos(aa)*t1z+cr*sin(aa)*t2z)*R' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 4999 'u=t;NL=10;NRv=500;ii=floor(u/NL);rr=floorMod(u,NL)/(NL-1);kk=ii;ga=2.399963;yy=1.0-2.0*(kk+0.5)/500.0;rad=sqrt(1.0-yy*yy);ph=ga*kk;nx=rad*cos(ph);ny=yy;nz=rad*sin(ph);t1x=-nz;t1z=nx;t1l=sqrt(t1x*t1x+t1z*t1z);t1x=t1x/(t1l+0.000001);t1z=t1z/(t1l+0.000001);t2x=ny*t1z;t2y=nz*t1x-nx*t1z;t2z=-ny*t1x;aa=rr*2.0*PI;R=3.4;cr=0.15;x=(nx+cr*cos(aa)*t1x+cr*sin(aa)*t2x)*R;y=(ny+cr*sin(aa)*t2y)*R;z=(nz+cr*cos(aa)*t1z+cr*sin(aa)*t2z)*R' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 0 9999 'u=t;NL=10;NRv=1000;ii=floor(u/NL);rr=floorMod(u,NL)/(NL-1);kk=ii;ga=2.399963;yy=1.0-2.0*(kk+0.5)/1000.0;rad=sqrt(1.0-yy*yy);ph=ga*kk;nx=rad*cos(ph);ny=yy;nz=rad*sin(ph);t1x=-nz;t1z=nx;t1l=sqrt(t1x*t1x+t1z*t1z);t1x=t1x/(t1l+0.000001);t1z=t1z/(t1l+0.000001);t2x=ny*t1z;t2y=nz*t1x-nx*t1z;t2z=-ny*t1x;aa=rr*2.0*PI;R=3.4;cr=0.11;x=(nx+cr*cos(aa)*t1x+cr*sin(aa)*t2x)*R;y=(ny+cr*sin(aa)*t2y)*R;z=(nz+cr*cos(aa)*t1z+cr*sin(aa)*t2z)*R' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
