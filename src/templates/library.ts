@@ -1507,6 +1507,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3599 'u=t;NL=60;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1)*2.0*PI;vv=(ss-0.5)*2.2;rr=2*cosh(0.9*vv);x=rr*cos(uu);z=rr*sin(uu);y=2.2*vv' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'bumpsphere',
+    name: '球面格窗隆起三态（双方向调制）',
+    desc: "**把球面的半径按两个独立方向同时调制，球就变成了布满格窗的灯笼**——r = R·(1 + A·cos(mθ)·cos(nφ))。这里 θ 是纬度角、φ 是经度角，**两个余弦一个管南北、一个管东西**，所以隆起既沿子午线排、又沿纬线排，交叉出来是棋盘状的鼓包阵列，而不是简单的一圈圈环形波。这正是球谐函数 Y_lm 的实部结构在几何上的直接呈现：l 阶球谐在球面上恰好有 l 条节线（其中 m 条经向、l−m 条纬向），本模板的 m 与 n 就是这两类节线的条数。**三条走的是「密度谱」**：(4,4) 是稀疏的大鼓包、能一眼数清；(8,6) 已经密到像蜂巢；(12,10) 干脆糊成一层带细密凹凸的壳——**A 随密度同步加到 0.26 是必须的**，否则鼓包越小越看不出来。nl+1 行 × nl 列（61×60）保证极点到极点的均匀覆盖。三条各 3660 粒 / 共 10980 粒 29ms、占格 7328（本库最高之一）。改 A 换起伏幅度（>0.6 会自交），改 m/n 换南北与东西的节线条数。",
+    tags: ['parameter', '表达式', '球谐'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=3.6*(1.0+0.18*cos(4.0*th)*cos(4.0*ph));x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=3.6*(1.0+0.22*cos(8.0*th)*cos(6.0*ph));x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;rr=3.6*(1.0+0.26*cos(12.0*th)*cos(10.0*ph));x=rr*sin(th)*cos(ph);y=rr*cos(th);z=rr*sin(th)*sin(ph)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
