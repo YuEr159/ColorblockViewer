@@ -1814,6 +1814,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3999 'u=t;NL=80;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*2.0*PI;ph=ss*2.0*PI;throat=3+0.9*cos(9.0*th);rad=throat+0.9*cos(ph);x=rad*cos(th);y=0.9*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'ripplewave',
+    name: '有向同心波纹面三态（径向波数谱）',
+    desc: "**一张铺在水平面上的同心环波——半径每增加一个波长，高度就上下走一个来回**。`hh = 0.8·sin(n·rr)` 里的 n 是**径向波数**：n=8 时盘上只有四五个环，n=22 时密到像一张水波唱片。**关键在 y 的表达式里那个 `(1 + 0.3·cos φ)`**：如果没有它，波峰就是一圈圈平齐的同心圆环，跟库里 `ripple` 一类的柱状涟漪没区别；乘上方位角余弦之后，**同一圈波峰在朝 +x 的方向被抬高、朝 −x 的方向被压低**，整张波纹面变成一张**倾斜的、微微扭转的波片**，看起来像被风吹歪的水面。这正是把「纯径向波」变成「有方向性的波」的最省事写法——**只加一个角向调制因子，波就从各向同性变成了有向的**。**三条走的是波数**：n=8 是疏朗的浅盘；n=14 是标准的水波纹；n=22 时波长只有 0.29 格，环密到接近采样间距，开始出现**摩尔纹**（这正是这条模板名字的由来——用粒子采样一个高频周期函数，采样不足时会出现低频的假条纹）。三条各 6000 粒，共 18000 粒 40ms、占格 6585。改 n 换波数（超过约 30 就严重混叠），改 0.3 换倾斜程度。",
+    tags: ['parameter', '表达式', '波动'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;NL=100;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;hh=0.8*sin(8.0*rr);x=rr*cos(ph);y=hh*(1.0+0.3*cos(ph));z=rr*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;NL=100;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;hh=0.8*sin(14.0*rr);x=rr*cos(ph);y=hh*(1.0+0.3*cos(ph));z=rr*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 5999 'u=t;NL=100;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);fr=ii/(NRv-1);rr=fr*4;ph=ss*2.0*PI;hh=0.8*sin(22.0*rr);x=rr*cos(ph);y=hh*(1.0+0.3*cos(ph));z=rr*sin(ph)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
