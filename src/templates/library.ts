@@ -1913,6 +1913,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 39935 'u=t;NL=48;NPv=52;kk=floor(u/(NL*NPv));rem=floorMod(u,NL*NPv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);th=(0.22+0.56*kk/(16-1.0))*PI;ph=jj/(NPv-1.0)*2.0*PI;ps=ss*4.0*PI;e1=(ps+ph)*0.5;e2=(ps-ph)*0.5;st=sin(th*0.5);ct=cos(th*0.5);x=st*cos(e1)*3.4;y=ct*cos(e2)*3.4;z=st*sin(e1)*3.4' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'latticerod',
+    name: '嵌套立方棱骨架三态（粗细谱）',
+    desc: "**判据「至少两个坐标同时贴近格线」= 立在这些格线上的棱**——这是写立方格骨架最省的办法，不需要枚举 12 条棱、不需要方向判断。展开来就是三件事：x 与 y 都贴线 → 平行 z 的棱；y 与 z 都贴线 → 平行 x 的棱；x 与 z 都贴线 → 平行 y 的棱，三式取并集正好补全所有棱，角点被重复覆盖（无害）。**两层格距叠加才像分形**：粗层用格距 L/2 给出大立方格，细层用 L/4 加一套缩小的格嵌进每个大格内部，两层粗细比 2:1，中间留出上一级格子的空白——这正是 Menger 海绵的「骨架版」（真正的 Menger 要挖掉面心与体心，这里只保留棱，所以细看是**相互嵌套的两套立方框**而不是完整海绵）。**thick 是棱的粗细**：0.10 时棱细如线、两层格各自清晰，像**线框模型**；0.16 时棱开始有体积，粗层的框明显比细层重，视觉上分出层级；0.24 时棱粗到相邻平行棱之间的空隙只剩 0.5 格，整片快要糊成实心——**注意粗层与细层的厚度比固定在 0.45**，这个比例让细层的线始终比粗层细一半，层级感才不会丢。**代价注意**：`conditional` 的代价是网格点数 × 表达式长度，与命中率无关；5³ 格距 0.25 是 8³=512 万点——已经超过常规预算，但因为范围只有 4 格、每边 17 个采样点，实测 161ms 可接受；再细化 step 会线性上涨。三条各 6561 粒，共 19683 粒 161ms、占格 16038（库内最高）。改 L 换立方格大小，改 thick 换棱的粗细（同时会改变粗细两层的对比）。",
+    tags: ['conditional', '表达式', '晶体学'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'h1=4/2.0;h2=4/4.0;ax=abs(x-h1*round(x/h1));ay=abs(y-h1*round(y/h1));az=abs(z-h1*round(z/h1));c1=(ax<0.1)&(ay<0.1);c2=(ay<0.1)&(az<0.1);c3=(ax<0.1)&(az<0.1);bx=abs(x-h2*round(x/h2));by=abs(y-h2*round(y/h2));bz=abs(z-h2*round(z/h2));t2=0.1*0.45;d1=(bx<t2)&(by<t2);d2=(by<t2)&(bz<t2);d3=(bx<t2)&(bz<t2);cond=c1|c2|c3|d1|d2|d3' 0.25 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'h1=4/2.0;h2=4/4.0;ax=abs(x-h1*round(x/h1));ay=abs(y-h1*round(y/h1));az=abs(z-h1*round(z/h1));c1=(ax<0.16)&(ay<0.16);c2=(ay<0.16)&(az<0.16);c3=(ax<0.16)&(az<0.16);bx=abs(x-h2*round(x/h2));by=abs(y-h2*round(y/h2));bz=abs(z-h2*round(z/h2));t2=0.16*0.45;d1=(bx<t2)&(by<t2);d2=(by<t2)&(bz<t2);d3=(bx<t2)&(bz<t2);cond=c1|c2|c3|d1|d2|d3' 0.25 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'h1=4/2.0;h2=4/4.0;ax=abs(x-h1*round(x/h1));ay=abs(y-h1*round(y/h1));az=abs(z-h1*round(z/h1));c1=(ax<0.24)&(ay<0.24);c2=(ay<0.24)&(az<0.24);c3=(ax<0.24)&(az<0.24);bx=abs(x-h2*round(x/h2));by=abs(y-h2*round(y/h2));bz=abs(z-h2*round(z/h2));t2=0.24*0.45;d1=(bx<t2)&(by<t2);d2=(by<t2)&(bz<t2);d3=(bx<t2)&(bz<t2);cond=c1|c2|c3|d1|d2|d3' 0.25 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
