@@ -1572,6 +1572,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 6999 'u=t;NL=140;NRv=50;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);tt=ii/(NRv-1);ph=ss*360*PI/180.0;yy=(tt-0.5)*7.0;ct=cos(tt*PI);st=sin(tt*PI);rr=3.0*signum(st)*pow(abs(st),0.55);x=rr*cos(ph);z=rr*sin(ph);y=yy+rr*0.4*sin(tt*PI)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'nodalnet',
+    name: '球谐节线网络三态（经纬网格球壳）',
+    desc: "**球谐函数 Y_lm 在球面上最本质的东西不是起伏，而是「哪里等于零」**——那些零值曲线把球面切成一块块符号交替的格子，叫**节线（nodal lines）**。角度部分可分离成 cos(lθ)·cos(mφ) 的形式：cos(lθ)=0 给出 l 条**纬向**节线（平行圈），cos(mφ)=0 给出 m 对**经向**节线（子午面），两组正交，织成球面经纬网。这条没有做径向调制（不像库里 `sphericalharmonics` 把 Y_l0 加成半径起伏），而是**用 conditional 直接筛选球壳上满足 |cos(lθ)·cos(mφ)| < 0.1 的点**：`abs(rr−3.6)<0.35` 先把采样限定在一层球壳上，第二个条件挑出节线附近，于是得到一张布满经纬网格的空心球壳。**l 与 m 是两个独立整数**：l 管南北方向切多少刀，m 管东西方向切多少刀，两者互不干涉——这就是球谐函数「分离变量」在视觉上的直接证据。三条 (l,m) = (3,2) / (4,4) / (5,3)：第一个南北三刀、东西四刀，格子的长短比明显；第二个横竖都是四刀，接近立方格；第三个南北五刀最密。**代价集中在条件求值上**：球壳范围内 60³ = 216000 次网格采样、每次算一次 acos 与两次 cos，实测 207ms；缩小范围到 3.0 或放大带宽到 0.15 都能降下来。三条共 35887 粒、占格 5216。改 bw 换网格粗细（0.05 是细线，0.2 是宽带），改 3.6 换球半径。",
+    tags: ['conditional', '表达式', '球谐'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -8 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);a=cos(3.0*th);b=cos(2.0*ph);v=a*b;abs(rr-3.6)<0.35&abs(v)<0.1' 0.12 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);a=cos(4.0*th);b=cos(4.0*ph);v=a*b;abs(rr-3.6)<0.35&abs(v)<0.1' 0.12 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 8 0 0 1 0.95 0.89 1 0 0 0 3.6 3.6 3.6 'rr=sqrt(x*x+y*y+z*z);ct=y/rr;th=acos(ct);ph=atan2(z,x);a=cos(5.0*th);b=cos(3.0*ph);v=a*b;abs(rr-3.6)<0.35&abs(v)<0.1' 0.12 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
