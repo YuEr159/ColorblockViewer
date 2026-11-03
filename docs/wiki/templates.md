@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 185 条）
+## 已收录模板（当前 186 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2704,6 +2704,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=90;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);li=floorMod(ii,24);tt=ss*2.0*PI;ph0=li*2.0*PI/24.0;th=tt;ph=ph0+5.0*tt/1.0;rad=3.0+1.1*cos(ph);x=rad*cos(th);y=1.1*sin(ph);z=rad*sin(th)' 1 200 'null' 1 null
+```
+
+### schybrid · 超椭球×球谐格窗三态（正交叠加）
+
+**球谐的格窗调制与超椭球的方圆控制，可以独立叠加**——这两件事看起来都像「改变半径」，但它们作用在**不同的环节**上：超椭球的指数 e 改的是**基底的角向分布**（把球面本身换成方的/尖的），球谐的 A 改的是**沿半径方向的起伏**（在基底形状之上再加一层鼓包）。**这条把它们乘在一起**：`rr = R·(1 + A·cos(mθ)cos(nφ))` 决定半径，而 `sr / sc` 用 e 次幂决定方向。**三条固定 A=0.28、(m,n)=(6,4)，只改 e = 1.0 / 0.5 / 1.8**：e=1 时是标准球面加格窗（跟库里 `bumpsphere` 接近）；e=0.5 时球面被「方化」，鼓包随之变成**方块阵列**，整体像一颗**方糖上的凹凸面**；e=1.8 时基底变尖，鼓包被拉成尖刺状的棱。**这说明两个参数是正交的**——想要「方形基底 + 圆形鼓包」或「圆基底 + 尖刺」都只是改两个数字。**注意 signum 在 sr/sc 里不可省**，而 modu 里的 cos 乘积**不需要 abs**（它本来就可以是负的，负半径会翻转，但因为只到 −0.28 所以不会自交）。三条各 3660 粒，共 10980 粒 29ms、占格 6365。改 e 换基底方圆，改 A 换起伏幅度，改 m/n 换格窗方位与数量。
+
+标签：`parameter` `表达式` `球谐`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),1);sr=signum(st)*pow(abs(st),1);modu=1.0+0.28*cos(4.0*th)*cos(4.0*ph);rr=3.4*modu;x=rr*sr*cos(ph);y=rr*sc;z=rr*sr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),0.5);sr=signum(st)*pow(abs(st),0.5);modu=1.0+0.28*cos(6.0*th)*cos(4.0*ph);rr=3.4*modu;x=rr*sr*cos(ph);y=rr*sc;z=rr*sr*sin(ph)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 3659 'u=t;NL=61;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ii/(NRv-1)*PI;ph=ss*2.0*PI;ct=cos(th);st=sin(th);sc=signum(ct)*pow(abs(ct),1.8);sr=signum(st)*pow(abs(st),1.8);modu=1.0+0.28*cos(6.0*th)*cos(4.0*ph);rr=3.4*modu;x=rr*sr*cos(ph);y=rr*sc;z=rr*sr*sin(ph)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
