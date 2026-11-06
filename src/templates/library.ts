@@ -1990,6 +1990,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 64799 'u=t;NL2=90;NRv=80;kk=floor(u/(NL2*NRv));rem=floorMod(u,NRv*NL2);ii=floor(rem/NL2);ss=floorMod(rem,NL2)/(NL2-1);uu=ii/(NRv-1.0)*24;vv=ss*2.0*PI;ex=exp(uu/18.849556);cv=cos(vv*0.5);c2=cv*cv;sc=(1.0+kk*0.04)*0.75;x=2.0*(1.0-ex)*cos(uu)*c2*sc;y=2.0*(-1.0+ex)*sin(uu)*c2*sc;z=(1.0-exp(uu/9.424778)-sin(vv)+ex*sin(vv))*sc' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'wulff',
+    name: 'Wulff 晶体平衡形三态（晶形谱）',
+    desc: "**晶体的平衡形状不是球，而是一组平直面的凸多面体**——Wulff 定理说：每个方向 n 上，晶面到中心的距离正比于该晶面的表面能 γ(n)。把这一点写成公式就是 `r(n) = γ(n)`，凸包就是这个晶体的形状。**这条模板用一个非常短的判据实现了它**：对单位方向 n，算两个候选距离——`{100} 面族的 h1 = a / max(|nx|,|ny|,|nz|)` 和 `{111} 面族的 h2 = b / ((|nx|+|ny|+|nz|)/√3)`，取较小者。为什么取小？因为**表面能高的方向会被相邻的低能面「切掉」**——Wulff 构型永远是各面族支撑平面的下包络，所以凸多面体的边界总是落在最近的那个面上，`min` 就是这条几何事实的算术形式。**a/b 之比决定了晶形**：`a` 大时 {100} 面远、{111} 面近，**八面体**主导（切面在斜方向）；`b` 大时反过来，**立方体**主导（平顶平底是 {100}）；两者相等时两类面同时等距，得到**截角八面体**（立方体 + 八面体的复合，同时有正方形面和三角形面）——这正是食盐（NaCl）晶体在不同生长条件下的常见形态谱。**三条走的是 b 从 1.55 到 2.65（a 固定 3.0）**：b=1.55 时 {111} 面近，整体偏八面体，能看到细长的三角切面；b=2.05 接近相等，混合形态明显、正方形面与三角面交界的棱清晰；b=2.65 时 {100} 面主导，**平顶平底的正方柱**出现，只在角落留一点三角切面——这正是真实晶体从「八面体习性」到「立方体习性」随温度/杂质变化的可视化。**注意 max 只能两参**（引擎限制），三个数的最大值要写成 `max(ax,max(ay,az))`。三条各 14400 粒，共 43200 粒 88ms、占格 3725。改 a 换 {100} 面距离，改 b 换 {111} 面距离，两者的**比值**才是形态参数。",
+    tags: ['parameter', '表达式', '晶体学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 14399 'u=t;NL=120;NRv=120;ii=floor(u/120);ss=floorMod(u,120)/119.0;ph=ii/119.0*2.0*PI;th=ss*2.0*PI;ct=cos(th);st=sin(th);nx=st*cos(ph);ny=st*sin(ph);nz=ct;ax=abs(nx);ay=abs(ny);az=abs(nz);r100=max(ax,max(ay,az));r111=(ax+ay+az)*0.57735;h1=3/r100;h2=1.55/r111;hh=min(h1,h2);x=nx*hh*1;y=ny*hh*1;z=nz*hh*1' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 14399 'u=t;NL=120;NRv=120;ii=floor(u/120);ss=floorMod(u,120)/119.0;ph=ii/119.0*2.0*PI;th=ss*2.0*PI;ct=cos(th);st=sin(th);nx=st*cos(ph);ny=st*sin(ph);nz=ct;ax=abs(nx);ay=abs(ny);az=abs(nz);r100=max(ax,max(ay,az));r111=(ax+ay+az)*0.57735;h1=3/r100;h2=2.05/r111;hh=min(h1,h2);x=nx*hh*1;y=ny*hh*1;z=nz*hh*1' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 14399 'u=t;NL=120;NRv=120;ii=floor(u/120);ss=floorMod(u,120)/119.0;ph=ii/119.0*2.0*PI;th=ss*2.0*PI;ct=cos(th);st=sin(th);nx=st*cos(ph);ny=st*sin(ph);nz=ct;ax=abs(nx);ay=abs(ny);az=abs(nz);r100=max(ax,max(ay,az));r111=(ax+ay+az)*0.57735;h1=3/r100;h2=2.65/r111;hh=min(h1,h2);x=nx*hh*1;y=ny*hh*1;z=nz*hh*1' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
