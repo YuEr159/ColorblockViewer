@@ -2012,6 +2012,17 @@ export const TEMPLATES: Template[] = [
       "/particleex conditional minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 2.8 2.8 2.8 'hi=3*0.5;gx=x-3*round(x/3);gy=y-3*round(y/3);gz=z-3*round(z/3);c1x=gx-hi;c1y=gy-hi;c1z=gz-hi;d8=sqrt(c1x*c1x+c1y*c1y+c1z*c1z);n8x=gx+hi;n8y=gy+hi;n8z=gz+hi;d8b=sqrt(n8x*n8x+n8y*n8y+n8z*n8z);c6x=abs(gx)-hi;c6y=abs(gy)-hi;c6z=abs(gz)-hi;d6=sqrt(c6x*c6x+c6y*c6y+c6z*c6z);dd=min(d8,min(d8b,d6));dcc=sqrt(gx*gx+gy*gy+gz*gz);cond=abs(dd-dcc)<0.14' 0.2 200 'null' 1 null",
     ],
   },
+  {
+    id: 'taylorcouette',
+    name: 'Taylor-Couette 涡胞三态（波纹管）',
+    desc: "**两个同心圆柱之间，内筒转得够快时，流体会自发排成一串甜甜圈状的涡胞**——这就是 Taylor–Couette 不稳定性，流体力学史上最著名的失稳之一（Taylor 1923）。每个涡胞里流体沿闭合流线循环：贴着内筒向上、贴着外筒向下，相邻涡胞的旋转方向相反。**这条模板画的是涡胞的「平均半径面」**：`rr = rm + rh·sin(κy)`，其中 rm 是环隙中线、rh 是半个隙宽。**sin 的零点正是相邻涡胞之间的分界面**（那里没有径向流动），而 sin 的极值处正是涡胞中心（该处贴壁），所以沿 y 扫描时，管壁的「腰」就是涡胞交界、「鼓」就是涡胞中心——**这就是图里波纹管形态的物理来源**：那不是装饰性的波纹，而是涡胞的标记。**与库里 `vortexstreet`（卡门涡街）的区别**：涡街是绕流尾迹里脱落的一串旋涡（二维、交替、单向推进）；Taylor–Couette 是**环形间隙里的定常驻波**（轴对称、不推进、正反交替），两者在数学上都不是一回事——这里没有「脱落的涡」，只有一个沿轴站立的波纹剖面。**三条走的是涡胞数 2 / 3 / 4**：2 个胞时波长 3.5 格，波纹舒缓，能清楚看到「腰-鼓-腰」的完整周期；3 个胞时波长变短、波纹加密；4 个胞（Rin 也调小到 0.9，环隙更宽）时已接近每格一个鼓包，整根管像**竹节**——**这是真实的物理趋势**：转速越高，形成的涡胞越短（波长 ∝ 隙宽 / Taylor 数）。**注意 `fr` 同时驱动 y 和相位**：两者必须用同一个参数联动，否则波纹与轴向位置会错位，画出来是斜的螺旋而不是横波。三条各 8000 粒，共 24000 粒 52ms、占格 5222。改 cells 换涡胞数，改 Rin/Rout 换环隙宽度，改 H 换管长。",
+    tags: ['parameter', '表达式', '流体力学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ss*2.0*PI;fr=ii/(NRv-1.0);yy=(fr-0.5)*7;ph=fr*2.0*2.0*PI;sn=sin(ph);rm=(1.3+2.4)*0.5;rh=(2.4-1.3)*0.5;rr=rm+rh*sn;x=rr*cos(th);y=yy;z=rr*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ss*2.0*PI;fr=ii/(NRv-1.0);yy=(fr-0.5)*7;ph=fr*3.0*2.0*PI;sn=sin(ph);rm=(1.3+2.4)*0.5;rh=(2.4-1.3)*0.5;rr=rm+rh*sn;x=rr*cos(th);y=yy;z=rr*sin(th)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ss*2.0*PI;fr=ii/(NRv-1.0);yy=(fr-0.5)*7;ph=fr*4.0*2.0*PI;sn=sin(ph);rm=(0.9+2.6)*0.5;rh=(2.6-0.9)*0.5;rr=rm+rh*sn;x=rr*cos(th);y=yy;z=rr*sin(th)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
