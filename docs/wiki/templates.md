@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 189 条）
+## 已收录模板（当前 190 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2776,6 +2776,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex conditional minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 4 4 4 'h1=4/2.0;h2=4/4.0;ax=abs(x-h1*round(x/h1));ay=abs(y-h1*round(y/h1));az=abs(z-h1*round(z/h1));c1=(ax<0.24)&(ay<0.24);c2=(ay<0.24)&(az<0.24);c3=(ax<0.24)&(az<0.24);bx=abs(x-h2*round(x/h2));by=abs(y-h2*round(y/h2));bz=abs(z-h2*round(z/h2));t2=0.24*0.45;d1=(bx<t2)&(by<t2);d2=(by<t2)&(bz<t2);d3=(bx<t2)&(bz<t2);cond=c1|c2|c3|d1|d2|d3' 0.25 200 'null' 1 null
+```
+
+### whitney · Whitney 伞面三态（自交奇点曲面）
+
+**这是拓扑学里最经典的奇点曲面**——Whitney 伞面 `x = uv, y = u, z = v²`。它的特殊之处在于**沿 y 轴整条直线自交**：取 u=0 时无论 v 取什么值，位置都是 `(0, 0, v²)`，也就是说 y=0 这条线被「折叠」了两次；而 v 为正和为负给出的 (x,z) 是镜像对称的，于是整张曲面像一把**撑开的伞，伞骨沿 y 轴穿过去、伞面从两侧包上来**。**它能画出来靠的是 z 只有 v²、没有 u**：这意味着任意固定 v 的截线都是沿 y 方向的一条水平线段（x = u·v 随 u 线性变化），而任意固定 u 的截线是抛物线——**两个方向的截面一个直、一个曲**，合起来才形成那种「越往外越张开、越靠近轴越收紧」的喇叭。**注意 Whitney 伞面在三维里是无法消除自交的**（它的奇点类型 ℂ²/(±1) 在 R³ 里只能靠自交实现），这正是它与库里 `enneper` 这类极小曲面的根本区别——前者是**必然自交**的拓扑对象，后者是光滑嵌入的。**三条走的是伞的张开度**：UR=3.2、VR=2.2 时伞面从 y=−1.6 收拢到 +1.6、z 抬到 7.3，是标准的伞形；VR=3.2 时伞口张开到 10.2 格、几乎摊平成一片大喇叭；UR=4.4 时伞柄拉长到 4.4 格、整体更狭长。**关键是 z 的系数固定 1.5**：它只控制伞面的「深度」，改它不会改变奇点结构，只改变伞撑多高——想让伞更深就把 1.5 加大，但 z 会随 v² 二次增长，加太多会撑爆包围盒。三条各 7200 粒，共 21600 粒 43ms、占格 5556。改 UR 换伞柄长度，改 VR 换伞面张开度，改 z 系数换伞的深度。
+
+标签：`parameter` `表达式` `拓扑`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)-0.5)*3.2;vv=(ss*2.0-1.0)*2.2;x=uu*vv;y=uu;z=vv*vv*1.5' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)-0.5)*3.2;vv=(ss*2.0-1.0)*3.2;x=uu*vv;y=uu;z=vv*vv*1.5' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)-0.5)*4.4;vv=(ss*2.0-1.0)*2.2;x=uu*vv;y=uu;z=vv*vv*1.5' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
