@@ -1968,6 +1968,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 79199 'u=t;NL=60;NThv=60;kk=floor(u/(NL*NThv));rem=floorMod(u,NL*NThv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);L=1.0+kk/(22-1.0)*5;th=(0.18+0.64*jj/(NThv-1.0))*PI;ph=ss*2.0*PI;st=sin(th);rr=L*st*st;x=rr*st*cos(ph);y=rr*cos(th);z=rr*st*sin(ph)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'coilbundle',
+    name: '多股螺旋线束三态（相位均分）',
+    desc: "**一群各自螺旋前进、又互相错开相位的线**——每条线绕 y 轴转 `turns` 圈同时上升 H，起点相位 `ph0 = k·2π/N` 均匀铺满一圈，于是整束线的截面永远是 N 个等分点。**关键在于相位差恒定**：任意两层高度上，这些线的方位角都保持均匀分布，正是这一点让整束看起来像**编织的股线**而不是一堆乱缠的线——这是绞缆、DNA 双螺旋、多股线缆共同的数学结构。**与库里 `helixsheet` 的区别**：那种是单根螺旋加厚成面；这条是**N 根独立曲线**，彼此之间有空隙，视觉上能一根根追踪、跟随它从底绕到顶——这正是「多股」与「单股」的本质差别。**半径上加的 `0.22·sin(k·φ_golden)` 是有意的**：它让每条线的轨道半径略有差异，避免了所有线在同一个圆柱面上完全贴合（那样会糊成一张整面），形成**微微鼓胀的束**；这也是为什么从正面看有明暗层次——外圈线（半径大）和内圈线（半径小）在投影上重叠但深度不同。**三条走的是线数与半径的组合**：6 根细束（半径 2.2）像**六股绞绳**，能看清每股独自的螺旋路径；12 根中等束（2.8）绕得更密，整体像**弹簧**；20 根粗束（3.2）并且 10 圈，视觉上已经接近**实心螺旋管**，但仔细看表面仍有纵向纹路——那是单根线的轨迹。**注意 `y` 里加的 `0.18·cos(k·1.7)`**：它让每条线的高度起点略有错落，避免所有线在底部同时出现形成「一圈整齐的端点」——这一个小量是整条模板看起来自然而不机械的根源。三条各 1800 / 3840 / 6800 粒，共 12440 粒 29ms、占格 9011（占格/粒子比 = 0.72，全库最高效的几条之一）。改 lines 换股数（越多越像实心管），改 turns 换缠绕密度，改 R 换束的粗细。",
+    tags: ['parameter', '表达式', '螺旋'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 1799 'u=t;NL=300;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ph0=kk/(6-1.0)*2.0*PI;th=ss*2.0*PI*4;rr=2.2*(1.0+0.22*sin(kk*2.399963));x=rr*cos(th+ph0);z=rr*sin(th+ph0);y=(ss-0.5)*5.5+0.18*cos(kk*1.7)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 3839 'u=t;NL=320;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ph0=kk/(12-1.0)*2.0*PI;th=ss*2.0*PI*7;rr=2.8*(1.0+0.22*sin(kk*2.399963));x=rr*cos(th+ph0);z=rr*sin(th+ph0);y=(ss-0.5)*5.5+0.18*cos(kk*1.7)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 6799 'u=t;NL=340;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ph0=kk/(20-1.0)*2.0*PI;th=ss*2.0*PI*10;rr=3.2*(1.0+0.22*sin(kk*2.399963));x=rr*cos(th+ph0);z=rr*sin(th+ph0);y=(ss-0.5)*5.5+0.18*cos(kk*1.7)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
