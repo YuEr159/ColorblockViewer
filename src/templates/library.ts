@@ -1957,6 +1957,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 9799 'u=t;NL=140;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)*2.0-1.0)*3.14159;vv=(ss*2.0-1.0)*1.45;cu=cos(uu);su=sin(uu);ch=cosh(vv);x=(uu-su*ch)*2.2;y=(1.0-cu*ch)*2.2;z=-4.0*sin(uu*0.5)*sinh(vv*0.5)*2.2' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'dipoleline',
+    name: '磁偶极场线族三态（苹果形嵌套）',
+    desc: "**偶极子的场线方程只有一行：r = L·sin²θ**——这是静磁学里最基本的结论（球坐标 r 表示场线到原点的距离，θ 是与偶极轴 y 的夹角）。把它画成整族线：L 是「这条线走多远」的标记，L 越大场线向外鼓得越开；θ 从 0.18π 扫到 0.82π（避开 θ=0 和 π 两处所有场线汇聚的奇点），φ 绕一圈就是完整的旋转对称。**形状的关键在 sin²θ**：θ=π/2（赤道）时 r 最大，θ→0 或 π 时 r→0——所有场线都在**两极收束到原点**，在赤道鼓到最开，于是整族线看起来像一串**套叠的苹果**，而不是同心球。这与库里 `multipole` 的偶极等势面完全是两回事：等势面是「势为常数的面」（两个相切的球，指数 1/2），场线是「沿场方向延伸的曲线」（sin²θ，指数 2）——**同一物理对象，两种等值线，形状完全不同**。**三条是场线数量 8 / 14 / 22 且在空间中的分布密度**：8 条时能一根根数清「苹果」轮廓，能看到内层靠近原点的线被压得很扁（这是 r ∝ L，L 小时整条线缩小的直接结果）；14 条时层与层之间挤在一起，形成体积感很强的**磁瓶**；22 条时整片糊成实心「椭球」，只剩最外层的苹果轮廓——**注意这不是真的椭球**，赤道方向的密集是因为所有 L 不同的线都在赤道处外推得最远，空间上自然堆叠，而不是人为加密。**占格之所以高**：这族线不是曲面而是**填满整个空间的曲线族**，每条线自身在 φ 方向展开成环面，多个 L 叠加后整个三维体积被曲线覆盖，密度分布恰好与「偶极场强 ∝ r⁻³」的衰减反向对应——越靠近原点线越密，视觉上就是内亮外暗。三条各 12800 / 35000 / 79200 粒，共 127000 粒 173ms、占格 29980（库内最高）。改 NL 换场线层数，改 R2 换最外层场线的大小，改 θ 区间换取场线覆盖的纬度范围。",
+    tags: ['parameter', '表达式', '电磁学'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 12799 'u=t;NL=40;NThv=40;kk=floor(u/(NL*NThv));rem=floorMod(u,NL*NThv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);L=1.0+kk/(8-1.0)*5;th=(0.18+0.64*jj/(NThv-1.0))*PI;ph=ss*2.0*PI;st=sin(th);rr=L*st*st;x=rr*st*cos(ph);y=rr*cos(th);z=rr*st*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 34999 'u=t;NL=50;NThv=50;kk=floor(u/(NL*NThv));rem=floorMod(u,NL*NThv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);L=1.0+kk/(14-1.0)*5;th=(0.18+0.64*jj/(NThv-1.0))*PI;ph=ss*2.0*PI;st=sin(th);rr=L*st*st;x=rr*st*cos(ph);y=rr*cos(th);z=rr*st*sin(ph)' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 79199 'u=t;NL=60;NThv=60;kk=floor(u/(NL*NThv));rem=floorMod(u,NL*NThv);jj=floor(rem/NL);ss=floorMod(rem,NL)/(NL-1);L=1.0+kk/(22-1.0)*5;th=(0.18+0.64*jj/(NThv-1.0))*PI;ph=ss*2.0*PI;st=sin(th);rr=L*st*st;x=rr*st*cos(ph);y=rr*cos(th);z=rr*st*sin(ph)' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
