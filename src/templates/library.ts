@@ -2001,6 +2001,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 14399 'u=t;NL=120;NRv=120;ii=floor(u/120);ss=floorMod(u,120)/119.0;ph=ii/119.0*2.0*PI;th=ss*2.0*PI;ct=cos(th);st=sin(th);nx=st*cos(ph);ny=st*sin(ph);nz=ct;ax=abs(nx);ay=abs(ny);az=abs(nz);r100=max(ax,max(ay,az));r111=(ax+ay+az)*0.57735;h1=3/r100;h2=2.65/r111;hh=min(h1,h2);x=nx*hh*1;y=ny*hh*1;z=nz*hh*1' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'bccvoronoi',
+    name: 'BCC Voronoi 胞壁网络三态（晶界）',
+    desc: "**把体心立方（BCC）晶体切开，每个原子周围的那块「领地」就是 Voronoi 胞**——BCC 的 Voronoi 胞是**截角八面体**（8 个六边形面 + 6 个正方形面，共 14 个面）。这条模板画的正是这些胞壁：取每个 BCC 格点（立方格点 + 体心），算粒子到**最近格点**的距离 d_cc，再算到所有**相邻格点**的距离取最小 dd，两者之差接近零的地方就是「到两个格点等距」的**胞界面**。**关键是最近邻有两组**：角点方向 8 个（距离 a√3/2）和体心方向 6 个（距离 a/2），`d8`（到角点）、`d8b`（到相对的角点）、`d6`（到最近的体心）取三者最小才是真正的最近邻距离——**只算一组会画出错误的胞壁**。这正是 BCC 与简单立方最本质的区别：简单立方的胞是立方体（平凡），BCC 的胞是有 14 个面的截角八面体，而这 14 个面恰好对应 14 个最近邻之间的等距面。**三条走的是晶格常数 a**：1.8 时胞小、壁密集，整个空间被切成**细密的蜂巢**；2.4 时是标准比例，每个截角八面体的六边形面与正方形面都清晰可辨；3.0 时胞大、壁稀疏，能一根根看清**胞与胞之间的三面交线**（截角八面体的棱正好在两两胞壁相交处）——**这些交线就是晶体学里的「晶界网络」**，真实多晶材料里晶粒之间的边界正是这种拓扑。**与库里 `wignerseitz` 的区别**：那条是单个 Wigner-Seitz 胞（一个孤立的多面体）；这条是**整片空间被胞壁铺满**，画的是胞与胞之间的界面网络，占格高出数倍。三条各 3140 / 5740 / 9020 粒，共 9220 粒 87ms、占格 6192（占格/粒子比 0.67）。改 a 换晶格常数，改 thick 换壁厚（加厚会吃掉胞腔内部空间）。",
+    tags: ['conditional', '表达式', '晶体学'],
+    cmds: [
+      "/particleex conditional minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 2.8 2.8 2.8 'hi=1.8*0.5;gx=x-1.8*round(x/1.8);gy=y-1.8*round(y/1.8);gz=z-1.8*round(z/1.8);c1x=gx-hi;c1y=gy-hi;c1z=gz-hi;d8=sqrt(c1x*c1x+c1y*c1y+c1z*c1z);n8x=gx+hi;n8y=gy+hi;n8z=gz+hi;d8b=sqrt(n8x*n8x+n8y*n8y+n8z*n8z);c6x=abs(gx)-hi;c6y=abs(gy)-hi;c6z=abs(gz)-hi;d6=sqrt(c6x*c6x+c6y*c6y+c6z*c6z);dd=min(d8,min(d8b,d6));dcc=sqrt(gx*gx+gy*gy+gz*gz);cond=abs(dd-dcc)<0.14' 0.2 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 2.8 2.8 2.8 'hi=2.4*0.5;gx=x-2.4*round(x/2.4);gy=y-2.4*round(y/2.4);gz=z-2.4*round(z/2.4);c1x=gx-hi;c1y=gy-hi;c1z=gz-hi;d8=sqrt(c1x*c1x+c1y*c1y+c1z*c1z);n8x=gx+hi;n8y=gy+hi;n8z=gz+hi;d8b=sqrt(n8x*n8x+n8y*n8y+n8z*n8z);c6x=abs(gx)-hi;c6y=abs(gy)-hi;c6z=abs(gz)-hi;d6=sqrt(c6x*c6x+c6y*c6y+c6z*c6z);dd=min(d8,min(d8b,d6));dcc=sqrt(gx*gx+gy*gy+gz*gz);cond=abs(dd-dcc)<0.14' 0.2 200 'null' 1 null",
+      "/particleex conditional minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 2.8 2.8 2.8 'hi=3*0.5;gx=x-3*round(x/3);gy=y-3*round(y/3);gz=z-3*round(z/3);c1x=gx-hi;c1y=gy-hi;c1z=gz-hi;d8=sqrt(c1x*c1x+c1y*c1y+c1z*c1z);n8x=gx+hi;n8y=gy+hi;n8z=gz+hi;d8b=sqrt(n8x*n8x+n8y*n8y+n8z*n8z);c6x=abs(gx)-hi;c6y=abs(gy)-hi;c6z=abs(gz)-hi;d6=sqrt(c6x*c6x+c6y*c6y+c6z*c6z);dd=min(d8,min(d8b,d6));dcc=sqrt(gx*gx+gy*gy+gz*gz);cond=abs(dd-dcc)<0.14' 0.2 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
