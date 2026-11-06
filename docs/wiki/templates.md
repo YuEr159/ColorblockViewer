@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 191 条）
+## 已收录模板（当前 192 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2812,6 +2812,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 12799 'u=t;NL=160;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1.0)*PI;vv=ss*PI;cv=cos(vv);x=0.5*6*sin(2.0*uu)*cv*cv;y=0.5*6*sin(uu)*sin(2.0*vv);z=0.5*6*cos(uu)*cos(2.0*vv)' 1 200 'null' 1 null
+```
+
+### catalan · Catalan 极小曲面三态（螺旋阶梯）
+
+**这是极小曲面里最有「实体感」的一张**——Catalan 曲面 `x=u−sin u·cosh v, y=1−cos u·cosh v, z=−4 sin(u/2)·sinh(v/2)`，与库里 `enneper`（另一种 Weierstrass 极小曲面）同族但形状完全不同。**它的关键是沿 u 方向的周期性**：`sin u` 与 `cos u` 让曲面每隔 2π 重复一次，但因为 y 里带 `1−cos u·cosh v`（常数项），**每个周期都比上一个抬高一截**，于是整张曲面是一条**向上盘绕的螺旋阶梯**——这与「环面上的螺旋」在拓扑上不同：后者闭合、前者永远向上不闭合。**z 只在 v 方向张开的 `sinh(v/2)` 控制**：v 越大，曲面沿 z 拉伸得越开；v=0 时 z 恒为 0，整张曲面塌成一条**平面曲线**（那是 x 轴上的摆线）。**这正是极小曲面的标志性行为**——它们总是沿着一条「脊线」（这里是 y 轴方向的悬链线）向两侧张开成鞍面，而 z 只是这个张开过程在第三个方向上的分量。**三条走的是张开度 v 的上限 0.55 / 0.95 / 1.45**：0.55 时像一条**窄褶皱的丝带**，能看清中央的脊线；0.95 时褶皱展开成明显的**双曲抛物面片段**，每节颜色分带清晰；1.45 时张开到 13.9 格宽、每节变成薄如纸的**悬垂翼面**，因为 sinh 在 v 大时增长得比 cosh 慢，边缘会自然收薄。**注意 sinh 增长快于 cosh 的错觉不成立**：两者之比 tanh(v) 趋于 1，所以远处 z 与 y 的增长速率趋同，翼面不会无限变薄——这正是极小曲面「不自交也不撕裂」的解析原因。三条各 9800 粒，共 29400 粒 76ms、占格 5440。改 UR 换圈数（每 2π 一节），改 VR 换张开度，改 S 换整体尺寸。
+
+标签：`parameter` `表达式` `极小曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 9799 'u=t;NL=140;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)*2.0-1.0)*3.14159;vv=(ss*2.0-1.0)*0.55;cu=cos(uu);su=sin(uu);ch=cosh(vv);x=(uu-su*ch)*2.2;y=(1.0-cu*ch)*2.2;z=-4.0*sin(uu*0.5)*sinh(vv*0.5)*2.2' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 9799 'u=t;NL=140;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)*2.0-1.0)*3.14159;vv=(ss*2.0-1.0)*0.95;cu=cos(uu);su=sin(uu);ch=cosh(vv);x=(uu-su*ch)*2.2;y=(1.0-cu*ch)*2.2;z=-4.0*sin(uu*0.5)*sinh(vv*0.5)*2.2' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 9799 'u=t;NL=140;NRv=70;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)*2.0-1.0)*3.14159;vv=(ss*2.0-1.0)*1.45;cu=cos(uu);su=sin(uu);ch=cosh(vv);x=(uu-su*ch)*2.2;y=(1.0-cu*ch)*2.2;z=-4.0*sin(uu*0.5)*sinh(vv*0.5)*2.2' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
