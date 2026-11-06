@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 190 条）
+## 已收录模板（当前 191 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2794,6 +2794,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7199 'u=t;NL=120;NRv=60;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=(ii/(NRv-1.0)-0.5)*4.4;vv=(ss*2.0-1.0)*2.2;x=uu*vv;y=uu;z=vv*vv*1.5' 1 200 'null' 1 null
+```
+
+### steinroman · Steiner 罗马曲面三态（RP² 浸入）
+
+**这是射影平面 RP² 在三维里最干净的一张浸入图**——`x=(a/2)sin2u·cos²v, y=(a/2)sin u·sin2v, z=(a/2)cos u·cos2v`，三个分量分别带 `sin2u`、`sin u`、`cos u`，也就是说 **u 一圈下来曲面把自己翻了一次面**。那四条「棱」不是折痕而是**自交曲线**：曲面沿这四条线穿过自身，而四条线围成的中心区域是**双层重叠**（粒子密度看得到翻倍）。RP² 的不可定向性在这里的体现是：你沿着曲面走一圈回来，会发现「正面」变成了「反面」——这正是莫比乌斯带的二维升级版，但**没有边界**。**与库里 `mobius` 的区别**：莫比乌斯带有一条边、有两条边界线；Steiner 曲面是**闭的**（无边），把它想象成「把莫比乌斯带的边界缝起来」得到的东西，只是缝起来后必须自交才能放进三维空间（这是 Hilbert 定理的推论：RP² 不能光滑嵌入 R³，只能浸入）。**三条走的是尺寸 S=3.2 / 4.5 / 6.0**：最小时四个瓣紧凑、中心重叠区清晰可见，像一朵**四瓣花**；4.5 时是标准比例，四个「三角形叶片」之间能看清自交曲线；6.0 时拉开到 6 格跨度，瓣与瓣之间的空隙变大、中心的双层区域被摊薄，整体更像**一只压扁的蝴蝶**。**注意四个瓣不是真的一样大**：y 用 sin u 而 z 用 cos u，前者峰值在 u=π/2、后者峰值在 u=0，所以**沿 x 方向伸出的两个瓣（由 sin2u 控制）与另一对（由 cos2v 控制）宽度不同**——这正是 Steiner 曲面不对称的地方，不是采样问题。三条各 12800 粒，共 38400 粒 68ms、占格 2613。改 S 换整体尺寸，改 NR/NC 换采样密度（曲面本身是双参数，密度只影响粒子铺开程度）。
+
+标签：`parameter` `表达式` `拓扑`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 12799 'u=t;NL=160;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1.0)*PI;vv=ss*PI;cv=cos(vv);x=0.5*3.2*sin(2.0*uu)*cv*cv;y=0.5*3.2*sin(uu)*sin(2.0*vv);z=0.5*3.2*cos(uu)*cos(2.0*vv)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 12799 'u=t;NL=160;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1.0)*PI;vv=ss*PI;cv=cos(vv);x=0.5*4.5*sin(2.0*uu)*cv*cv;y=0.5*4.5*sin(uu)*sin(2.0*vv);z=0.5*4.5*cos(uu)*cos(2.0*vv)' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 12799 'u=t;NL=160;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);uu=ii/(NRv-1.0)*PI;vv=ss*PI;cv=cos(vv);x=0.5*6*sin(2.0*uu)*cv*cv;y=0.5*6*sin(uu)*sin(2.0*vv);z=0.5*6*cos(uu)*cos(2.0*vv)' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
