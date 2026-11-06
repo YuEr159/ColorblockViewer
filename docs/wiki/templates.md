@@ -25,7 +25,7 @@
 > （写 `x`/`y`/`z`）；极坐标曲线用 polar 族（写 `s1=t;s2=0;dis=r(t)`）。
 > 混写两套字段是错误，探索脚本 `scripts/curve-lab.ts` 会自动判定并拒绝。
 
-## 已收录模板（当前 194 条）
+## 已收录模板（当前 195 条）
 
 ### ripple · 涟漪波面（conditional 表达式）
 
@@ -2866,6 +2866,24 @@ Clifford 环面是 S³ 里唯一一个**平坦**的环面：它的两个圆参�
 
 ```
 /particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 6799 'u=t;NL=340;kk=floor(u/NL);ss=floorMod(u,NL)/(NL-1);ph0=kk/(20-1.0)*2.0*PI;th=ss*2.0*PI*10;rr=3.2*(1.0+0.22*sin(kk*2.399963));x=rr*cos(th+ph0);z=rr*sin(th+ph0);y=(ss-0.5)*5.5+0.18*cos(kk*1.7)' 1 200 'null' 1 null
+```
+
+### seashell · 海螺多壁壳三态（对数螺旋）
+
+**真正的海螺不是螺旋管，而是「一边绕一边长大」的锥壳**——`x = 2(1−e^{u/6π})cos u·cos²(v/2)`，其中的 **`e^{u/6π}` 是螺旋的半径增长因子**：u 每转 2π，括号里的 `(1−e^{u/6π})` 就变化一个固定比例，于是螺旋越往上半径越大，这是对数螺线（等角螺线）的离散版本——海洋生物造壳时按固定比例放大每一圈，这正是一条指数曲线。**`cos²(v/2)` 是把圆管压成「贝壳口」的关键**：v 绕一圈时 `cos²(v/2)` 在 v=0 和 v=2π 处都归零，也就是说**管子在接缝处收拢成一条边**而不是圆——贝壳的开口本来就不是封闭圆管，而是从一条缝卷起来的，这个因子就是那条缝。**z 里的 `−sin v + e^{u/6π}sin v` 让壳越往上越「翘」**：低处两项相互抵消、壳沿轴平直；高处 `e^{u/6π}` 占优、壳向侧后方翘起，于是整个螺体自然形成**螺旋轴略弯的锥形**，不是死板的直筒。**多层壁是这条模板的实体化手法**：把整个曲面按 `1+k·wall`（k=0..NL−1）缩放几层，最内层和最外层之间就有了**壳体厚度**——单层时只能看到一张薄纸般的曲面，多层后螺壳有了真正的体积感，从侧面能看出壳壁的厚度渐变（因为外层比内层整体放大，厚度与螺体同比例增长，这与真实贝壳的生长方式一致：每圈都比上一圈更厚）。**三条走的是圈数与壁厚**：5 层墙、壁厚 0.075（u 到 14），是一只**矮胖的螺**，壳壁厚实到几乎能看见内腔的轮廓；7 层、0.055（u 到 18）是标准比例，约 3 圈半，壳壁均匀；9 层、0.040（u 到 24）拉长成**高瘦的锥螺**，壁相对更薄、能看到更多圈数。三条各 32400 / 50400 / 64800 粒，共 151200 粒 235ms、占格 8229。改 UM 换圈数，改 wall×NL 换壁厚，改 S 换整体尺寸；**注意 u 太大时 exp(u/9.42) 会让 z 急剧下坠**，UM 超过 24 后螺尖会甩出包围盒。
+
+标签：`parameter` `表达式` `曲面`
+
+```
+/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 35999 'u=t;NL2=90;NRv=80;kk=floor(u/(NL2*NRv));rem=floorMod(u,NRv*NL2);ii=floor(rem/NL2);ss=floorMod(rem,NL2)/(NL2-1);uu=ii/(NRv-1.0)*14;vv=ss*2.0*PI;ex=exp(uu/18.849556);cv=cos(vv*0.5);c2=cv*cv;sc=(1.0+kk*0.075)*0.75;x=2.0*(1.0-ex)*cos(uu)*c2*sc;y=2.0*(-1.0+ex)*sin(uu)*c2*sc;z=(1.0-exp(uu/9.424778)-sin(vv)+ex*sin(vv))*sc' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 50399 'u=t;NL2=90;NRv=80;kk=floor(u/(NL2*NRv));rem=floorMod(u,NRv*NL2);ii=floor(rem/NL2);ss=floorMod(rem,NL2)/(NL2-1);uu=ii/(NRv-1.0)*18;vv=ss*2.0*PI;ex=exp(uu/18.849556);cv=cos(vv*0.5);c2=cv*cv;sc=(1.0+kk*0.055)*0.75;x=2.0*(1.0-ex)*cos(uu)*c2*sc;y=2.0*(-1.0+ex)*sin(uu)*c2*sc;z=(1.0-exp(uu/9.424778)-sin(vv)+ex*sin(vv))*sc' 1 200 'null' 1 null
+```
+
+```
+/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 64799 'u=t;NL2=90;NRv=80;kk=floor(u/(NL2*NRv));rem=floorMod(u,NRv*NL2);ii=floor(rem/NL2);ss=floorMod(rem,NL2)/(NL2-1);uu=ii/(NRv-1.0)*24;vv=ss*2.0*PI;ex=exp(uu/18.849556);cv=cos(vv*0.5);c2=cv*cv;sc=(1.0+kk*0.04)*0.75;x=2.0*(1.0-ex)*cos(uu)*c2*sc;y=2.0*(-1.0+ex)*sin(uu)*c2*sc;z=(1.0-exp(uu/9.424778)-sin(vv)+ex*sin(vv))*sc' 1 200 'null' 1 null
 ```
 
 ## 待采纳候选（社区高频用法）
