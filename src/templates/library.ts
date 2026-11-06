@@ -2023,6 +2023,17 @@ export const TEMPLATES: Template[] = [
       "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 7999 'u=t;NL=100;NRv=80;ii=floor(u/NL);ss=floorMod(u,NL)/(NL-1);th=ss*2.0*PI;fr=ii/(NRv-1.0);yy=(fr-0.5)*7;ph=fr*4.0*2.0*PI;sn=sin(ph);rm=(0.9+2.6)*0.5;rh=(2.6-0.9)*0.5;rr=rm+rh*sn;x=rr*cos(th);y=yy;z=rr*sin(th)' 1 200 'null' 1 null",
     ],
   },
+  {
+    id: 'duocyl',
+    name: 'Duocylinder 四维双环投影三态',
+    desc: "**R⁴ 里两个圆相乘得到的东西，投影到三维就是这样**——duocylinder（双环面）的每一点是 `(r₁cos α, r₁sin α, r₂cos β, r₂sin β)`，两个独立的旋转角 α、β 各管一个圆。**约束 r₁²+r₂²=R² 把它压到 S³ 上**，这样它才是三维球面里的一个「二维环面」，而不是四维里的三维物体；这条约束正是整条模板能画出结构的原因——**r₁ 是「外圈半径」，r₂ 由它决定**，于是每个 r₁ 值都给出一对同心圆（一个在 xz 平面、一个在 xy 平面）。**投影只取三个坐标**，丢掉第四个，所以看起来像**一堆互相正交、半径互补的圆环**：外圈大的时候内圈就小，反之亦然——这就是为什么图里的环呈现出「大环套小环、内外呼应」的嵌套感，而不是均匀的球面网格。**这正是四维旋转「双旋转」的几何痕迹**：三维里一个刚体只能绕一根轴转；四维里可以同时绕两个互相正交的平面转，两个平面各自独立，duocylinder 就是这种双旋转下「不动」的形状。**与库里 `hopffiber` 的区别**：Hopf 纤维化也是 S³ 上的环面族，但那里的 φ 差是**耦合**的（两根圆绑在一起转，产生相扣）；duocylinder 的两个角**完全独立**，环与环只相交不互扣——图里所有圆都在同一深度平面上平铺，没有互锁。**三条走的是 r₁ 层数 10 / 14 / 18**：10 层时环距大，能一根根数清内外半径如何互补；14 层是标准比例，环与环开始相互穿插形成面感；18 层时环密到互相贴合，整片看起来像**一个带经纬网格的球**——但仔细看会发现「经线」和「纬线」并不是同一种东西，它们分别是两个不同圆的投影。**效率提醒**：粒子数 = 层数×周向点数²，三者同时增大时增长很快；三条合计 15 万粒 241ms。改 NR 换环的层数，改 NC/NT 换两个圆各自的采样密度。",
+    tags: ['parameter', '表达式', '四维'],
+    cmds: [
+      "/particleex parameter minecraft:end_rod -9 0 0 1 0.95 0.89 1 0 0 0 0 15999 'u=t;NL=40;NRv=10;NTh=40;per=NL*NRv*NTh;kk=floor(u/per);rem=floorMod(u,per);tt=floor(rem/(NL*NRv));rr2=floorMod(rem,NL*NRv);ii=floor(rr2/NL);ss=floorMod(rr2,NL)/(NL-1);r1=ii/(NRv-1.0);r2=sqrt(max(0.0001,1.0-r1*r1));aa=ss*2.0*PI;bb=tt/(NTh-1.0)*2.0*PI;x=r1*cos(aa)*3;y=r2*cos(bb)*3;z=r1*sin(aa)*3' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 0 0 0 1 0.95 0.89 1 0 0 0 0 43903 'u=t;NL=56;NRv=14;NTh=56;per=NL*NRv*NTh;kk=floor(u/per);rem=floorMod(u,per);tt=floor(rem/(NL*NRv));rr2=floorMod(rem,NL*NRv);ii=floor(rr2/NL);ss=floorMod(rr2,NL)/(NL-1);r1=ii/(NRv-1.0);r2=sqrt(max(0.0001,1.0-r1*r1));aa=ss*2.0*PI;bb=tt/(NTh-1.0)*2.0*PI;x=r1*cos(aa)*3;y=r2*cos(bb)*3;z=r1*sin(aa)*3' 1 200 'null' 1 null",
+      "/particleex parameter minecraft:end_rod 9 0 0 1 0.95 0.89 1 0 0 0 0 93311 'u=t;NL=72;NRv=18;NTh=72;per=NL*NRv*NTh;kk=floor(u/per);rem=floorMod(u,per);tt=floor(rem/(NL*NRv));rr2=floorMod(rem,NL*NRv);ii=floor(rr2/NL);ss=floorMod(rr2,NL)/(NL-1);r1=ii/(NRv-1.0);r2=sqrt(max(0.0001,1.0-r1*r1));aa=ss*2.0*PI;bb=tt/(NTh-1.0)*2.0*PI;x=r1*cos(aa)*3;y=r2*cos(bb)*3;z=r1*sin(aa)*3' 1 200 'null' 1 null",
+    ],
+  },
 ];
 
 /** 按 id 查模板（分享链接/测试用） */
